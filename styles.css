@@ -1,4 +1,6 @@
 .container {
+    display:inline-block;
+    width: 45%;
     margin: 20px;
     padding: 20px;
     border-radius: 10px;
