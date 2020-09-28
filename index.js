@@ -60,7 +60,12 @@ function addListeners() {
             resetFadeOut(block, 1000);
         });
 
-    document.getElementById('')
+    document.getElementById('play')
+    .addEventListener('click', function () {
+        const block = document.getElementById('moveAndHideBlock')
+        am.addMove(228, {x: 20, y: 20})
+        am.play(block)
+    })
 
 }
 
@@ -182,8 +187,8 @@ function animaster() {
         },
 
         // play
-        addFadeIn(duration, translation){
-            this._steps.push(step(this.fadeIn.name, duration, translation, undefined))
+        addFadeIn(duration){
+            this._steps.push(step(this.fadeIn.name, duration, undefined, undefined))
             return this
         },
 
@@ -192,20 +197,35 @@ function animaster() {
             return this
         },
 
-        addScale(element){
+        addScale(duration, ratio){
+            this._steps.push(step(this.scale.name, duration, undefined, ratio))
+            return this
+        },
 
+        addFadeOut(duration){
+            this._steps.push(step(this.fadeOut.name, duration, undefined))
+            return this
         },
 
         play(element){
-            for (const s of _steps) {
+            for (const s of this._steps) {
                 switch (s.stepName) {
+                    case this.fadeIn.name:
+                        this.fadeIn(element, s.duration)
+                        break;
                     case this.move.name:
                         this.move(element, s.duration, s.translation)
+                        break;
+                    case this.scale.name:
+                        this.scale(element, s.duration, s.ratio)
+                        break;
+                    case this.fadeOut.name:
+                        this.fadeOut(element, duration)
                         break;
                     default:
                         break;
                 }
             }
-        }
+        },
     }
 }
