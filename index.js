@@ -13,7 +13,7 @@ function configureAnimations() {
         .bindAll('scale');
     let duration = 3000;
     animaster()
-        .move({x: 100, y: 20}, 2 / 5 * duration)
+        .move({x: 100, y: 20}, 2 / 5 * duration, false)
         .fadeOut(3 / 5 * duration)
         .bindAll('moveAndHide');
     duration = 5000;
@@ -28,6 +28,12 @@ function configureAnimations() {
         .scale(1, 0.5 * duration, false)
         .cycle()
         .bindAll('heartBeating');
+    duration = 5000;
+    animaster()
+        .rotate(360, 2000, false)
+        .rotate(0, 0)
+        .cycle()
+        .bindAll('rotate');
 }
 
 function animaster() {
@@ -57,8 +63,9 @@ class Animation {
     _cycled = false;
 
     _addStep(duration, sync, operation, ...params) {
-        this._steps.push({operation, sync, params: [duration, ...params]});
-        return this;
+        const animation = new Animation();
+        animation._steps = [...this._steps, {operation, sync, params: [duration, ...params]}];
+        return animation;
     }
 
     fadeIn(duration, sync = true) {
@@ -94,11 +101,11 @@ class Animation {
     _playNext() {
         if (this._stopPended)
             return;
-        if (this._currentStepIndex >= this._steps.length)
-            if (this._cycled && this._steps.length > 0)
-                this._currentStepIndex = 0;
-            else
+        if (this._currentStepIndex >= this._steps.length) {
+            if (!this._cycled)
                 return;
+            this._currentStepIndex = 0;
+        }
 
         const currentStep = this._steps[this._currentStepIndex++];
         let stepTimeout = currentStep.sync ? 0 : currentStep.params[0];
