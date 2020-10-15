@@ -100,7 +100,6 @@ function animaster() {
             return {
                 stop() {
                     clearInterval(timerId);
-                    timerId = null;
                 }
             }
         },
