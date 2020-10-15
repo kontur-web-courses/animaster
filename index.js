@@ -1,7 +1,7 @@
 addListeners();
 
 function addListeners() {
-    let hb;
+    let heartBeatAnimation;
 
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -42,13 +42,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            hb = animaster().heartBeating(block, 500, 1.4);
+            heartBeatAnimation = animaster().heartBeating(block, 500, 1.4);
         });
 
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            hb.stop();
+            heartBeatAnimation.stop();
         });
 }
 
