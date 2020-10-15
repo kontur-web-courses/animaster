@@ -1,6 +1,8 @@
 addListeners();
 
 function addListeners() {
+    let hb;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -24,24 +26,34 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, );
+            animaster().moveAndHide(block, 3000, {x: 100, y: 20});
         });
+
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, );
+            animaster().showAndHide(block, 3000);
         });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, );
+            hb = animaster().heartBeating(block, 500, 1.4);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            hb.stop();
         });
 }
 
 function animaster() {
+    let timerId;
     return {
         fadeIn (element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
@@ -71,14 +83,26 @@ function animaster() {
             }
             return result.join(' ');
         },
-        moveAndHide() {
-            
+        moveAndHide(element, duration, translation) {
+            const onePartDuration = duration / 5;
+            this.move(element, onePartDuration * 2, translation);
+            setTimeout(() => this.fadeOut(element, onePartDuration * 3), onePartDuration * 2);
         },
-        showAndHide() {
-
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
         },
-        heartBeating() {
-
+        heartBeating(element, duration = 500, ratio = 1.4) {
+            timerId = setInterval(() => {
+                this.scale(element, duration, ratio);
+                setTimeout(() => this.scale(element, duration, 1), duration);
+            }, duration * 2);
+            return {
+                stop() {
+                    clearInterval(timerId);
+                    timerId = null;
+                }
+            }
         },
     };
 }
