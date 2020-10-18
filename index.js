@@ -6,7 +6,7 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
 
-            anim.moveAndHide(block, 5000, { x: 100, y: 20 });
+            anim.moveAndHide(block, 5000);
         });
 
     document.getElementById('movePlay')
@@ -53,7 +53,8 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
-        moveAndHide(element, duration, translation) {
+        moveAndHide(element, duration) {
+            const translation = { x: 100, y: 20 }
             let moveDurationCoef = 2 / 5;
             let moveDuration = duration * moveDurationCoef;
             this.move(element, moveDuration, translation);
