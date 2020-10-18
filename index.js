@@ -4,25 +4,33 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            let obj = animaster().fadeIn(block, 5000);
+            document.getElementById('fadeInStop')
+                .addEventListener('click', () => animaster().resetFadeIn(block));
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000)
+            let obj = animaster().fadeOut(block, 5000)
+            document.getElementById('fadeOutStop')
+                .addEventListener('click', () => animaster().resetFadeOut(block));
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            let obj = animaster().move(block, 1000, {x: 100, y: 10});
+            document.getElementById('moveStop')
+                .addEventListener('click', () => animaster().resetMoveAndScale(block));
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            let obj = animaster().scale(block, 1000, 1.25);
+            document.getElementById('scaleStop')
+                .addEventListener('click', () => animaster().resetMoveAndScale(block));
         });
 
     document.getElementById('moveAndHidePlay')
@@ -38,7 +46,9 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            let obj = animaster().heartBeating(block);
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', obj.stop);
         });
 }
 
@@ -55,6 +65,7 @@ function addListeners() {
  * @param duration — Продолжительность анимации в миллисекундах
  * @param translation — объект с полями x и y, обозначающими смещение блока
  */
+
 // function move(element, duration, translation)
 
 /**
@@ -76,44 +87,67 @@ function getTransform(translation, ratio) {
     return result.join(' ');
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function animaster(){
+function animaster() {
     return {
-        fadeIn: function(element, duration){
-            element.style.transitionDuration =  `${duration}ms`;
+        resetFadeIn: function (element) {
+            element.style.transitionDuration = null
+            element.classList.add('hide');
+            element.classList.remove('show');
+        },
+        fadeIn: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        fadeOut: function(element, duration){
-            element.style.transitionDuration =  `${duration}ms`;
+        resetFadeOut: function (element) {
+            element.style.transitionDuration = null
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        fadeOut: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
         },
-        move: function(element, duration, translation){
+        resetMoveAndScale: function (element) {
+            element.style.transitionDuration = null;
+            element.style.transform = null
+        },
+        move: function (element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
-        scale: function(element, duration, ratio){
-            element.style.transitionDuration =  `${duration}ms`;
+        scale: function (element, duration, ratio) {
+            element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        moveAndHide: function (element, duration){
-            this.move(element, duration/5*2, {x: 100, y: 20});
-            setTimeout(() => this.fadeOut(element, duration/5*3), duration/5*2)
+        moveAndHide: function (element, duration) {
+            let timerId = setTimeout(() => {
+                this.move(element, duration / 5 * 2, {x: 100, y: 20});
+                timerId = setTimeout(() => this.fadeOut(element, duration / 5 * 3), duration / 5 * 2)
+            })
         },
-        showAndHide: function(element, duration){
-            this.fadeIn(element, duration/3)
-            setTimeout(() => this.fadeOut(element, duration/3), duration*2/3)
+        showAndHide: function (element, duration) {
+            let timerId = setTimeout(() => {
+                this.fadeIn(element, duration / 3);
+                timerId = setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3)
+            }, 0)
         },
-        heartBeating: async function(element){
-            for(;;){
-                this.scale(element, 500, 1.4)
-                await sleep(500)
-                this.scale(element, 500, 1 / 1.4)
-                await sleep(500)
+        heartBeating: function (element) {
+            let timerId = 0
+            let a = () => {
+                this.scale(element, 500, 1.4);
+                timerId = setTimeout(b, 500)
+            }
+            let b = () => {
+                this.scale(element, 500, 1 / 1.4);
+                timerId = setTimeout(a, 500)
+            }
+            timerId = setTimeout(a, 0)
+            return {
+                stop: function () {
+                    clearTimeout(timerId)
+                }
             }
         }
     }
