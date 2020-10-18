@@ -85,9 +85,15 @@ function animaster() {
         const durationTact = duration / 2;
         heartBeatingTact(element, durationTact, ratio);
 
-        setInterval(() => {
+        const timerId = setInterval(() => {
             heartBeatingTact(element, durationTact, ratio);
-        }, duration)
+        }, duration);
+
+        return {
+            stop() {
+                clearInterval(timerId);
+            }
+        }
     }
 
     function heartBeatingTact(element, duration, ratio) {
@@ -165,10 +171,26 @@ function addListeners() {
             animaster().showAndHide(block, 2000);
         });
 
-    document.getElementById('heartBeatingPlay')
+    
+    let heartBeatingStopper;
+    const btnHeartBeatingPlay = document.getElementById('heartBeatingPlay');
+    const btnHeartBeatingStop = document.getElementById('heartBeatingStop');
+
+    btnHeartBeatingPlay
         .addEventListener('click', function () {
+            btnHeartBeatingPlay.classList.add('hide');
+            btnHeartBeatingStop.classList.remove('hide');
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 1000, 1.4);
+            heartBeatingStopper = animaster().heartBeating(block, 1000, 1.4);
+        });
+
+    btnHeartBeatingStop
+        .addEventListener('click', function () {
+            btnHeartBeatingPlay.classList.remove('hide');
+            btnHeartBeatingStop.classList.add('hide');
+            if (heartBeatingStopper) {
+                heartBeatingStopper.stop();
+            }
         });
 }
 
