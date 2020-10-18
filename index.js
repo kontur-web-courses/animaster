@@ -12,7 +12,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            anim.showAndHide(block, 1000, { x: 100, y: 10 });
+            anim.showAndHide(block, 1000);
         });
 
     let interval;
