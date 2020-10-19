@@ -72,9 +72,17 @@ function animaster() {
          */
         heartBeating(element) {
             const duration = 1000;
-            this.scale(element, duration / 2, 1.4);
-            setTimeout(() => this.scale(element, duration / 2, 1), duration / 2)
-            setTimeout(() => this.heartBeating(element), duration)
+            const animation = () => {
+                this.scale(element, duration / 2, 1.4);
+                setTimeout(() => this.scale(element, duration / 2, 1), duration / 2);
+            };
+            const timerId = setInterval(() => animation(), duration);
+            animation();
+            return {
+                stop() {
+                    clearInterval(timerId);
+                }
+            }
         }
     }
 }
@@ -117,9 +125,20 @@ function addListeners() {
         });
 
     document.getElementById('heartBeatingPlay')
-        .addEventListener('click', function () {
+        .addEventListener('click', () => {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            if(this.heartBeating) {
+                return;
+            }
+            this.heartBeating = animaster().heartBeating(block);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', () => {
+            if (this.heartBeating) {
+                this.heartBeating.stop();
+                this.heartBeating = null;
+            }
         });
 }
 
