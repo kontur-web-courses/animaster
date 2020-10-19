@@ -40,7 +40,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            animaster().heartBeating(block).start();
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
         });
 }
 
@@ -75,11 +81,16 @@ function animaster() {
             setTimeout(animasterBase.fadeIn, 2 / 3 * duration, element, 1 / 3 * duration, true);
         },
         heartBeating : (element) => {
-            let timerId = setTimeout(function tick() {
-                animasterBase.scale(element, 500, 1.4);
-                setTimeout(animasterBase.scale, 500, element, 500, 1);
-                timerId = setTimeout(tick, 1000)
-            }, 0);
+            return {
+                start : () => {
+                    this.timerId = setTimeout(function tick() {
+                        animasterBase.scale(element, 500, 1.4);
+                        setTimeout(animasterBase.scale, 500, element, 500, 1);
+                        this.timerId = setTimeout(tick, 1000)
+                    }, 0);
+                },
+                stop : clearTimeout(this.timerId)
+            }
         }
     }
 }
