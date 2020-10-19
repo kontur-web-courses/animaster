@@ -30,6 +30,12 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 5000);
         });
+    
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 6000);
+        });
 }
 
 function animaster() {
@@ -91,6 +97,20 @@ function animaster() {
             setTimeout(() => {
                 this.fadeOut(element, hideDuration);
             }, moveDuration);
+        },
+        /**
+         * Функция, показывающая элемент и после паузы, скрывающая его. Каждая фаза длится 1/3 от указанной продолжительности анимации
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        showAndHide(element, duration) {
+            const animationDuration = duration / 3;
+            const pauseDuration = 2 * animationDuration;
+            
+            this.fadeIn(element, animationDuration);
+            setTimeout(() => {
+                this.fadeOut(element, animationDuration);
+            }, pauseDuration);
         },
     }
 
