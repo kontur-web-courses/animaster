@@ -44,6 +44,37 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        /**
+         * Блок одновременно сдвигается на 100 пикселей вправо и на 20 вниз, а потом исчезает
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        moveAndHide(element, duration) {
+            this.move(element, 2/5 * duration, {x: 100 , y: 20});
+            setTimeout(() => this.fadeOut(element, 3/5 * duration), 2/5 * duration);
+        },
+
+        /**
+         * Блок появляется, ждет и исчезает
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        showAndHide(element, duration) {
+            this.fadeIn(element, 1/3 * duration);
+            setTimeout(() => this.fadeOut(element, 1/3 * duration), 2/3 * duration)
+        },
+
+        /**
+         * Имитация сердцебиения
+         * @param element — HTMLElement, который надо анимировать
+         */
+        heartBeating(element) {
+            const duration = 1000;
+            this.scale(element, duration / 2, 1.4);
+            setTimeout(() => this.scale(element, duration / 2, 1), duration / 2)
+            setTimeout(() => this.heartBeating(element), duration)
         }
     }
 }
@@ -71,6 +102,24 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
+        });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
         });
 }
 
