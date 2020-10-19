@@ -7,6 +7,12 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -23,7 +29,7 @@ function addListeners() {
 function animaster() {
     return {
         /**
-         * Блок плавно появляется из прозрачного.
+         * Блок плавно появляется из прозрачного
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
@@ -31,6 +37,17 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+        },
+
+        /**
+         * Блок плавно скрывается
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        fadeOut(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
         },
 
         /**
