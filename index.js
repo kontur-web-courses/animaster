@@ -57,21 +57,20 @@ function addListeners() {
 
 function animaster() {
     function resetFadeIn(element) {
+        element.style.transitionDuration = `0ms`;
         element.classList.remove('show');
         element.classList.add('hide');
-        console.log(element.style);
     }
 
     function resetFadeOut(element) {
+        element.style.transitionDuration = `0ms`;
         element.classList.remove('hide');
         element.classList.add('show');
-        console.log(element.style);
     }
 
     function resetMoveAndScale(element) {
-        element.style.transform = getTransform({x: 0, y: 0}, null);
-        element.style.transform = getTransform(null, 1);
-        console.log(element.style);
+        element.style.transitionDuration = `0ms`;
+        element.style.transform = null;
     }
 
     return {
@@ -120,7 +119,6 @@ function animaster() {
         },
 
         resetMoveAndHide(element) {
-            element.style.transitionDuration = `0ms`;
             resetMoveAndScale(element);
             resetFadeOut(element);
         },
@@ -142,7 +140,6 @@ function animaster() {
             return {
                 timerId : timerId,
                 stop() {
-                    console.log("here", this.timerId);
                     clearInterval(this.timerId);
                 }
             }
