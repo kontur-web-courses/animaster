@@ -20,6 +20,10 @@ function addListeners() {
         });
 }
 
+function animaster() {
+
+}
+
 /**
  * Блок плавно появляется из прозрачного.
  * @param element — HTMLElement, который надо анимировать
