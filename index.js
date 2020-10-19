@@ -24,6 +24,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+    
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000);
+        });
 }
 
 function animaster() {
@@ -71,7 +77,21 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-
+        
+        /**
+         * Функция, передвигающая элемент на 100 пикселей вправо и на 20 вниз, а затем скрывающая его. Пропорция времени анимации 40/60
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        moveAndHide(element, duration) {
+            const moveDuration = .4 * duration;
+            const hideDuration = .6 * duration;
+            this.move(element, moveDuration, {x: 100, y: 20});
+            
+            setTimeout(() => {
+                this.fadeOut(element, hideDuration);
+            }, moveDuration);
+        },
     }
 
 }
