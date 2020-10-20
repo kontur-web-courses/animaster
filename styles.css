@@ -40,6 +40,10 @@
     transition-timing-function: ease;
 }
 
+.farestBlock{
+    margin: 10px;
+}
+
 .hide {
     opacity: 0;
 }
