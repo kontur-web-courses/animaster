@@ -1,6 +1,24 @@
 addListeners();
 
 function animaster() {
+
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('show');
+        element.classList.remove('hide');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -8,18 +26,18 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
-            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
         },
 
         /**
-         * Блок плавно появляется из прозрачного.
+         * Блок плавно становится прозрачным.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeOut(element, duration) {
-            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
         },
@@ -42,7 +60,7 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
 
@@ -52,8 +70,15 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         moveAndHide(element, duration) {
-            this.move(element, 2/5 * duration, {x: 100 , y: 20});
-            setTimeout(() => this.fadeOut(element, 3/5 * duration), 2/5 * duration);
+            this.move(element, 2 / 5 * duration, {x: 100, y: 20});
+            const timerId = setTimeout(() => this.fadeOut(element, 3 / 5 * duration), 2 / 5 * duration);
+            return {
+                reset() {
+                    clearTimeout(timerId);
+                    resetMoveAndScale(element);
+                    resetFadeOut(element);
+                }
+            }
         },
 
         /**
@@ -62,8 +87,8 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         showAndHide(element, duration) {
-            this.fadeIn(element, 1/3 * duration);
-            setTimeout(() => this.fadeOut(element, 1/3 * duration), 2/3 * duration)
+            this.fadeIn(element, 1 / 3 * duration);
+            setTimeout(() => this.fadeOut(element, 1 / 3 * duration), 2 / 3 * duration)
         },
 
         /**
@@ -113,9 +138,20 @@ function addListeners() {
         });
 
     document.getElementById('moveAndHidePlay')
-        .addEventListener('click', function () {
+        .addEventListener('click', () => {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000);
+            if (this.moveAndHide) {
+                return;
+            }
+            this.moveAndHide = animaster().moveAndHide(block, 5000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', () => {
+            if (this.moveAndHide) {
+                this.moveAndHide.reset();
+                this.moveAndHide = null;
+            }
         });
 
     document.getElementById('showAndHidePlay')
@@ -127,7 +163,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', () => {
             const block = document.getElementById('heartBeatingBlock');
-            if(this.heartBeating) {
+            if (this.heartBeating) {
                 return;
             }
             this.heartBeating = animaster().heartBeating(block);
