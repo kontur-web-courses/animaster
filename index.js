@@ -83,6 +83,35 @@ function animaster() {
                     clearInterval(timerId);
                 }
             }
+        },
+
+        /**
+         * Сброс анимации FadeIn
+         * @param element — HTMLElement, на котором надо сбросить состояние
+         */
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+
+        /**
+         * Сброс анимации FadeOut
+         * @param element — HTMLElement, на котором надо сбросить состояние
+         */
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+
+        /**
+         * Сброс анимации MoveAndScale
+         * @param element — HTMLElement, на котором надо сбросить состояние
+         */
+        resetMoveAndScale(element) {
+            element.style.transitionDuration = null;
+            element.style.transform = null;
         }
     }
 }
@@ -116,6 +145,13 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 5000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndScale(block);
+            animaster().resetFadeOut(block);
         });
 
     document.getElementById('showAndHidePlay')
