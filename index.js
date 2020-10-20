@@ -22,8 +22,8 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
-    }
-    
+    };
+
     /**
      * Функция, передвигающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -36,9 +36,10 @@ function animaster() {
     };
 
     animations.showAndHide = (block, duration) => {
-        animations.fadeIn(block, duration / 3);
-        setTimeout(() => animations.fadeOut(block, duration / 3), duration / 3)
-    }
+        const animationDurationThird = duration / 3;
+        animations.fadeIn(block, animationDurationThird);
+        setTimeout(() => animations.fadeOut(block, animationDurationThird), animationDurationThird);
+    };
 
     /**
      * Функция, увеличивающая/уменьшающая элемент
@@ -50,28 +51,32 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
     };
-    animations.moveAndHide = (element, duration , ratio) =>{
-        animations.move(element, duration*2/5, ratio);
-        setTimeout(()=>{
-            animations.fadeOut(element, duration*3/5)
-        }, duration*2/5)
-    }
+
+    animations.moveAndHide = (element, duration , ratio) => {
+        const firstAnimationDuration = duration * 2 / 5;
+        const secondAnimationDuration = duration * 3 / 5;
+        animations.move(element, firstAnimationDuration, ratio);
+        setTimeout(() => {
+            animations.fadeOut(element, secondAnimationDuration);
+        }, firstAnimationDuration);
+    };
+
     animations.heartBeating = (element, duration, ratio) => {
-        const stop1 = setInterval(() => {
-                animations.scale(element, duration / 2, ratio)
-            }, duration)
-        const stop2 = setTimeout(()=>{
-            setInterval(()=>{
-                animations.scale(element, duration/2, 1 )
-            }, duration)
-        }, duration/2)
+        const durationHalf = duration / 2;
+        const heartBeatInterval = setInterval(() => {
+            animations.scale(element, durationHalf, ratio);
+            setTimeout(() => {
+                animations.scale(element, durationHalf, 1);
+            }, durationHalf);
+        }, duration);
+
         return {
             stop() {
-                clearInterval(stop1)
-                clearInterval(stop2)
+                clearInterval(heartBeatInterval);
             }
-        }
+        };
     }
+
     return animations;
 }
 
@@ -110,6 +115,7 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 3000, {x: 200, y: 20});
         });
+
     let heartBeating;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
@@ -131,6 +137,6 @@ function getTransform(translation, ratio) {
     if (ratio) {
         result.push(`scale(${ratio})`);
     }
-    
+
     return result.join(' ');
 }
