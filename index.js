@@ -41,16 +41,10 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().addMove(2000, {x : 100, y : 10}).addFadeOut(3000).play(block);
+            moveAndHideStopper = animaster().addMove(2000, {x : 100, y : 10}).addFadeOut(3000).play(block);
         });
     
-    /*
-    document.getElementById('moveAndHideStop')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(5000, block).stop();
-        });
-    */
+    
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -58,20 +52,13 @@ function addListeners() {
             animaster().addFadeIn(5000 / 3).addDelay(5000 / 3).addFadeOut(5000 / 3).play(block);
         });
     
+    
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().addScale(500, 1.4).addScale(500, 1).play(block, true);
-        });
-
-    /*
-    document.getElementById('heartBeatingStop')
-        .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block).stop();
-        });
-    */
-        
+            heartBeatingStopper = animaster().addScale(500, 1.4).addScale(500, 1).play(block, true);
+        });      
 }
 
 
@@ -146,6 +133,11 @@ function animaster() {
 
         play(element, cycled=false) {
             const _steps = this._steps;
+
+            const resetFadeIn = this.resetFadeIn;
+            const resetFadeOut = this.resetFadeOut;
+            const resetMoveAndScale = this.resetMoveAndScale;
+
             let timerId = setTimeout(function passCommand(idx) {
                 if (idx < _steps.length) {
                     _steps[idx].func(element);
@@ -153,9 +145,17 @@ function animaster() {
                         _steps[idx].duration, 
                         cycled ? (idx + 1 ) % _steps.length : idx + 1);
                 }
-            }, 0, 0);
+            return {
+                stop : () => {
+                    clearTimeout(timerId);
+                    resetFadeIn(element);
+                    resetFadeOut(element);
+                    resetMoveAndScale(element);
+                }
+            }
+        }, 0, 0);
 
-        }
+        }       
 
         resetFadeIn(element) {
             element.style.transitionDuration =  null;
