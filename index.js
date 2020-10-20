@@ -2,6 +2,8 @@ addListeners();
 
 function animaster() {
     return {
+        _steps: [],
+
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -112,6 +114,34 @@ function animaster() {
         resetMoveAndScale(element) {
             element.style.transitionDuration = null;
             element.style.transform = null;
+        },
+
+        /**
+         * Добавить анимацию движения в список шагов анимации
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param translation — объект с полями x и y, обозначающими смещение блока
+         */
+        addMove(duration, translation) {
+            this._steps.push({
+                animation: 'move',
+                duration: duration,
+                translation: translation
+            });
+            return this;
+        },
+
+        /**
+         * Воспроизведение анимации
+         * @param element — HTMLElement, к которому надо применить шаги анимации
+         */
+        play(element) {
+            const playStep = (index = 0) => {
+                const step = this._steps[index];
+                if(step === undefined) return;
+                this[step.animation](element, step.duration, step.translation);
+                setTimeout(() => playStep(index + 1), step.duration);
+            };
+            playStep();
         }
     }
 }
@@ -132,7 +162,8 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y:10}).play(block);
+            // animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
