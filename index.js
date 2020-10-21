@@ -133,8 +133,7 @@ function animaster() {
             this._steps.push({
                 animationName: animationNames.move,
                 duration: duration,
-                translation: translation,
-                ratio: null
+                translation: translation
             });
             return this;
         },
@@ -148,7 +147,6 @@ function animaster() {
             this._steps.push({
                 animationName: animationNames.scale,
                 duration: duration,
-                translation: null,
                 ratio: ratio
             });
             return this;
@@ -189,12 +187,23 @@ function animaster() {
         play(element) {
             const playStep = (index = 0) => {
                 const step = this._steps[index];
+                const getTransformValue = (paramName) => {
+                    let result = null;
+                    if(step[paramName]) {
+                        result = step[paramName];
+                    } else if(this._steps[index -1]) {
+                        result = this._steps[index -1][paramName];
+                    }
+                    return result;
+                }
                 if(step === undefined) return;
                 element.style.transitionDuration = `${step.duration}ms`;
                 switch (step.animationName) {
                     case animationNames.move:
                     case animationNames.scale:
-                        element.style.transform = getTransform(step.translation, step.ratio);
+                        let translation = getTransformValue('translation');
+                        let ratio = getTransformValue('ratio');
+                        element.style.transform = getTransform(translation, ratio);
                         break;
                     case animationNames.fadeOut:
                     case animationNames.fadeIn:
@@ -212,6 +221,28 @@ function animaster() {
 }
 
 function addListeners() {
+    const customAnimation = animaster()
+        .addMove(200, {x: 40, y: 40})
+        .addScale(800, 1.3)
+        .addMove(200, {x: 80, y: 0})
+        .addScale(800, 1)
+        .addMove(200, {x: 40, y: -40})
+        .addScale(800, 0.7)
+        .addMove(200, {x: 0, y: 0})
+        .addScale(800, 1);
+
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            customAnimation.play(block);
+        });
+
+    document.getElementById('customAnimation2Play')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimation2Block');
+            customAnimation.play(block);
+        });
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
