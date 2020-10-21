@@ -124,6 +124,7 @@ function animaster() {
                 translation: translation,
                 ratio: null,
             };
+            console.log(step);
             this._steps.push(step);
             return this;
         },
@@ -135,6 +136,7 @@ function animaster() {
                 translation: null,
                 ratio: ratio,
             };
+            console.log(step);
             this._steps.push(step);
             return this;
         },
@@ -162,20 +164,43 @@ function animaster() {
         },
 
         play(element) {
-            for (const step of this._steps) {
+            const playStep = (index = 0) => {
+                const step = this._steps[index];
+                if (step === undefined) return;
                 element.style.transitionDuration = `${step.duration}ms`;
-                if (step.animationName === animationNames.move || step.animationName === animationNames.scale)
-                    element.style.transform = getTransform(step.translation, step.ratio);
+                if (step.animationName === animationNames.move)
+                    element.style.transform = getTransform(step.translation, this._steps[index - 1].ratio);
+                if (step.animationName === animationNames.scale)
+                    element.style.transform = getTransform(this._steps[index - 1].translation, step.ratio);
                 if (step.animationName === animationNames.fadeIn || step.animationName === animationNames.fadeOut) {
                     element.classList.remove(step.remove);
                     element.classList.add(step.add);
                 }
-            }
-        },
+                setTimeout(() => playStep(index + 1), step.duration);
+            };
+            playStep();
+        }
     }
 }
 
+const customAnimation = animaster()
+    .addMove(200, {x: 40, y: 40})
+    .addScale(800, 1.3);
+// .addMove(200, {x: 80, y: 0})
+// .addScale(800, 1)
+// .addMove(200, {x: 40, y: -40})
+// .addScale(800, 0.7)
+// .addMove(200, {x: 0, y: 0})
+// .addScale(800, 1);
+
 function addListeners() {
+
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            customAnimation.play(block);
+        });
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
