@@ -122,9 +122,7 @@ function animaster() {
                 animationName: animationNames.move,
                 duration: duration,
                 translation: translation,
-                ratio: null,
             };
-            console.log(step);
             this._steps.push(step);
             return this;
         },
@@ -133,10 +131,8 @@ function animaster() {
             const step = {
                 animationName: animationNames.scale,
                 duration: duration,
-                translation: null,
                 ratio: ratio,
             };
-            console.log(step);
             this._steps.push(step);
             return this;
         },
@@ -166,24 +162,26 @@ function animaster() {
         play(element) {
             const playStep = (index = 0) => {
                 const step = this._steps[index];
-                const previousStep = this._steps[index - 1];
                 if (step === undefined) return;
                 element.style.transitionDuration = `${step.duration}ms`;
+
                 if (step.animationName === animationNames.move || step.animationName === animationNames.scale) {
-                    let translation, ratio;
+                    const previousStep = this._steps[index - 1];
                     if (previousStep === undefined) {
-                        translation = step.translation;
-                        ratio = step.ratio;
+                        step.translation = step.translation || null;
+                        step.ratio = step.ratio || null;
                     } else {
-                        translation = step.translation || previousStep.translation || null;
-                        ratio = step.ratio || previousStep.ratio || null;
+                        step.translation = step.translation || previousStep.translation || null;
+                        step.ratio = step.ratio || previousStep.ratio || null;
                     }
-                    element.style.transform = getTransform(translation, ratio);
+                    element.style.transform = getTransform(step.translation, step.ratio);
                 }
+
                 if (step.animationName === animationNames.fadeIn || step.animationName === animationNames.fadeOut) {
                     element.classList.remove(step.remove);
                     element.classList.add(step.add);
                 }
+
                 setTimeout(() => playStep(index + 1), step.duration);
             };
             playStep();
