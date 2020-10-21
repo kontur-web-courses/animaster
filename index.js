@@ -1,6 +1,36 @@
 addListeners();
 
 function animaster() {
+
+    /**
+     * Сброс анимации FadeIn
+     * @param element — HTMLElement, на котором надо сбросить состояние
+     */
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    /**
+     * Сброс анимации FadeOut
+     * @param element — HTMLElement, на котором надо сбросить состояние
+     */
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    /**
+     * Сброс анимации MoveAndScale
+     * @param element — HTMLElement, на котором надо сбросить состояние
+     */
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     return {
         _steps: [],
 
@@ -55,7 +85,14 @@ function animaster() {
          */
         moveAndHide(element, duration) {
             this.move(element, 2/5 * duration, {x: 100 , y: 20});
-            setTimeout(() => this.fadeOut(element, 3/5 * duration), 2/5 * duration);
+            const timerId = setTimeout(() => this.fadeOut(element, 3/5 * duration), 2/5 * duration);
+            return {
+                reset() {
+                    clearTimeout(timerId);
+                    resetMoveAndScale(element);
+                    resetFadeOut(element);
+                }
+            }
         },
 
         /**
@@ -85,35 +122,6 @@ function animaster() {
                     clearInterval(timerId);
                 }
             }
-        },
-
-        /**
-         * Сброс анимации FadeIn
-         * @param element — HTMLElement, на котором надо сбросить состояние
-         */
-        resetFadeIn(element) {
-            element.style.transitionDuration = null;
-            element.classList.remove('show');
-            element.classList.add('hide');
-        },
-
-        /**
-         * Сброс анимации FadeOut
-         * @param element — HTMLElement, на котором надо сбросить состояние
-         */
-        resetFadeOut(element) {
-            element.style.transitionDuration = null;
-            element.classList.remove('hide');
-            element.classList.add('show');
-        },
-
-        /**
-         * Сброс анимации MoveAndScale
-         * @param element — HTMLElement, на котором надо сбросить состояние
-         */
-        resetMoveAndScale(element) {
-            element.style.transitionDuration = null;
-            element.style.transform = null;
         },
 
         /**
@@ -173,16 +181,22 @@ function addListeners() {
         });
 
     document.getElementById('moveAndHidePlay')
-        .addEventListener('click', function () {
+        .addEventListener('click', () => {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000);
+            if(this.moveAndHide) {
+                return;
+            }
+            this.moveAndHide = animaster().moveAndHide(block, 5000);
         });
 
     document.getElementById('moveAndHideReset')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            animaster().resetMoveAndScale(block);
-            animaster().resetFadeOut(block);
+        .addEventListener('click', () => {
+            console.log(1234);
+            if (this.moveAndHide) {
+                console.log(123);
+                this.moveAndHide.reset();
+                this.moveAndHide = null;
+            }
         });
 
     document.getElementById('showAndHidePlay')
