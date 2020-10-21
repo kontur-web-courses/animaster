@@ -166,10 +166,20 @@ function animaster() {
         play(element) {
             const playStep = (index = 0) => {
                 const step = this._steps[index];
+                const previousStep = this._steps[index - 1];
                 if (step === undefined) return;
                 element.style.transitionDuration = `${step.duration}ms`;
-                if (step.animationName === animationNames.move || step.animationName === animationNames.scale)
-                    element.style.transform = getTransform(step.translation, step.ratio);
+                if (step.animationName === animationNames.move || step.animationName === animationNames.scale) {
+                    let translation, ratio;
+                    if (previousStep === undefined) {
+                        translation = step.translation;
+                        ratio = step.ratio;
+                    } else {
+                        translation = step.translation || previousStep.translation || null;
+                        ratio = step.ratio || previousStep.ratio || null;
+                    }
+                    element.style.transform = getTransform(translation, ratio);
+                }
                 if (step.animationName === animationNames.fadeIn || step.animationName === animationNames.fadeOut) {
                     element.classList.remove(step.remove);
                     element.classList.add(step.add);
