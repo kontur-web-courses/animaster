@@ -46,20 +46,16 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+            this.addFadeIn(duration).play(element);
         },
 
         /**
-         * Блок плавно появляется из прозрачного.
+         * Блок плавно становится прозрачным.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeOut(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('show');
-            element.classList.add('hide');
+            this.addFadeOut(duration).play(element);
         },
 
         /**
@@ -79,8 +75,7 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            this.addScale(duration, ratio).play(element);
         },
 
         /**
@@ -138,7 +133,51 @@ function animaster() {
             this._steps.push({
                 animationName: animationNames.move,
                 duration: duration,
-                translation: translation
+                translation: translation,
+                ratio: null
+            });
+            return this;
+        },
+
+        /**
+         * Добавить анимацию увеличения/уменьшения элемента в список шагов анимации
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+         */
+        addScale(duration, ratio) {
+            this._steps.push({
+                animationName: animationNames.scale,
+                duration: duration,
+                translation: null,
+                ratio: ratio
+            });
+            return this;
+        },
+
+        /**
+         * Добавить анимацию плавного появления из прозрачного в список шагов анимации
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        addFadeIn(duration) {
+            this._steps.push({
+                animationName: animationNames.fadeIn,
+                duration: duration,
+                add: 'show',
+                remove: 'hide'
+            });
+            return this;
+        },
+
+        /**
+         * Добавить анимацию плавного исчезновения в список шагов анимации
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        addFadeOut(duration) {
+            this._steps.push({
+                animationName: animationNames.fadeOut,
+                duration: duration,
+                add: 'hide',
+                remove: 'show'
             });
             return this;
         },
