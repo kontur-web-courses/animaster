@@ -4,14 +4,14 @@ function animaster() {
 
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
-        element.classList.add('hide');
         element.classList.remove('show');
+        element.classList.add('hide');
     }
 
     function resetFadeOut(element) {
         element.style.transitionDuration = null;
-        element.classList.add('show');
         element.classList.remove('hide');
+        element.classList.add('show');
     }
 
     function resetMoveAndScale(element) {
@@ -20,6 +20,8 @@ function animaster() {
     }
 
     return {
+        _steps: [],
+
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -49,8 +51,26 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.addMove(duration, translation);
+            this.play(element);
+        },
+
+        addMove(duration, translation) {
+            const step = {
+                animationName: 'move',
+                duration: duration,
+                translation: translation,
+                ratio : null,
+            };
+            this._steps.push(step);
+            return this;
+        },
+
+        play(element) {
+            for (const step of this._steps) {
+                element.style.transitionDuration = `${step.duration}ms`;
+                element.style.transform = getTransform(step.translation, step.ratio);
+            }
         },
 
         /**
@@ -129,6 +149,7 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             animaster().move(block, 1000, {x: 100, y: 10});
+            //animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
