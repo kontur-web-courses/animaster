@@ -6,6 +6,7 @@ function animaster() {
         fadeOut: 'fadeOut',
         move: 'move',
         scale: 'scale',
+        delay: 'delay'
     };
 
     /**
@@ -84,8 +85,8 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         moveAndHide(element, duration) {
-            this.move(element, 2/5 * duration, {x: 100 , y: 20});
-            const timerId = setTimeout(() => this.fadeOut(element, 3/5 * duration), 2/5 * duration);
+            this.addMove(2 / 5 * duration, { x: 100, y: 20 }).addFadeOut(3 / 5 * duration).play(element);
+            const timerId = this.timerId;
             return {
                 reset() {
                     clearTimeout(timerId);
@@ -95,14 +96,17 @@ function animaster() {
             }
         },
 
+
         /**
          * Блок появляется, ждет и исчезает
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
         showAndHide(element, duration) {
-            this.fadeIn(element, 1/3 * duration);
-            setTimeout(() => this.fadeOut(element, 1/3 * duration), 2/3 * duration)
+            // this.fadeIn(element, 1/3 * duration);
+            // setTimeout(() => this.fadeOut(element, 1/3 * duration), 2/3 * duration)
+            const partDuration = 1 / 3 * duration;
+            this.addFadeIn(partDuration).addDelay(partDuration).addFadeOut(partDuration).play(element);
         },
 
         /**
@@ -111,15 +115,11 @@ function animaster() {
          */
         heartBeating(element) {
             const duration = 1000;
-            const animation = () => {
-                this.scale(element, duration / 2, 1.4);
-                setTimeout(() => this.scale(element, duration / 2, 1), duration / 2);
-            };
-            const timerId = setInterval(() => animation(), duration);
-            animation();
+            this.addScale(duration / 2, 1.4).addScale(duration / 2, 1).play(element, true);
+            const self = this; // TODO: Почему не работает если присвоить this.timerId
             return {
                 stop() {
-                    clearInterval(timerId);
+                    clearTimeout(self.timerId);
                 }
             }
         },
@@ -181,22 +181,37 @@ function animaster() {
         },
 
         /**
+         * Добавить паузу в анимацию
+         * @param duration — Продолжительность паузы
+         */
+        addDelay(duration) {
+            this._steps.push({
+                animationName: animationNames.delay,
+                duration,
+            });
+            return this;
+        },
+
+        /**
          * Воспроизведение анимации
          * @param element — HTMLElement, к которому надо применить шаги анимации
          */
-        play(element) {
-            const playStep = (index = 0) => {
+        play(element, cycled = false) {
+            const runStep = (index = 0) => {
                 const step = this._steps[index];
                 const getTransformValue = (paramName) => {
                     let result = null;
-                    if(step[paramName]) {
+                    if (step[paramName]) {
                         result = step[paramName];
-                    } else if(this._steps[index -1]) {
-                        result = this._steps[index -1][paramName];
+                    } else if (this._steps[index - 1]) {
+                        result = this._steps[index - 1][paramName];
                     }
                     return result;
+                };
+                if (step === undefined) {
+                    if(cycled) runStep();
+                    return;
                 }
-                if(step === undefined) return;
                 element.style.transitionDuration = `${step.duration}ms`;
                 switch (step.animationName) {
                     case animationNames.move:
@@ -213,22 +228,22 @@ function animaster() {
                     default:
                         break;
                 }
-                setTimeout(() => playStep(index + 1), step.duration);
+                this.timerId = setTimeout(() => runStep(index + 1), step.duration);
             };
-            playStep();
+            runStep();
         }
     }
 }
 
 function addListeners() {
     const customAnimation = animaster()
-        .addMove(200, {x: 40, y: 40})
+        .addMove(200, { x: 40, y: 40 })
         .addScale(800, 1.3)
-        .addMove(200, {x: 80, y: 0})
+        .addMove(200, { x: 80, y: 0 })
         .addScale(800, 1)
-        .addMove(200, {x: 40, y: -40})
+        .addMove(200, { x: 40, y: -40 })
         .addScale(800, 0.7)
-        .addMove(200, {x: 0, y: 0})
+        .addMove(200, { x: 0, y: 0 })
         .addScale(800, 1);
 
     document.getElementById('customAnimationPlay')
@@ -258,7 +273,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, { x: 100, y: 10 });
         });
 
     document.getElementById('scalePlay')
@@ -270,7 +285,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', () => {
             const block = document.getElementById('moveAndHideBlock');
-            if(this.moveAndHide) {
+            if (this.moveAndHide) {
                 return;
             }
             this.moveAndHide = animaster().moveAndHide(block, 5000);
@@ -293,7 +308,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', () => {
             const block = document.getElementById('heartBeatingBlock');
-            if(this.heartBeating) {
+            if (this.heartBeating) {
                 return;
             }
             this.heartBeating = animaster().heartBeating(block);
