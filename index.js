@@ -103,8 +103,6 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         showAndHide(element, duration) {
-            // this.fadeIn(element, 1/3 * duration);
-            // setTimeout(() => this.fadeOut(element, 1/3 * duration), 2/3 * duration)
             const partDuration = 1 / 3 * duration;
             this.addFadeIn(partDuration).addDelay(partDuration).addFadeOut(partDuration).play(element);
         },
@@ -116,7 +114,7 @@ function animaster() {
         heartBeating(element) {
             const duration = 1000;
             this.addScale(duration / 2, 1.4).addScale(duration / 2, 1).play(element, true);
-            const self = this; // TODO: Почему не работает если присвоить this.timerId
+            const self = this; // TODO: Почему не работает если присвоить this.timerId?
             return {
                 stop() {
                     clearTimeout(self.timerId);
@@ -216,9 +214,9 @@ function animaster() {
                 switch (step.animationName) {
                     case animationNames.move:
                     case animationNames.scale:
-                        let translation = getTransformValue('translation');
-                        let ratio = getTransformValue('ratio');
-                        element.style.transform = getTransform(translation, ratio);
+                        step.translation = getTransformValue('translation');
+                        step.ratio = getTransformValue('ratio');
+                        element.style.transform = getTransform(step.translation, step.ratio);
                         break;
                     case animationNames.fadeOut:
                     case animationNames.fadeIn:
