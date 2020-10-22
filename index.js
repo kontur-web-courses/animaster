@@ -85,7 +85,7 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         moveAndHide(element, duration) {
-            this.addMove(2 / 5 * duration, { x: 100, y: 20 }).addFadeOut(3 / 5 * duration).play(element);
+            this.addMove(2 / 5 * duration, {x: 100, y: 20}).addFadeOut(3 / 5 * duration).play(element);
             const timerId = this.timerId;
             return {
                 reset() {
@@ -95,7 +95,6 @@ function animaster() {
                 }
             }
         },
-
 
         /**
          * Блок появляется, ждет и исчезает
@@ -130,8 +129,8 @@ function animaster() {
         addMove(duration, translation) {
             this._steps.push({
                 animationName: animationNames.move,
-                duration: duration,
-                translation: translation
+                duration,
+                translation,
             });
             return this;
         },
@@ -144,8 +143,8 @@ function animaster() {
         addScale(duration, ratio) {
             this._steps.push({
                 animationName: animationNames.scale,
-                duration: duration,
-                ratio: ratio
+                duration,
+                ratio,
             });
             return this;
         },
@@ -157,7 +156,7 @@ function animaster() {
         addFadeIn(duration) {
             this._steps.push({
                 animationName: animationNames.fadeIn,
-                duration: duration,
+                duration,
                 add: 'show',
                 remove: 'hide'
             });
@@ -171,7 +170,7 @@ function animaster() {
         addFadeOut(duration) {
             this._steps.push({
                 animationName: animationNames.fadeOut,
-                duration: duration,
+                duration,
                 add: 'hide',
                 remove: 'show'
             });
@@ -207,7 +206,7 @@ function animaster() {
                     return result;
                 };
                 if (step === undefined) {
-                    if(cycled) runStep();
+                    if (cycled) runStep();
                     return;
                 }
                 element.style.transitionDuration = `${step.duration}ms`;
@@ -235,13 +234,13 @@ function animaster() {
 
 function addListeners() {
     const customAnimation = animaster()
-        .addMove(200, { x: 40, y: 40 })
+        .addMove(200, {x: 40, y: 40})
         .addScale(800, 1.3)
-        .addMove(200, { x: 80, y: 0 })
+        .addMove(200, {x: 80, y: 0})
         .addScale(800, 1)
-        .addMove(200, { x: 40, y: -40 })
+        .addMove(200, {x: 40, y: -40})
         .addScale(800, 0.7)
-        .addMove(200, { x: 0, y: 0 })
+        .addMove(200, {x: 0, y: 0})
         .addScale(800, 1);
 
     document.getElementById('customAnimationPlay')
@@ -271,7 +270,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, { x: 100, y: 10 });
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
@@ -283,9 +282,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', () => {
             const block = document.getElementById('moveAndHideBlock');
-            if (this.moveAndHide) {
-                return;
-            }
+            if (this.moveAndHide) return;
             this.moveAndHide = animaster().moveAndHide(block, 5000);
         });
 
@@ -306,9 +303,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', () => {
             const block = document.getElementById('heartBeatingBlock');
-            if (this.heartBeating) {
-                return;
-            }
+            if (this.heartBeating) return;
             this.heartBeating = animaster().heartBeating(block);
         });
 
