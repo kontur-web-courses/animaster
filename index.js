@@ -11,7 +11,7 @@ class Animaster {
     _steps = []
 
     addStep(name,duration,params){
-        this._steps.push(new Step(name,duration,params))
+        this._steps.push(new Step(name,duration,params));
         return this;
     }
 
@@ -33,7 +33,7 @@ class Animaster {
     buildHandler(){
         let animaster = this;
         return  function() {
-            animaster.play(this)
+            animaster.play(this);
         }
     }
 
@@ -62,14 +62,14 @@ class Animaster {
             funcs[step.name](element,step.duration,step.params);
 
             sleep(step.duration).then(()=>{
-                playNextStep()
+                playNextStep();
             });
         }
 
         playNextStep();
 
         const stop = () => {
-            this.reset(element, unchangedClassList)
+            this.reset(element, unchangedClassList);
             stopRequested = true;
         }
 
@@ -92,8 +92,8 @@ class Animaster {
         }
 
         const stop = () => {
-            animation.cancel()
-            this.reset(element, element.classList)
+            animation.cancel();
+            this.reset(element, element.classList);
         }
 
         return {
@@ -128,6 +128,10 @@ class Animaster {
         element.style.transitionDuration = null;
         element.style.transform = null;
         element.classList = classList === null ? null : classList.value;
+        if(classList.value.includes('hide'))
+            classList.add('show');
+        if(classList.value.includes('show'))
+            classList.add('hide');
     }
 
     delay(duration){
@@ -135,17 +139,17 @@ class Animaster {
     }
 
     moveAndHide(element, duration){
-        this.addStep('move',duration * 0.4, {x: 100, y: 20})
+        this.addStep('move',duration * 0.4, {x: 100, y: 20});
         this.addStep('fadeOut',duration*0.6);
         return this.play(element);
     }
 
     showAndHide(element, duration){
         duration = duration*0.33;
-        this.addStep('fadeIn',duration)
+        this.addStep('fadeIn',duration);
         this.addStep('delay', duration);
         this.addStep('fadeOut',duration);
-        this.play(element)
+        this.play(element);
     }
 
     heartBeating(element){
