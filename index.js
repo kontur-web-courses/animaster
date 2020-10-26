@@ -36,9 +36,9 @@ function addListeners() {
                 .addScale(800, 0.7)
                 .addMove(200, {x: 0, y: 0})
                 .addScale(800, 1);
-            customAnimation.play(block);
+            let play = customAnimation.play(block);
             document.getElementById('moveScriptStop')
-                .addEventListener('click', () => animaster().resetMoveAndScale(block));
+                .addEventListener('click', () => play.stop());
         });
 
     document.getElementById('scalePlay')
@@ -62,7 +62,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            let obj = animaster().heartBeating(block);
+            let obj = animaster().heartBeating(block, true);
             document.getElementById('heartBeatingStop')
                 .addEventListener('click', obj.stop);
         });
@@ -120,13 +120,31 @@ function animaster() {
         addFadeOut: function (duration) {
             this._steps.push({func: (element) => this.fadeOut(element, duration), duration: duration})
         },
+        addMoveAndHide: function (duration) {
+            this._steps.push({func: (element) => this.moveAndHide(element, duration)})
+        },
+        addShowAndHide: function (duration) {
+            this._steps.push({func: (element) => this.showAndHide(element, duration)})
+        },
+        addHeartBeating: function (cycled) {
+            this._steps.push({func: (element) => this.heartBeating(element, cycled)})
+        },
         play: function (element) {
+            let stepNumber = 0
             const playStep = (stepNumber, steps) => {
-                if(stepNumber >= steps.length) return;
+                if (stepNumber >= steps.length || stepNumber < 0) return;
                 steps[stepNumber].func(element)
-                setTimeout(()=> playStep(stepNumber + 1, steps), steps[stepNumber].duration)
+                setTimeout(() => playStep(stepNumber + 1, steps), steps[stepNumber].duration)
             }
-            playStep(0, this._steps)
+            playStep(stepNumber, this._steps)
+            return {
+                stop: function(){
+                    stepNumber = -1
+                },
+                reset: function (){
+
+                }
+            }
         },
         resetFadeIn: function (element) {
             element.style.transitionDuration = null
@@ -172,17 +190,25 @@ function animaster() {
                 timerId = setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3)
             }, 0)
         },
-        heartBeating: function (element) {
+        heartBeating: function (element, cycled) {
             let timerId = 0
-            let a = () => {
+            if (cycled) {
+                let a = () => {
+                    this.scale(element, 500, 1.4);
+                    timerId = setTimeout(b, 500)
+                }
+                let b = () => {
+                    this.scale(element, 500, 1 / 1.4);
+                    timerId = setTimeout(a, 500)
+                }
+                timerId = setTimeout(a, 0)
+            } else {
                 this.scale(element, 500, 1.4);
-                timerId = setTimeout(b, 500)
+                setTimeout(() => {
+                    this.scale(element, 500, 1 / 1.4)
+                    setTimeout(() => this.scale(element, 500, 1), 500)
+                }, 500)
             }
-            let b = () => {
-                this.scale(element, 500, 1 / 1.4);
-                timerId = setTimeout(a, 500)
-            }
-            timerId = setTimeout(a, 0)
             return {
                 stop: function () {
                     clearTimeout(timerId)
