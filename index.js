@@ -24,6 +24,22 @@ function addListeners() {
             document.getElementById('moveStop')
                 .addEventListener('click', () => animaster().resetMoveAndScale(block));
         });
+    document.getElementById('movePlayScript')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveScriptBlock');
+            const customAnimation = animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
+            customAnimation.play(block);
+            document.getElementById('moveScriptStop')
+                .addEventListener('click', () => animaster().resetMoveAndScale(block));
+        });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
@@ -89,6 +105,29 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     return {
+        _steps: [],
+        addMove: function (duration, translation) {
+            this._steps.push({func: (element) => this.move(element, duration, translation), duration: duration})
+            return this
+        },
+        addScale: function (duration, ratio) {
+            this._steps.push({func: (element) => this.scale(element, duration, ratio), duration: duration})
+            return this
+        },
+        addFadeIn: function (duration) {
+            this._steps.push({func: (element) => this.fadeIn(element, duration), duration: duration})
+        },
+        addFadeOut: function (duration) {
+            this._steps.push({func: (element) => this.fadeOut(element, duration), duration: duration})
+        },
+        play: function (element) {
+            const playStep = (stepNumber, steps) => {
+                if(stepNumber >= steps.length) return;
+                steps[stepNumber].func(element)
+                setTimeout(()=> playStep(stepNumber + 1, steps), steps[stepNumber].duration)
+            }
+            playStep(0, this._steps)
+        },
         resetFadeIn: function (element) {
             element.style.transitionDuration = null
             element.classList.add('hide');
