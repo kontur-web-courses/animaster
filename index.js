@@ -22,24 +22,18 @@ function addListeners() {
             const block = document.getElementById('moveBlock');
             let obj = animaster().move(block, 1000, {x: 100, y: 10});
             document.getElementById('moveStop')
-                .addEventListener('click', () => animaster().resetMoveAndScale(block));
+                .addEventListener('click', () => obj.resetMoveAndScale(block));
         });
-    document.getElementById('movePlayScript')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveScriptBlock');
-            const customAnimation = animaster()
-                .addMove(200, {x: 40, y: 40})
-                .addScale(800, 1.3)
-                .addMove(200, {x: 80, y: 0})
-                .addScale(800, 1)
-                .addMove(200, {x: 40, y: -40})
-                .addScale(800, 0.7)
-                .addMove(200, {x: 0, y: 0})
-                .addScale(800, 1);
-            let play = customAnimation.play(block);
-            document.getElementById('moveScriptStop')
-                .addEventListener('click', () => play.stop());
-        });
+
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+
+    document.getElementById('moveScriptBlock')
+        .addEventListener('click', worryAnimationHandler);
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
@@ -68,30 +62,6 @@ function addListeners() {
         });
 }
 
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-// function fadeIn(element, duration)
-
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-
-// function move(element, duration, translation)
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-// function scale(element, duration, ratio)
-
 function getTransform(translation, ratio) {
     const result = [];
     if (translation) {
@@ -106,6 +76,29 @@ function getTransform(translation, ratio) {
 function animaster() {
     return {
         _steps: [],
+        buildHandler: function(){
+            let animaster = this;
+            return  function() {
+                animaster.play(this);
+            }
+        },
+        play: function (element) {
+            let stepNumber = 0
+            const playStep = (stepNumber, steps) => {
+                if (stepNumber >= steps.length || stepNumber < 0) return;
+                steps[stepNumber].func(element)
+                setTimeout(() => playStep(stepNumber + 1, steps), steps[stepNumber].duration)
+            }
+            playStep(stepNumber, this._steps)
+            return {
+                stop: function(){
+                    stepNumber = -1
+                },
+                reset: function (){
+
+                }
+            }
+        },
         addMove: function (duration, translation) {
             this._steps.push({func: (element) => this.move(element, duration, translation), duration: duration})
             return this
@@ -128,23 +121,6 @@ function animaster() {
         },
         addHeartBeating: function (cycled) {
             this._steps.push({func: (element) => this.heartBeating(element, cycled)})
-        },
-        play: function (element) {
-            let stepNumber = 0
-            const playStep = (stepNumber, steps) => {
-                if (stepNumber >= steps.length || stepNumber < 0) return;
-                steps[stepNumber].func(element)
-                setTimeout(() => playStep(stepNumber + 1, steps), steps[stepNumber].duration)
-            }
-            playStep(stepNumber, this._steps)
-            return {
-                stop: function(){
-                    stepNumber = -1
-                },
-                reset: function (){
-
-                }
-            }
         },
         resetFadeIn: function (element) {
             element.style.transitionDuration = null
