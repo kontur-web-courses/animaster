@@ -111,7 +111,7 @@ function animaster() {
             }, moveDuration);
         },
         /**
-         * Функция, показывающая элемент и после паузы, скрывающая его. Каждая фаза длится 1/3 от указанной продолжительности анимации
+         * Функция, показывающая элемент и после паузы скрывающая его. Каждая фаза длится 1/3 от указанной продолжительности анимации
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
@@ -127,21 +127,20 @@ function animaster() {
 
         heartBeating(element) {
 
-            const timer1 = setInterval(() => {
-                this.scale(element, 500, 1.4)
-            }, 500)
-
-            const timer2 = setInterval(() => {
-                this.scale(element, 500, 1)
-            }, 1000)
+            const duration = 1000;
+            const maxRatio = 1.4;
+            const minRatio = 1;
+            let timer = setInterval(() => {
+                this.scale(element, duration / 2, maxRatio);
+                setTimeout(this.scale, duration / 2, element, duration / 2, minRatio);
+            }, duration);
 
             const stop = function () {
-                clearInterval(timer1);
-                clearInterval(timer2);
+                clearInterval(timer)
             }
 
             return {
-                stop: stop,
+                stop,
             }
         },
     }
