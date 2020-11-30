@@ -1,9 +1,11 @@
 .container {
     margin: 20px;
     padding: 20px;
+    width: 250px;
     border-radius: 10px;
-    border: 2px solid #ddd;
+    border: 2px solid #dddddd;
     position: relative;
+    display: inline-block;
 }
 
 .container-header {
