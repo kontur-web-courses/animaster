@@ -27,6 +27,12 @@ function resetMoveAndScale(element) {
 function animaster() {
   return {
     _steps: [],
+    _currentStep: 0,
+    _currentTranslation: { x: 0, y: 0 },
+    _currentRatio: 1,
+    _stopPended: false,
+    _startVisibility: null,
+    _timeout: null,
 
     addFadeIn: function (duration) {
       this._steps.push({
@@ -61,54 +67,69 @@ function animaster() {
       return this;
     },
 
-    play: function (element, cycled = false) {
-      let totalDuration = 0;
-      let totalTranslation = { x: 0, y: 0 };
-      let currentRatio = 1;
-      this._steps.forEach((step) => {
-        setTimeout(() => {
-          switch (step.name) {
-            case ANIMATION_SCALE:
-              currentRatio = step.ratio;
-              break;
-
-            case ANIMATION_MOVE:
-              totalTranslation.x += step.translation.x;
-              totalTranslation.y += step.translation.y;
-              break;
-
-            case ANIMATION_FADE_IN:
-              element.classList.remove("hide");
-              element.classList.add("show");
-              break;
-
-            case ANIMATION_FADE_OUT:
-              element.classList.remove("show");
-              element.classList.add("hide");
-              break;
-          }
-
-          element.style.transform = getTransform(
-            totalTranslation,
-            currentRatio
-          );
-          element.style.transitionDuration = `${step.duration}ms`;
-        }, totalDuration);
-        totalDuration += step.duration;
-        console.log(totalDuration);
-      });
-
-      let cycledTimeout = undefined;
-      if (cycled)
+    _nextStep: function (element, cycled = false) {
+      if (this._stopPended)
       {
-        console.log(cycledTimeout);
-        cycledTimeout = setTimeout(() => { this.play(element, cycled) }, totalDuration);
+        return;
       }
 
+      if (this._currentStep === this._steps.length) {
+        if (cycled) {
+          this._currentStep = 0;
+        } else {
+          return;
+        }
+      }
+
+      let step = this._steps[this._currentStep];
+      switch (step.name) {
+        case ANIMATION_SCALE:
+          this._currentRatio = step.ratio;
+          break;
+
+        case ANIMATION_MOVE:
+          this._currentTranslation.x += step.translation.x;
+          this._currentTranslation.y += step.translation.y;
+          break;
+
+        case ANIMATION_FADE_IN:
+          element.classList.remove("hide");
+          element.classList.add("show");
+          break;
+
+        case ANIMATION_FADE_OUT:
+          element.classList.remove("show");
+          element.classList.add("hide");
+          break;
+      }
+
+      element.style.transform = getTransform(this._currentTranslation, this._currentRatio);
+      element.style.transitionDuration = `${step.duration}ms`;
+
+      this._currentStep += 1;
+      this._timeout = setTimeout(() => {this._nextStep(element, cycled)},  step.duration);
+    },
+
+    play: function (element, cycled = false) {
+      this._startVisibility = element.classList.contains("hide") ? "hide" : "show";
+      this._nextStep(element, cycled);
+      
+      let obj = this;
       return {
         stop: function() {
-            cycledTimeout && clearTimeout(cycledTimeout);
+          obj._stopPended = true;
+          clearTimeout(obj._timeout);
         },
+        reset: function()
+        {
+          stop();
+          obj._steps = [];
+          element.style.transform = getTransform({x:0, y:0}, 1);
+          element.style.transitionDuration = `${0}ms`;
+          element.classList.remove("show");
+          element.classList.remove("hide");
+          element.classList.add(obj._startVisibility);
+        }
       }
     },
 
@@ -159,9 +180,7 @@ function addListeners() {
 
   document.getElementById("movePlay").addEventListener("click", function () {
     const block = document.getElementById("moveBlock");
-    animaster()
-      .addMove(1000, { x: 100, y: 10 })
-      .play(block);
+    animaster().addMove(1000, { x: 100, y: 10 }).play(block);
   });
 
   document.getElementById("scalePlay").addEventListener("click", function () {
@@ -169,26 +188,34 @@ function addListeners() {
     animaster().addScale(1000, 1.25).play(block);
   });
 
+
+  let moveAndHideAnimation;
   document
     .getElementById("moveAndHidePlay")
     .addEventListener("click", function () {
       const block = document.getElementById("moveAndHideBlock");
-      animaster().addMove(1000, { x: 100, y: 20 }).addDelay(500).addFadeOut(500).play(block);
+      moveAndHideAnimation = animaster()
+        .addMove(1000, { x: 100, y: 20 })
+        .addDelay(500)
+        .addFadeOut(500)
+        .play(block);
     });
 
   document
     .getElementById("MoveAndHideReset")
     .addEventListener("click", function () {
-      const block = document.getElementById("moveAndHideBlock");
-      resetFadeOut(block);
-      resetMoveAndScale(block);
+      moveAndHideAnimation && moveAndHideAnimation.reset();
     });
 
   document
     .getElementById("showAndHidePlay")
     .addEventListener("click", function () {
       const block = document.getElementById("showAndHideBlock");
-      animaster().addFadeIn(1000).addDelay(1000).addFadeOut(block, 1000).play(block);
+      animaster()
+        .addFadeIn(1000)
+        .addDelay(1000)
+        .addFadeOut(block, 1000)
+        .play(block);
     });
 
   let heartBeatingAnimation;
@@ -197,7 +224,10 @@ function addListeners() {
     .addEventListener("click", function () {
       const block = document.getElementById("heartBeatingBlock");
 
-      heartBeatingAnimation = animaster().addScale(1000, 1.25).addScale(1000, 1).play(block, true);
+      heartBeatingAnimation = animaster()
+        .addScale(1000, 1.25)
+        .addScale(1000, 1)
+        .play(block, true);
     });
 
   document
