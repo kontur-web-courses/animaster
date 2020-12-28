@@ -1,40 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Animaster</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <header class="container-header">
-            <h3 class="animation-name">fadeIn</h3>
-            <button class="button" id="fadeInPlay">Play</button>
-        </header>
-        <div class="block hide" id="fadeInBlock"></div>
-    </div>
-    <div class="container">
-        <header class="container-header">
-            <h3 class="animation-name">fadeOut</h3>
-            <button class="button" id="fadeOutPlay">Play</button>
-        </header>
-        <div class="block show" id="fadeOutBlock"></div>
-    </div>
-    <div class="container">
-        <header class="container-header">
-            <h3 class="animation-name">move</h3>
-            <button class="button" id="movePlay">Play</button>
-        </header>
-        <div class="block" id="moveBlock"></div>
-    </div>
-    <div class="container">
-        <header class="container-header">
-            <h3 class="animation-name">scale</h3>
-            <button class="button" id="scalePlay">Play</button>
-        </header>
-        <div class="block" id="scaleBlock"></div>
-    </div>
+addListeners();
 
-    <script src="index.js"></script>
-</body>
-</html>
+function animaster(){
+    return {
+        fadeIn (element, duration){
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        fadeOut (element, duration){
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        move(element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        },
+        scale(element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        }
+    }
+
+}
+
+function addListeners() {
+    document.getElementById('fadeInPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().fadeIn(block, 5000);
+        });
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+        const block = document.getElementById('fadeOutBlock');
+        animaster().fadeOut(block, 5000);
+        });
+    document.getElementById('movePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().move(block, 1000, {x: 100, y: 10});
+        });
+
+    document.getElementById('scalePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().scale(block, 1000, 1.25);
+        });
+}
+
+/**
+ * Блок плавно появляется из прозрачного.
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ */
+// function fadeIn(element, duration) {
+//     element.style.transitionDuration =  `${duration}ms`;
+//     element.classList.remove('hide');
+//     element.classList.add('show');
+// }
+
+/**
+ * Функция, передвигающая элемент
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ * @param translation — объект с полями x и y, обозначающими смещение блока
+ */
+// function move(element, duration, translation) {
+//     element.style.transitionDuration = `${duration}ms`;
+//     element.style.transform = getTransform(translation, null);
+// }
+
+/**
+ * Функция, увеличивающая/уменьшающая элемент
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+ */
+// function scale(element, duration, ratio) {
+//     element.style.transitionDuration =  `${duration}ms`;
+//     element.style.transform = getTransform(null, ratio);
+// }
+
+function getTransform(translation, ratio) {
+    const result = [];
+    if (translation) {
+        result.push(`translate(${translation.x}px,${translation.y}px)`);
+    }
+    if (ratio) {
+        result.push(`scale(${ratio})`);
+    }
+    return result.join(' ');
+}
