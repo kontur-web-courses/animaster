@@ -1,5 +1,17 @@
 addListeners();
 
+function resetFadeIn(element) {
+	return;
+}
+
+function resetFadeOut(element) {
+	return;
+}
+
+function resetMoveAndScale(element) {
+	return;
+}
+
 function animaster() {
 	return {
 		scale(element, duration, ratio) {
