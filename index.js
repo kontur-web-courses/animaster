@@ -50,6 +50,21 @@ function addListeners() {
         .addEventListener('click', function () {
             heartbeating.stop();
         });
+
+    document.getElementById('customAnimation')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customBlock');
+            const customAnimation = animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
+            customAnimation.play(block);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -156,7 +171,7 @@ function animaster () {
         let delay = 0;
         for (let {name, ...args} of steps){
             setTimeout(name, delay, element, ...Object.values(args));
-            delay += args[0];
+            delay += args.duration;
         }
         steps = [];
     }
