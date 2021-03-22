@@ -39,7 +39,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            obj.heartBeating(block);
+            heartbeating = obj.heartBeating(block);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            heartbeating.stop();
         });
 }
 
@@ -106,9 +112,12 @@ function animaster () {
     function heartBeating(element) {
         let f = function () {
             scale(element, 500, 1.4);
-            setTimeout(scale, 100, element, 500, 1);
+            setTimeout(scale, 500, element, 500, 1);
         }
-        setInterval(f, 1100);
+        let timer = setInterval(f, 1500);
+        return {
+            stop: () => clearInterval(timer)
+        }
     }
 
     return {
