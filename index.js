@@ -56,6 +56,25 @@ function getTransform(translation, ratio) {
 }
 
 function animaster() {
+
+    function resetFadeIn(element) {
+        element.style.show = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut(element) {
+        element.style.hide = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transform = getTransform({x: -100, y:-20}, null);
+        element.style.transform = getTransform(null, 1/1.4);
+        element.style.transform = getTransform(null, 1/1.4);
+    }
+
     let obj = {
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
