@@ -3,11 +3,13 @@ addListeners();
 function addListeners() {
     let heartBeatingStopper;
     let moveAndHideStopper;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
             animaster().fadeIn(block, 5000);
         });
+
     document.getElementById('fadeInReset')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -28,7 +30,8 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            // animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
     document.getElementById('moveReset')
         .addEventListener('click', function () {
@@ -74,6 +77,21 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             heartBeatingStopper.stop();
         });
+    
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1)
+                .play(block);
+    });
 }
 
 function getTransform(translation, ratio) {
@@ -104,6 +122,22 @@ function animaster() {
         element.style.transform = null;
     }
     return {
+        _steps: [],
+        play(element) {
+            let perform = () => {
+                if (this._steps.length == 0) return;
+                let step = this._steps.pop();
+                let func = step.shift();
+                func.call(this, element, ...step);
+                setTimeout(() => perform(), step.shift());
+            };
+            perform();
+            // for(let command of this._steps) {
+            //     console.log(command);
+            //     let func = command.shift();
+            //     setTimeout(() => func.call(this, element, ...command), 10000);
+            // }
+        },
         resetFadeInWrapper(element) {
             resetFadeIn(element);
         },
@@ -127,6 +161,10 @@ function animaster() {
             element.classList.remove('hide');
             element.classList.add('show');
         },
+        addFadeIn(duration) {
+            this._steps.push([this.fadeIn, duration]);
+            return this;
+        },
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -136,6 +174,10 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        addFadeOut(duration) {
+            this._steps.push([this.fadeOut, duration]);
+            return this;
         },
         /**
          * Функция, передвигающая элемент
@@ -147,6 +189,10 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
+        addMove(duration, translation) {
+            this._steps.push([this.move, duration, translation]);
+            return this;
+        },
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -156,6 +202,10 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+        addScale(duration, ratio) {
+            this._steps.push([this.scale, duration, ratio]);
+            return this;
         },
         moveAndHide(element, duration, translation){
             let moveDuration = (2 * duration) / 5;
