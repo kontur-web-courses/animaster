@@ -1,5 +1,22 @@
 addListeners();
 
+let moveAndHideTimeout;
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            
+            anim.move(block, 2000, {x: 100, y: 20});
+            moveAndHideTimeout = setTimeout(() => anim.fadeOut(block, 3000), 2000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            clearInterval(moveAndHideTimeout);
+            anim.resetMoveAndScale(block);
+            anim.resetFadeOut(block);
+        });
+
 function addListeners() {
     let ani = animaster();
     document.getElementById('fadeInPlay')
@@ -122,6 +139,12 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove("show");
             element.classList.add("hide")
+        },
+
+        resetMoveAndScale(element){
+            element.style.transitionDuration = null;
+            element.style.transform = getTransform({x: 0, y: 0}, null);
+            element.style.transform = getTransform(null, 1);
         },
 
         resetMoveAndScale(element){
