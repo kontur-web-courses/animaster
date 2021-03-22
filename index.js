@@ -60,9 +60,9 @@ function addListeners() {
             const block = document.getElementById('someMovementsBlock');
             animaster()
                 .addMove(200, {x: 100, y: 0})
-                .addMove(200, {x: 0, y: 0})
-                .addMove(200, {x: 0, y: 0})
-                .addMove(200, {x: 0, y: 0})
+                .addMove(400, {x: 200, y: 0})
+                .addMove(600, {x: 300, y: 0})
+                .addMove(800, {x: 400, y: 0})
                 .play(block);
         });
 }
@@ -102,7 +102,7 @@ function animaster(){
          */
         move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            element.style.transform += getTransform(translation, null);
         },
         /**
          * Функция, увеличивающая/уменьшающая элемент
@@ -156,10 +156,7 @@ function animaster(){
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         addMove(duration, translation) {
-            console.log(this.steps_)
-            this.steps_.add(function (element) {
-                this.move(element, duration, translation);
-            });
+            this.steps_.push(new functionContext('move', duration, translation));
             return this;
         },
         /**
@@ -167,9 +164,12 @@ function animaster(){
          * @param element — HTMLElement, который надо анимировать
          */
         play(element) {
-            this.steps_.forEach(action => action(element));
+            let durationAmount = 0;
+            this.steps_.forEach(context => {
+                setTimeout(() => this[context.name](element, context.duration, ...context.args), durationAmount);
+                durationAmount += context.duration;
+            });
         },
-
         resetFadeIn(element) {
             element.style.transitionDuration = null;
             element.classList.add('hide');
@@ -187,6 +187,14 @@ function animaster(){
             element.style.transform = getTransform(null, null);
 
         },
+    }
+}
+
+class functionContext {
+    constructor(name, duration, ...args) {
+        this.name = name;
+        this.duration = duration;
+        this.args = args;
     }
 }
 
