@@ -46,7 +46,25 @@ function addListeners() {
         .addEventListener("click", function () {
             ani.stealBeating = false;
         })
+
+    let moveAndHideTimeout;
+    
+    document.getElementById('moveAndHidePlay')
+            .addEventListener('click', function () {
+                const block = document.getElementById('moveAndHideBlock');
+                ani.move(block, 2000, {x: 100, y: 20});
+                moveAndHideTimeout = setTimeout(() => anim.fadeOut(block, 3000), 2000);
+            });
+    
+    document.getElementById('moveAndHideReset')
+            .addEventListener('click', function () {
+                const block = document.getElementById('moveAndHideBlock');
+                clearInterval(moveAndHideTimeout);
+                ani.resetMoveAndScale(block);
+                ani.resetFadeOut(block);
+            });
 }
+
 
 function animaster() {
     let resetFadeIn = function(element) {
@@ -102,6 +120,12 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove("show");
             element.classList.add("hide")
+        },
+
+        resetMoveAndScale(element){
+            element.style.transitionDuration = null;
+            element.style.transform = getTransform({x: 0, y: 0}, null);
+            element.style.transform = getTransform(null, 1);
         },
         
         stealBeating: false,
