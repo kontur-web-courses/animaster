@@ -36,7 +36,7 @@ function animaster() {
         move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
-        }
+        },
     }
 }
 
