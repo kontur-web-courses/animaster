@@ -21,8 +21,8 @@ function animaster(){
         },
         moveAndHide(element, duration, translation){
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
             element.classList.remove('hide');
+            element.style.transform = getTransform(translation, null);
             element.classList.add('show');
         },
         showAndHide(element, duration, translation){
