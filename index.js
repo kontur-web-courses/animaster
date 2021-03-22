@@ -40,7 +40,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 500, 1.4);
+            heartBeatingStopObj = animaster().heartBeating(block, 500, 1.4);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            heartBeatingStopObj.stop()
         });
 
     document.getElementById('someMovementsPlay')
@@ -69,6 +74,10 @@ function animaster(){
             element.classList.remove('hide');
             element.classList.add('show');
         },
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            // element.classList.remove('show');
+        },
         /**
          * Блок плавно угасает.
          * Блок плавно исчезает.
@@ -81,6 +90,10 @@ function animaster(){
             element.classList.add('show');
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            // element.classList.remove('show');
         },
         /**
          * Функция, передвигающая элемент
@@ -106,12 +119,17 @@ function animaster(){
          * Сердцебиение.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         heartBeating(element, duration, ratio) {
-            setInterval(() => {
+            let timerId = setInterval(() => {
                 this.scale(element, duration, ratio);
                 setTimeout(() => this.scale(element, duration, 1.0), duration);
             }, 2 * duration);
+
+            return {
+                stop() { clearInterval(timerId); }
+            };
         },
         /**
          * Движение (2/5 времени) и исчезновение (3/5 времени)
