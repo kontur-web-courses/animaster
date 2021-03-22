@@ -53,7 +53,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
             .addEventListener('click', function () {
                 const block = document.getElementById('moveAndHideBlock');
-                ani.move(block, 2000, {x: 100, y: 20});
+                ani.move(block, getRecord('move', 2000, {x: 100, y: 20}, null));
                 moveAndHideTimeout = setTimeout(() => anim.fadeOut(block, 3000), 2000);
             });
     
