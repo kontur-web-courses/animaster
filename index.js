@@ -42,6 +42,7 @@ function animaster() {
             return {stop: function(){
                 clearInterval(id1);
                 clearInterval(id2);
+                this.scale(element, 0, 1)
                 }}
         }
     }
@@ -76,6 +77,11 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             am.moveAndHide(block, 5000)
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            am.resetMoveAndHide(block)
         });
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
