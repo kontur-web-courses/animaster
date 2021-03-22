@@ -18,7 +18,7 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
-        
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
@@ -29,6 +29,12 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 1000);
+        });
+        
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(element, 3000);
         });
 }
 
@@ -70,6 +76,11 @@ function animaster() {
         moveAndHide(element, duration) {
             this.move(element, 0.4 * duration, {x: 100, y: 20})
             this.fadeOut(element, 0.6 * duration)
+        },
+        
+        showAndHide(element, duration) {
+            this.fadeOut(element, duration / 3);
+            setTimeout(() => this.fadeIn(element, duration), duration / 3);
         }
     }
 
