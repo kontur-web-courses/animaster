@@ -19,6 +19,13 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             obj.scale(block, 1000, 1.25);
         });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            obj.fadeOut(block, 5000);
+        });
+
 }
 
 function getTransform(translation, ratio) {
@@ -65,9 +72,16 @@ function animaster () {
         element.style.transform = getTransform(translation, null);
     }
 
+    function fadeOut(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
     return {
         scale: scale,
         fadeIn: fadeIn,
-        move: move
+        move: move,
+        fadeOut: fadeOut
     }
 }
