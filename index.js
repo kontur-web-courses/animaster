@@ -123,6 +123,7 @@ function animaster(){
             this.move(element, 2 * duration / 5, translation);
             setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
         },
+
         /**
          * появление (1/3), ожидание (1/3), исчезновение (1/3)
          * @param element — HTMLElement, который надо анимировать
