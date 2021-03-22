@@ -37,8 +37,8 @@ function animaster() {
             this.fadeOut(element, hideDuration);
         },
         heartBeating: function (element) {
-            this.scale(element, 500, 1.4)
-            setTimeout(this.scale, 500, element, 500, 1)
+            setInterval(this.scale, 500, element, 500, 1.4)
+            setInterval(this.scale, 1000, element, 500, 1)
         }
     }
 }
