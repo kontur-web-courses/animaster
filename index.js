@@ -5,31 +5,22 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
             ani.fadeIn(block, 5000);
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            animaster().fadeOut(block, 5000);
-            ani.fadeIn(block, 5000);
+            const block = document.getElementById('fadeOutBlock');
+            ani.fadeOut(block, 5000);
         });
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
             ani.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            ani.scale(block, 1000, 1.25);
-        });
-    
-    document.getElementById('showAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHide');
             ani.scale(block, 1000, 1.25);
         });
 
@@ -50,8 +41,8 @@ function animaster() {
 
         fadeOut(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
-            element.classList.add('show');
-            element.classList.remove('hide');
+            element.classList.add('hide');
+            element.classList.remove('show');
         },
 
         scale(element, duration, ratio) {
@@ -65,14 +56,10 @@ function animaster() {
         },
 
         moveAndHide(element, duration, translation) {
-            this.fadeIn(element, duration * 2 / 5);
             this.move(element, duration * 3 / 5, translation);
+            this.fadeOut(element, duration * 2 / 5);
         },
 
-        showAndHide(element, duration) {
-            setTimeout(this.fadeIn(element, duration * 1 / 3), 1000)
-            this.fadeOut(element, duration * 1 / 3)
-        }
     }
 }
 
