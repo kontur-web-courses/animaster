@@ -17,8 +17,6 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             animaster().move(block, 1000, {x: 100, y: 10});
-<<<<<<< HEAD
-=======
         });
 
     document.getElementById('moveAndHidePlay')
@@ -31,28 +29,36 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 1000);
->>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
-<<<<<<< HEAD
         });
     
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block, 500, 1.4);
-=======
->>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
+        });
+
+    document.getElementById('someMovementsPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('someMovementsBlock');
+            animaster()
+                .addMove(200, {x: 100, y: 0})
+                .addMove(200, {x: 0, y: 0})
+                .addMove(200, {x: 0, y: 0})
+                .addMove(200, {x: 0, y: 0})
+                .play(block);
         });
 }
 
 
 function animaster(){
     return {
+        'steps_': [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -64,23 +70,17 @@ function animaster(){
             element.classList.add('show');
         },
         /**
-<<<<<<< HEAD
          * Блок плавно угасает.
-=======
          * Блок плавно исчезает.
->>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
-<<<<<<< HEAD
             element.classList.remove('hide');
             element.classList.add('show');
-=======
             element.classList.remove('show');
             element.classList.add('hide');
->>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
         },
         /**
          * Функция, передвигающая элемент
@@ -102,7 +102,6 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-<<<<<<< HEAD
         /**
          * Сердцебиение.
          * @param element — HTMLElement, который надо анимировать
@@ -114,27 +113,46 @@ function animaster(){
                 setTimeout(() => this.scale(element, duration, 1.0), duration);
             }, 2 * duration);
         },
-=======
-
+        /**
+         * Движение (2/5 времени) и исчезновение (3/5 времени)
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param translation — объект с полями x и y, обозначающими смещение блока
+         */
         moveAndHide(element, duration, translation) {
             this.move(element, 2 * duration / 5, translation);
             setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
         },
-
+        /**
+         * появление (1/3), ожидание (1/3), исчезновение (1/3)
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
         showAndHide(element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), 2 * duration / 3);
+        },
+        /**
+         * Функция ///
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param translation — объект с полями x и y, обозначающими смещение блока
+         */
+        addMove(duration, translation) {
+            console.log(this.steps_)
+            this.steps_.add(function (element) {
+                this.move(element, duration, translation);
+            });
+            return this;
+        },
+        /**
+         * Функция, воспроизводящая накопленные анимации
+         * @param element — HTMLElement, который надо анимировать
+         */
+        play(element) {
+            this.steps_.forEach(action => action(element));
         }
->>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
     }
 }
-
-
-
-
-
-
-
 
 function getTransform(translation, ratio) {
     const result = [];
