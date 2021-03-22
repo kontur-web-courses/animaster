@@ -1,7 +1,6 @@
 addListeners();
 
 function animaster() {
-
     return {
         fadeIn: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
@@ -51,9 +50,27 @@ function animaster() {
         },
         resetFadeOut: function (element) {
             element.classList.hide = null;
+            element.classList.add("show");
         },
         resetMoveAndHide: function (element) {
-            element.classList.hide = null;
+            this.resetFadeOut(element)
+            element.style.transform = null;
+        },
+        _steps: [],
+        addMove: function (duration, ratio){
+            this._steps.push({
+                name: "move",
+                duration: duration,
+                ratio: ratio
+            })
+            return this
+        },
+        play: function (element){
+            for (let step of this._steps){
+                if (step.name == "move"){
+                    this.move(element, step.duration, step.ratio)
+                }
+            }
         }
 
     }
@@ -70,7 +87,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            am.move(block, 1000, {x: 100, y: 10});
+            am.addMove( 1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
