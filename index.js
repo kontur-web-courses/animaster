@@ -5,25 +5,25 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            obj.fadeIn(block, 5000);
+            obj.addFadeIn(5000).play(block);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            obj.move(block, 1000, {x: 100, y: 10});
+            obj.addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            obj.scale(block, 1000, 1.25);
+            obj.addScale( 1000, 1.25).play(block);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            obj.fadeOut(block, 5000);
+            obj.addFadeOut(5000).play(block);
         });
 
     document.getElementById('moveAndHidePlay')
@@ -116,7 +116,7 @@ function animaster () {
 
     function showAndHide (element, duration) {
         fadeIn(element, duration / 3);
-        setTimeout(this.fadeOut, duration / 3, element, duration / 3);
+        setTimeout(fadeOut, duration / 3, element, duration / 3);
     }
 
     function heartBeating(element) {
@@ -146,28 +146,54 @@ function animaster () {
     function addMove(duration, translation) {
         steps.push({
             name: move,
-            duration: duration,
-            arg: translation
+            duration,
+            translation
         });
         return this;
     }
 
     function play (element) {
-        for (let anim of steps){
-            anim.name(element, anim.duration, anim.arg);
+        let delay = 0;
+        for (let {name, ...args} of steps){
+            setTimeout(name, delay, element, ...Object.values(args));
+            delay += args[0];
         }
+        steps = [];
+    }
+
+    function addScale(duration, ratio){
+        steps.push({
+            name: scale,
+            duration,
+            ratio
+        });
+        return this;
+    }
+
+    function addFadeIn (duration) {
+        steps.push({
+            name: fadeIn,
+            duration
+        });
+        return this;
+    }
+    function addFadeOut (duration) {
+        steps.push({
+            name: fadeOut,
+            duration
+        });
+        return this;
     }
 
     return {
-        scale: scale,
-        fadeIn: fadeIn,
-        move: move,
-        fadeOut: fadeOut,
-        moveAndHide: moveAndHide,
-        showAndHide: showAndHide,
-        heartBeating: heartBeating,
-        addMove: addMove,
-        play: play,
+        moveAndHide,
+        showAndHide,
+        heartBeating,
+        addMove,
+        addScale,
+        addFadeIn,
+        addFadeOut,
+        play,
         _steps: steps
     }
 }
