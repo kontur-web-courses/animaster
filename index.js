@@ -119,8 +119,8 @@ function animaster () {
     }
 
     function moveAndHide (element, duration) {
-        move(element, duration * 0.4, {x: 100, y: 20});
-        fadeOut(element, duration * 0.6);
+        this.addMove(duration * 0.4, {x: 100, y: 20})
+            .addFadeOut(duration * 0.6).play(element);
         return {
             reset: function () {
                 resetFadeOut(element);
@@ -130,19 +130,23 @@ function animaster () {
     }
 
     function showAndHide (element, duration) {
-        fadeIn(element, duration / 3);
-        setTimeout(fadeOut, duration / 3, element, duration / 3);
+        this.addFadeIn(duration / 3)
+            .addFadeOut(duration / 3)
+            .play(element);
     }
 
     function heartBeating(element) {
-        let f = function () {
-            scale(element, 500, 1.4);
-            setTimeout(scale, 500, element, 500, 1);
-        }
-        let timer = setInterval(f, 1500);
-        return {
-            stop: () => clearInterval(timer)
-        }
+        this.addScale(500, 1.4)
+            .addScale(500, 1)
+            .play(element, true);
+    }
+
+    function addDelay (duration){
+        steps.push({
+            name: () => {},
+            duration
+        });
+        return this;
     }
 
     function resetFadeIn(element) {
@@ -166,14 +170,31 @@ function animaster () {
         });
         return this;
     }
+    let cancelled = false;
 
-    function play (element) {
-        let delay = 0;
-        for (let {name, ...args} of steps){
-            setTimeout(name, delay, element, ...Object.values(args));
-            delay += args.duration;
+    function play (element, cycled = false) {
+        let f = function () {
+            if (cancelled) {
+                clearInterval(timer);
+                steps = [];
+            }
+            let delay = 0;
+            for (let {name, ...args} of steps){
+                setTimeout(name, delay, element, ...Object.values(args));
+                delay += args.duration;
+            }
         }
-        steps = [];
+        if (cycled){
+            timer = setInterval(f, 1000);
+        }
+        else {
+            f();
+            steps = [];
+        }
+
+        return {
+            stop: () => cancelled = true
+        }
     }
 
     function addScale(duration, ratio){
@@ -208,6 +229,7 @@ function animaster () {
         addScale,
         addFadeIn,
         addFadeOut,
+        addDelay,
         play,
         _steps: steps
     }
