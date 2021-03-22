@@ -17,20 +17,37 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             animaster().move(block, 1000, {x: 100, y: 10});
+<<<<<<< HEAD
+=======
+        });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000, {x: 100, y: 20});
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 1000);
+>>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
+<<<<<<< HEAD
         });
     
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block, 500, 1.4);
+=======
+>>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
         });
-
 }
 
 
@@ -47,14 +64,23 @@ function animaster(){
             element.classList.add('show');
         },
         /**
+<<<<<<< HEAD
          * Блок плавно угасает.
+=======
+         * Блок плавно исчезает.
+>>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
+<<<<<<< HEAD
             element.classList.remove('hide');
             element.classList.add('show');
+=======
+            element.classList.remove('show');
+            element.classList.add('hide');
+>>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
         },
         /**
          * Функция, передвигающая элемент
@@ -76,6 +102,7 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
+<<<<<<< HEAD
         /**
          * Сердцебиение.
          * @param element — HTMLElement, который надо анимировать
@@ -87,6 +114,18 @@ function animaster(){
                 setTimeout(() => this.scale(element, duration, 1.0), duration);
             }, 2 * duration);
         },
+=======
+
+        moveAndHide(element, duration, translation) {
+            this.move(element, 2 * duration / 5, translation);
+            setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
+        },
+
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), 2 * duration / 3);
+        }
+>>>>>>> fbe77624271a2808537f604fe22e1733c76143fc
     }
 }
 
