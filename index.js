@@ -20,7 +20,8 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            ani.move(block, 1000, {x: 100, y: 10});
+            let record = getRecord('move', 1000, {x: 100, y: 10}, null);
+            ani.move(block, record);
         });
 
     document.getElementById('scalePlay')
@@ -32,7 +33,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            ani.moveAndHide(block, 5000, {x: 100, y: 20});
+            ani.moveAndHide(block, 1000, {x: 100, y: 20});
         });
 
     document.getElementById('heartBeatingPlay')
@@ -97,13 +98,14 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
 
-        move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+        move(element, record) {
+            element.style.transitionDuration = `${record.duration}ms`;
+            element.style.transform = getTransform(record.translation, null);
         },
 
         moveAndHide(element, duration, translation) {
-            this.move(element, duration * 3 / 5, translation);
+            let record = getRecord('move', duration * 3 / 5, translation, null);
+            this.move(element, record);
             setTimeout(this.fadeOut, duration * 3 / 5, element, duration * 2 / 5)
         },
 
@@ -129,6 +131,30 @@ function animaster() {
         },
         
         stealBeating: false,
+
+        _steps : [],
+
+        play(element) {
+            let duration = 0;
+            for (let step of this._steps) {
+                setTimeout(this[step.action](step), duration);
+                duration += step.duration + 50;
+            }
+        },
+
+        addMove(duration, translation) {
+            this._steps.push(getRecord('move', duration, translation, null));
+            return this;
+        }
+    }
+}
+
+function getRecord(action, duration, translation, scale) {
+    return {
+        action,
+        duration,
+        translation,
+        scale
     }
 }
 
