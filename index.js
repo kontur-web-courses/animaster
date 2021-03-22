@@ -29,42 +29,39 @@ function animaster(){
 }
 
 function addListeners() {
-    let ani = animaster();
-    document.getElementById('fadeInPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            ani.fadeIn(block, 5000);
-        });
+	let ani = animaster();
+	document
+		.getElementById("fadeInPlay")
+		.addEventListener("click", function () {
+			const block = document.getElementById("fadeInBlock");
+			ani.fadeIn(block, 4000);
+		});
 
-    document.getElementById('fadeOutPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutBlock');
-            ani.fadeOut(block, 1000);
-        });
+	document
+		.getElementById("fadeOutPlay")
+		.addEventListener("click", function () {
+			const block = document.getElementById("fadeOutBlock");
+			ani.fadeOut(block, 1000);
+		});
 
-    document.getElementById('movePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveBlock');
-            ani.move(block, 1000, {x: 100, y: 10});
-        });
+	document.getElementById("movePlay").addEventListener("click", function () {
+		const block = document.getElementById("moveBlock");
+		ani.move(block, 1000, { x: 100, y: 10 });
+	});
 
-    document.getElementById('scalePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('scaleBlock');
-            ani.scale(block, 1000, 1.25);
-        });
+	document.getElementById("scalePlay").addEventListener("click", function () {
+		const block = document.getElementById("scaleBlock");
+		ani.scale(block, 1000, 1.25);
+	});
 }
-
 
 function getTransform(translation, ratio) {
-    const result = [];
-    if (translation) {
-        result.push(`translate(${translation.x}px,${translation.y}px)`);
-    }
-    if (ratio) {
-        result.push(`scale(${ratio})`);
-    }
-    return result.join(' ');
+	const result = [];
+	if (translation) {
+		result.push(`translate(${translation.x}px,${translation.y}px)`);
+	}
+	if (ratio) {
+		result.push(`scale(${ratio})`);
+	}
+	return result.join(" ");
 }
-
-
