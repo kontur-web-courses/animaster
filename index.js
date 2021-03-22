@@ -40,7 +40,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 500, 1.4);
+            heartBeatingStopObj = animaster().heartBeating(block, 500, 1.4);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            heartBeatingStopObj.stop()
         });
 
     document.getElementById('someMovementsPlay')
@@ -117,10 +122,14 @@ function animaster(){
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         heartBeating(element, duration, ratio) {
-            setInterval(() => {
+            let timerId = setInterval(() => {
                 this.scale(element, duration, ratio);
                 setTimeout(() => this.scale(element, duration, 1.0), duration);
             }, 2 * duration);
+
+            return {
+                stop() { clearInterval(timerId); }
+            };
         },
         /**
          * Движение (2/5 времени) и исчезновение (3/5 времени)
