@@ -18,6 +18,12 @@ function animaster(){
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        moveAndHide(element, duration, translation){
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+            element.classList.remove('hide');
+            element.classList.add('show');
         }
     }
 }
