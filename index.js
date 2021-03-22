@@ -27,8 +27,8 @@ function addListeners() {
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 1000);
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000);
         });
 }
 
