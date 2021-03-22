@@ -39,12 +39,23 @@ function animaster() {
         heartBeating: function (element) {
             let id1 = setInterval(this.scale, 500, element, 500, 1.4);
             let id2 = setInterval(this.scale, 1000, element, 500, 1);
-            return {stop: function(){
-                clearInterval(id1);
-                clearInterval(id2);
-                this.scale(element, 0, 1)
-                }}
+            return {
+                stop: function () {
+                    clearInterval(id1);
+                    clearInterval(id2);
+                }
+            }
+        },
+        resetFadeIn: function (element) {
+            element.classList.show = null;
+        },
+        resetFadeOut: function (element) {
+            element.classList.hide = null;
+        },
+        resetMoveAndHide: function (element) {
+            element.classList.hide = null;
         }
+
     }
 }
 
