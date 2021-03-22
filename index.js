@@ -8,6 +8,12 @@ function addListeners() {
             ani.fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            ani.fadeIn(block, 5000);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -27,6 +33,12 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+        },
+
+        fadeOut(elemant, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.add('show');
+            element.classList.remove('hide');
         },
 
         scale(element, duration, ratio) {
