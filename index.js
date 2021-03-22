@@ -19,6 +19,7 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animations['scale'](block, 1000, 1.25);
         });
+
 }
 
 
