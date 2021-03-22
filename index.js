@@ -60,9 +60,12 @@ function addListeners() {
             const block = document.getElementById('someMovementsBlock');
             animaster()
                 .addMove(200, {x: 100, y: 0})
-                .addMove(400, {x: 200, y: 0})
-                .addMove(600, {x: 300, y: 0})
-                .addMove(800, {x: 400, y: 0})
+                .addFadeOut(block, 300)
+                .addMove(200, {x: 100, y: 0})
+                .addMove(200, {x: 100, y: 0})
+                .addMove(200, {x: 100, y: 0})
+                .addFadeIn(block, 300)
+                .addScale(block, 1000, 1.25)
                 .play(block);
         });
 }
@@ -70,7 +73,7 @@ function addListeners() {
 
 function animaster(){
     return {
-        'steps_': [],
+        '_steps': [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -112,7 +115,7 @@ function animaster(){
          */
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            element.style.transform += getTransform(null, ratio);
         },
         /**
          * Сердцебиение.
@@ -156,7 +159,22 @@ function animaster(){
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         addMove(duration, translation) {
-            this.steps_.push(new functionContext('move', duration, translation));
+            this._steps.push(new functionContext('move', duration, translation));
+            return this;
+        },
+
+        addScale(element, duration, ratio) {
+            this._steps.push(new functionContext('scale', duration, ratio))
+            return this;
+        },
+
+        addFadeIn(element, duration) {
+            this._steps.push(new functionContext('fadeIn', duration))
+            return this;
+        },
+
+        addFadeOut(element, duration) {
+            this._steps.push(new functionContext('fadeOut', duration))
             return this;
         },
         /**
@@ -165,7 +183,7 @@ function animaster(){
          */
         play(element) {
             let durationAmount = 0;
-            this.steps_.forEach(context => {
+            this._steps.forEach(context => {
                 setTimeout(() => this[context.name](element, context.duration, ...context.args), durationAmount);
                 durationAmount += context.duration;
             });
