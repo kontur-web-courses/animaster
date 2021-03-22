@@ -43,12 +43,13 @@ function animaster() {
 		heartBeating(element) {
 			let id1 = setInterval(this.scale, 500, element, 500, 1.4);
 			let id2 = setInterval(this.scale, 1000, element, 500, 1);
-			document
-				.getElementById("heartBeatingStop")
-				.addEventListener("click", function () {
+
+			return {
+				stop() {
 					clearInterval(id1);
 					clearInterval(id2);
-				});
+				},
+			};
 		},
 	};
 }
@@ -94,11 +95,19 @@ function addListeners() {
 			ani.showAndHide(block, 1000);
 		});
 
+	let heart = null;
+
 	document
 		.getElementById("heartBeating")
 		.addEventListener("click", function () {
 			const block = document.getElementById("heartBeatingBlock");
-			ani.heartBeating(block);
+			heart = ani.heartBeating(block);
+		});
+
+	document
+		.getElementById("heartBeatingStop")
+		.addEventListener("click", function () {
+			if (heart !== null) heart.stop();
 		});
 
 	document.getElementById("scalePlay").addEventListener("click", function () {
