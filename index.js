@@ -1,23 +1,34 @@
 addListeners();
 
 function addListeners() {
-    let animations = animaster()
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animations['fadeIn'](block, 5000);
+            animaster().fadeIn(block, 5000);
+        });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animations['move'](block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animations['scale'](block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
+        });
+    
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block, 500, 1.4);
         });
 
 }
@@ -31,6 +42,16 @@ function animaster(){
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        /**
+         * Блок плавно угасает.
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
@@ -54,7 +75,18 @@ function animaster(){
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
-        }
+        },
+        /**
+         * Сердцебиение.
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        heartBeating(element, duration, ratio) {
+            setInterval(() => {
+                this.scale(element, duration, ratio);
+                setTimeout(() => this.scale(element, duration, 1.0), duration);
+            }, 2 * duration);
+        },
     }
 }
 
