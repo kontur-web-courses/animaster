@@ -1,4 +1,5 @@
 addListeners();
+
 function animaster() {
 	return {
 		scale(element, duration, ratio) {
