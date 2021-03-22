@@ -1,56 +1,205 @@
 addListeners();
 
+function animaster() {
+    return {
+        fadeIn: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+
+        move: function (element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        },
+
+        scale: function (element, duration, ratio) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        },
+
+        fadeOut: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        showAndHide: function (element, duration) {
+            let newDuration = duration / 3;
+            this.fadeIn(element, newDuration);
+            this.fadeOut(element, newDuration);
+            setTimeout(this.fadeOut, newDuration, element, newDuration);
+        },
+        moveAndHide: function (element, duration) {
+            let moveDuration = duration / 5 * 2;
+            let hideDuration = duration / 5 * 3;
+            this.move(element, moveDuration, {x: 100, y: 20});
+            this.fadeOut(element, hideDuration);
+        },
+        heartBeating: function (element) {
+            let id1 = setInterval(this.scale, 500, element, 500, 1.4);
+            let id2 = setInterval(this.scale, 1000, element, 500, 1);
+            return {
+                stop: function () {
+                    clearInterval(id1);
+                    clearInterval(id2);
+                }
+            }
+        },
+        resetFadeIn: function (element) {
+            element.classList.show = null;
+        },
+        resetFadeOut: function (element) {
+            element.classList.hide = null;
+            element.classList.add("show");
+        },
+        resetMoveAndHide: function (element) {
+            this.resetFadeOut(element)
+            element.style.transform = null;
+        },
+        _steps: [],
+        addMove: function (duration, translation) {
+            this._steps.push({
+                name: "move",
+                duration: duration,
+                translation: translation
+            });
+            return this;
+        },
+        addScale: function (duration, ratio) {
+            this._steps.push({
+                name: "scale",
+                duration: duration,
+                ratio: ratio
+            });
+            return this;
+        },
+        addFadeIn: function (duration) {
+            this._steps.push({
+                name: "fadeIn",
+                duration: duration,
+            });
+            return this;
+        },
+        addFadeOut: function (duration) {
+            this._steps.push({
+                name: "fadeOut",
+                duration: duration
+            });
+            return this;
+        },
+        addMoveAndHide: function (duration) {
+            this._steps.push({
+                name: "moveAndHide",
+                duration: duration
+            });
+            return this;
+        },
+        addShowAndHide: function (duration) {
+            this._steps.push({
+                name: "showAndHide",
+                duration: duration
+            });
+            return this;
+        },
+        addHearthBeating: function (duration) {
+            this._steps.push({
+                name: "hearthBeating",
+                duration: duration
+            });
+            return this;
+        },
+        play: function (element, cycled = false) {
+            let timeout = 0;
+            for (let step of this._steps) {
+                switch (step.name) {
+                    case 'move':
+                        setTimeout(this.move, timeout, element, step.duration, step.translation);
+                        break;
+                    case 'scale':
+                        setTimeout(this.scale, timeout, element, step.duration, step.ratio);
+                        break;
+                    case 'fadeIn':
+                        setTimeout(this.fadeIn, timeout, element, step.duration);
+                        break;
+                    case 'fadeOut':
+                        setTimeout(this.fadeOut, timeout, element, step.duration);
+                        break;
+                    case 'moveAndHide':
+                        setTimeout(this.moveAndHide, timeout, element, step.duration);
+                        break;
+                    case 'showAndHide':
+                        setTimeout(this.showAndHide, timeout, element, step.duration);
+                        break;
+                    case 'hearthBeating':
+                        setTimeout(this.heartBeating, timeout, element, step.duration);
+                        break;
+                    case 'addDelay':
+                        break;
+                }
+                timeout += step.duration;
+            }
+        }
+
+    }
+}
+
 function addListeners() {
+    let am = animaster();
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            fadeIn(block, 5000);
+            am.fadeIn(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            move(block, 1000, {x: 100, y: 10});
+            am.addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            scale(block, 1000, 1.25);
+            am.addScale(1000, 1.25).play(block);
         });
-}
 
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
-}
-
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-function scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            am.fadeOut(block, 5000)
+        });
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            am.moveAndHide(block, 5000)
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            am.resetMoveAndHide(block)
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            am.showAndHide(block, 3000)
+        });
+    let hearthBeating;
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            hearthBeating = am.heartBeating(block);
+        });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            document.getElementById('heartBeatingBlock');
+            hearthBeating.stop();
+        });
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            let newAm = animaster();
+            newAm.addShowAndHide(1000).play(block);
+        });
 }
 
 function getTransform(translation, ratio) {
