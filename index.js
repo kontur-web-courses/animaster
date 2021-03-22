@@ -62,6 +62,10 @@ function animaster(){
             element.classList.remove('hide');
             element.classList.add('show');
         },
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            // element.classList.remove('show');
+        },
         /**
          * Блок плавно исчезает.
          * @param element — HTMLElement, который надо анимировать
@@ -71,6 +75,10 @@ function animaster(){
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            // element.classList.remove('show');
         },
         /**
          * Функция, передвигающая элемент
@@ -96,6 +104,7 @@ function animaster(){
          * Сердцебиение.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         heartBeating(element, duration, ratio) {
             let timerId = setInterval(() => {
@@ -109,13 +118,6 @@ function animaster(){
         },
     }
 }
-
-
-
-
-
-
-
 
 function getTransform(translation, ratio) {
     const result = [];
