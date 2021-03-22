@@ -24,6 +24,13 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000, {x: 100, y: 20});
         });
+    
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndScale(block);
+            animaster().resetFadeOut(block);
+        });
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -74,10 +81,6 @@ function animaster(){
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        resetFadeIn(element) {
-            element.style.transitionDuration = null;
-            // element.classList.remove('show');
-        },
         /**
          * Блок плавно угасает.
          * Блок плавно исчезает.
@@ -90,10 +93,6 @@ function animaster(){
             element.classList.add('show');
             element.classList.remove('show');
             element.classList.add('hide');
-        },
-        resetFadeOut(element) {
-            element.style.transitionDuration = null;
-            // element.classList.remove('show');
         },
         /**
          * Функция, передвигающая элемент
@@ -169,7 +168,25 @@ function animaster(){
          */
         play(element) {
             this.steps_.forEach(action => action(element));
-        }
+        },
+
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.add('hide');
+            element.classList.remove('show');
+        },
+        
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            element.classList.add('show');
+            element.classList.remove('hide');
+        },
+
+        resetMoveAndScale(element) {
+            element.style.transitionDuration = null;
+            element.style.transform = getTransform(null, null);
+
+        },
     }
 }
 
