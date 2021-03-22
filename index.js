@@ -5,26 +5,26 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            // animaster().fadeIn(block, 5000);
             ani.fadeIn(block, 5000);
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            animaster().fadeOut(block, 5000);
-            ani.fadeIn(block, 5000);
+            const block = document.getElementById('fadeOutBlock');
+            // animaster().fadeOut(block, 5000);
+            ani.fadeOut(block, 5000);
         });
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            // animaster().move(block, 1000, {x: 100, y: 10});
             ani.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            // animaster().scale(block, 1000, 1.25);
             ani.scale(block, 1000, 1.25);
         });
 
@@ -45,8 +45,8 @@ function animaster() {
 
         fadeOut(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
-            element.classList.add('show');
             element.classList.remove('hide');
+            element.classList.add('show');
         },
 
         scale(element, duration, ratio) {
@@ -60,9 +60,10 @@ function animaster() {
         },
 
         moveAndHide(element, duration, translation) {
-            this.fadeIn(element, duration * 2 / 5);
             this.move(element, duration * 3 / 5, translation);
-        }
+            this.fadeOut(element, duration * 2 / 5);
+        },
+
     }
 }
 
