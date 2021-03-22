@@ -63,6 +63,16 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             am.moveAndHide(block, 5000)
         });
+    document.getElementById('moveAndHide')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            am.moveAndHide(block, 5000)
+        });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            am.moveAndHide(block, 5000)
+        });
 }
 
 function getTransform(translation, ratio) {
