@@ -34,6 +34,10 @@ function animaster() {
             let hideDuration = duration / 5 * 3;
             this.move(element, moveDuration, {x: 100, y: 20});
             this.fadeOut(element, hideDuration);
+        },
+        heartBeating: function (element) {
+            this.scale(element, 500, 1.4)
+            setTimeout(this.scale, 500, element, 500, 1)
         }
     }
 }
@@ -75,8 +79,8 @@ function addListeners() {
         });
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            am.moveAndHide(block, 5000)
+            const block = document.getElementById('heartBeatingBlock');
+            am.heartBeating(block);
         });
 }
 
