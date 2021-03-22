@@ -49,6 +49,18 @@ function addListeners() {
 }
 
 function animaster() {
+    let resetFadeIn = function(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
+    let resetFadeOut = function (element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
     return {
         fadeIn(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
