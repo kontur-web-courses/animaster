@@ -11,6 +11,17 @@ function animaster() {
     }
 
     /**
+     * Блок плавно появляется из прозрачного.
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     */
+    function fadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    /**
      * Функция, передвигающая элемент
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
@@ -34,6 +45,7 @@ function animaster() {
 
     return {
         fadeIn: fadeIn,
+        fadeOut: fadeOut,
         move: move,
         scale: scale
     }
@@ -59,6 +71,18 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             aniMaster.scale(block, 1000, 1.25);
+        });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            aniMaster.fadeOut(block, 5000);
+        });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            aniMaster.fadeOut(block, 5000);
         });
 }
 
