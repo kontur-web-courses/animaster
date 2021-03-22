@@ -24,19 +24,16 @@ function animaster() {
             element.classList.remove('show');
             element.classList.add('hide');
         },
-<<<<<<< HEAD
-
         showAndHide: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
-=======
-        moveAndHide: function(element, duration){
+        },
+        moveAndHide: function (element, duration) {
             let moveDuration = duration / 5 * 2;
             let hideDuration = duration / 5 * 3;
             this.move(element, moveDuration, {x: 100, y: 20});
             this.fadeOut(element, hideDuration);
->>>>>>> ac992b4b8ca9cef56821b8c5cdc22499ca4a6e2f
         }
     }
 }
@@ -66,19 +63,12 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             am.fadeOut(block, 5000)
         });
-<<<<<<< HEAD
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             am.fadeOut(block, 3000)
-=======
-    document.getElementById('moveAndHide')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            am.moveAndHide(block, 5000)
->>>>>>> ac992b4b8ca9cef56821b8c5cdc22499ca4a6e2f
         });
-    document.getElementById('moveAndHide')
+    document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             am.moveAndHide(block, 5000)
