@@ -26,7 +26,7 @@ function animaster() {
         showAndHide: function (element, duration) {
             let newDuration = duration / 3;
             this.fadeIn(element, newDuration);
-            this.fadeIn(element, newDuration);
+            this.fadeOut(element, newDuration);
             setTimeout(this.fadeOut, newDuration, element, newDuration);
         },
         moveAndHide: function (element, duration) {
@@ -57,7 +57,7 @@ function animaster() {
             element.style.transform = null;
         },
         _steps: [],
-        addMove: function (duration, translation){
+        addMove: function (duration, translation) {
             this._steps.push({
                 name: "move",
                 duration: duration,
@@ -65,7 +65,7 @@ function animaster() {
             });
             return this;
         },
-        addScale: function (duration, ratio){
+        addScale: function (duration, ratio) {
             this._steps.push({
                 name: "scale",
                 duration: duration,
@@ -73,23 +73,44 @@ function animaster() {
             });
             return this;
         },
-        addFadeIn : function (duration){
+        addFadeIn: function (duration) {
             this._steps.push({
                 name: "fadeIn",
                 duration: duration,
             });
             return this;
         },
-        addFadeOut: function (duration){
+        addFadeOut: function (duration) {
             this._steps.push({
                 name: "fadeOut",
                 duration: duration
             });
             return this;
         },
-        play: function (element){
-            let timeout = 0
-            for (let step of this._steps){
+        addMoveAndHide: function (duration) {
+            this._steps.push({
+                name: "moveAndHide",
+                duration: duration
+            });
+            return this;
+        },
+        addShowAndHide: function (duration) {
+            this._steps.push({
+                name: "showAndHide",
+                duration: duration
+            });
+            return this;
+        },
+        addHearthBeating: function (duration) {
+            this._steps.push({
+                name: "hearthBeating",
+                duration: duration
+            });
+            return this;
+        },
+        play: function (element, cycled = false) {
+            let timeout = 0;
+            for (let step of this._steps) {
                 switch (step.name) {
                     case 'move':
                         setTimeout(this.move, timeout, element, step.duration, step.translation);
@@ -102,6 +123,17 @@ function animaster() {
                         break;
                     case 'fadeOut':
                         setTimeout(this.fadeOut, timeout, element, step.duration);
+                        break;
+                    case 'moveAndHide':
+                        setTimeout(this.moveAndHide, timeout, element, step.duration);
+                        break;
+                    case 'showAndHide':
+                        setTimeout(this.showAndHide, timeout, element, step.duration);
+                        break;
+                    case 'hearthBeating':
+                        setTimeout(this.heartBeating, timeout, element, step.duration);
+                        break;
+                    case 'addDelay':
                         break;
                 }
                 timeout += step.duration;
@@ -122,7 +154,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            am.addMove( 1000, {x: 100, y: 10}).play(block);
+            am.addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -166,15 +198,7 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('customAnimationBlock');
             let newAm = animaster();
-            newAm.addMove(200, {x: 40, y: 40})
-                .addScale(800, 1.3)
-                .addMove(200, {x: 80, y: 0})
-                .addScale(800, 1)
-                .addMove(200, {x: 40, y: -40})
-                .addScale(800, 0.7)
-                .addMove(200, {x: 0, y: 0})
-                .addScale(800, 1)
-                .play(block);
+            newAm.addShowAndHide(1000).play(block);
         });
 }
 
