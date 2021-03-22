@@ -33,8 +33,14 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
+            ani.stealBeating = true;
             ani.heartBeating(block, ani);
         });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener("click", function () {
+            ani.stealBeating = false;
+        })
 }
 
 function animaster() {
@@ -67,10 +73,15 @@ function animaster() {
         },
 
         heartBeating(element, ani) {
+            if (!ani.stealBeating) {
+                return;
+            }
             ani.scale(element, 450, 1.4);
             setTimeout(ani.scale, 500, element, 450, 1);
             setTimeout(ani.heartBeating, 1000, element, ani);
         },
+
+        stealBeating: false,
     }
 }
 
