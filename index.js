@@ -29,7 +29,11 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            obj.moveAndHide(block, 5000);
+            moveAndHide = obj.moveAndHide(block, 5000);
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            moveAndHide.reset();
         });
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -101,6 +105,12 @@ function animaster () {
     function moveAndHide (element, duration) {
         move(element, duration * 0.4, {x: 100, y: 20});
         fadeOut(element, duration * 0.6);
+        return {
+            reset: function () {
+                resetFadeOut(element);
+                resetMoveAndScale(element);
+            }
+        }
     }
 
     function showAndHide (element, duration) {
