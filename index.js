@@ -24,6 +24,11 @@ function animaster(){
             element.style.transform = getTransform(translation, null);
             element.classList.remove('hide');
             element.classList.add('show');
+        },
+        showAndHide(element, duration, translation){
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
         }
     }
 }
@@ -49,10 +54,15 @@ function addListeners() {
 		ani.move(block, 1000, { x: 100, y: 10 });
 	});
 
-	document.getElementById("scalePlay").addEventListener("click", function () {
-		const block = document.getElementById("scaleBlock");
-		ani.scale(block, 1000, 1.25);
+	document.getElementById("moveAndGide").addEventListener("click", function () {
+		const block = document.getElementById("moveAndHideBlock");
+		ani.moveAndHide(block, 1000, 1.25, { x: 100, y: 10 });
 	});
+
+    document.getElementById("scalePlay").addEventListener("click", function () {
+        const block = document.getElementById("scaleBlock");
+        ani.scale(block, 1000, 1.25);
+    });
 }
 
 function getTransform(translation, ratio) {
