@@ -29,6 +29,12 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             ani.moveAndHide(block, 5000, {x: 100, y: 20});
         });
+    
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            ani.showAndHide(block, 5000);
+        });
 }
 
 function animaster() {
@@ -60,6 +66,10 @@ function animaster() {
             this.fadeOut(element, duration * 2 / 5);
         },
 
+        showAndHide(element, duration) {
+            this.fadeOut(element, duration * 1 / 3);
+            setTimeout(this.fadeIn, duration * 3 / 5, element, duration * 2 / 5)
+        }
     }
 }
 
