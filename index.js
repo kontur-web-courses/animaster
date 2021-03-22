@@ -44,7 +44,6 @@ function addListeners() {
 
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
             heartbeating.stop();
         });
 }
