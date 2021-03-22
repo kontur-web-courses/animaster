@@ -83,6 +83,11 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             am.heartBeating(block);
         });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            am.heartBeating(block);
+        });
 }
 
 function getTransform(translation, ratio) {
