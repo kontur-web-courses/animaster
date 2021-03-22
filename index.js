@@ -23,6 +23,12 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+
+        showAndHide: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
         }
     }
 }
@@ -51,6 +57,11 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             am.fadeOut(block, 5000)
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            am.fadeOut(block, 3000)
         });
 }
 
