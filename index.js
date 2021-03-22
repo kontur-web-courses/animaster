@@ -64,6 +64,7 @@ function getTransform(translation, ratio) {
 }
 
 function animaster () {
+    let steps = []
     /**
      * Функция, увеличивающая/уменьшающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -142,6 +143,21 @@ function animaster () {
         scale(element, 0, 1);
     }
 
+    function addMove(duration, translation) {
+        steps.push({
+            name: move,
+            duration: duration,
+            arg: translation
+        });
+        return this;
+    }
+
+    function play (element) {
+        for (let anim of steps){
+            anim.name(element, anim.duration, anim.arg);
+        }
+    }
+
     return {
         scale: scale,
         fadeIn: fadeIn,
@@ -149,6 +165,9 @@ function animaster () {
         fadeOut: fadeOut,
         moveAndHide: moveAndHide,
         showAndHide: showAndHide,
-        heartBeating: heartBeating
+        heartBeating: heartBeating,
+        addMove: addMove,
+        play: play,
+        _steps: steps
     }
 }
