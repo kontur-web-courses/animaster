@@ -1,15 +1,16 @@
 addListeners();
 
 function resetFadeIn(element) {
-	return;
+	element.style.transitionDuration = null;
 }
 
 function resetFadeOut(element) {
-	return;
+	element.style.transitionDuration = null;
 }
 
 function resetMoveAndScale(element) {
-	return;
+	element.style.transitionDuration = null;
+	element.style.transform = null;
 }
 
 function animaster() {
@@ -86,6 +87,13 @@ function addListeners() {
 		.addEventListener("click", function () {
 			const block = document.getElementById("moveAndHideBlock");
 			ani.moveAndHide(block, 1000, { x: 100, y: 10 });
+		});
+
+	document
+		.getElementById("moveAndHideReset")
+		.addEventListener("click", function () {
+			const block = document.getElementById("moveAndHideBlock");
+			resetMoveAndScale(block);
 		});
 
 	document
