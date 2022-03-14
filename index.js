@@ -27,13 +27,18 @@ function addListeners() {
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            setInterval(block, 1000);
+            animaster().showAndHide(block, 1000);
         });
 
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            setInterval(animaster().heartBeating, 1500, block, 1000);
+            let animation = animaster().heartBeating(block);
+
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    animation.stop()
+                });
         });
 }
 
@@ -55,13 +60,13 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      */
     function fadeIn(element, duration) {
-        element.style.transitionDuration =  `${duration}ms`;
+        element.style.transitionDuration = `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
     }
 
     function fadeOut(element, duration) {
-        element.style.transitionDuration =  `${duration}ms`;
+        element.style.transitionDuration = `${duration}ms`;
         element.classList.add('hide');
         element.classList.remove('show');
     }
@@ -84,7 +89,7 @@ function animaster() {
      * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
      */
     function scale(element, duration, ratio) {
-        element.style.transitionDuration =  `${duration}ms`;
+        element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
     }
 
@@ -96,13 +101,28 @@ function animaster() {
     function showAndHide(element, duration) {
         fadeIn(element, duration / 3);
         setTimeout(move, duration / 3, element, duration / 3, {x: 0, y: 0});
-        setTimeout(fadeOut,  duration / 3, element, duration / 3);
+        setTimeout(fadeOut, duration / 3, element, duration / 3);
     }
 
     function heartBeating(element) {
-        scale(element, 500, 1.4);
-        setTimeout(scale, 500, element, 500, 1);
+        function beat() {
+            scale(element, 500, 1.4);
+            setTimeout(scale, 500, element, 500, 1);
+        }
+        let interval = setInterval(beat, 1500);
+        function stop() {
+            clearInterval(interval);
+        }
+        return {stop};
     }
 
-    return {fadeIn: fadeIn, fadeOut: fadeOut, move: move, scale: scale, moveAndHide: moveAndHide, showAndHide: showAndHide, heartBeating}
+    return {
+        fadeIn: fadeIn,
+        fadeOut: fadeOut,
+        move: move,
+        scale: scale,
+        moveAndHide: moveAndHide,
+        showAndHide: showAndHide,
+        heartBeating: heartBeating
+    }
 }
