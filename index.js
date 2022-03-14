@@ -18,6 +18,23 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000);
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            setInterval(block, 1000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            setInterval(animaster().heartBeating, 1500, block, 1000);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -45,8 +62,8 @@ function animaster() {
 
     function fadeOut(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
-        element.classList.add('show');
-        element.classList.remove('hide');
+        element.classList.add('hide');
+        element.classList.remove('show');
     }
 
     /**
@@ -70,5 +87,22 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
     }
-    return {fadeIn: fadeIn, fadeOut: fadeOut, move: move, scale: scale}
+
+    function moveAndHide(element, duration) {
+        move(element, duration * 2 / 5, {x: 100, y: 20})
+        fadeOut(element, duration * 3 / 5);
+    }
+
+    function showAndHide(element, duration) {
+        fadeIn(element, duration / 3);
+        setTimeout(move, duration / 3, element, duration / 3, {x: 0, y: 0});
+        setTimeout(fadeOut,  duration / 3, element, duration / 3);
+    }
+
+    function heartBeating(element) {
+        scale(element, 500, 1.4);
+        setTimeout(scale, 500, element, 500, 1);
+    }
+
+    return {fadeIn: fadeIn, fadeOut: fadeOut, move: move, scale: scale, moveAndHide: moveAndHide, showAndHide: showAndHide, heartBeating}
 }
