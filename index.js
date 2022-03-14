@@ -41,6 +41,17 @@ function addListeners() {
             animaster().showAndHide(block, 3000);
         });
 
+    document.getElementById('complexMovePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('complexMoveBlock');
+            animaster()
+                .AddMove( 900, {x: -100, y: 0})
+                .AddMove( 1000, {x: 100, y: 0})
+                .AddMove(1000, {x: 100, y: 100})
+                .AddMove(3000, {x: 200, y: 50})
+                .play(block);
+        });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
@@ -158,6 +169,36 @@ function animaster() {
                     clearInterval(interval);
                 }
             }
+        },
+        _steps: [],
+
+        /**
+         * Функция, добавляющая передвигание в очередь
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param translation — объект с полями x и y, обозначающими смещение блока
+         */
+        AddMove(duration, translation) {
+            this._steps.push({
+                func: this.move,
+                args: [duration, translation],
+                duration: duration,
+            });
+            return this;
+        },
+
+        /**
+         * Функция, запускающая очередь анимаций
+         * @param element — HTMLElement, который надо анимировать
+         */
+        play(element) {
+            let stepFunc = (curStack) => {
+                if (curStack.length === 0) return;
+                let curStep = curStack[0];
+                curStep.func(element, ...curStep.args)
+                let newStack = curStack.slice(1);
+                setTimeout(stepFunc, curStep.duration, newStack);
+            }
+            stepFunc(this._steps);
         },
 
     }
