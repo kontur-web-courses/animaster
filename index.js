@@ -87,7 +87,7 @@ function animaster() {
 
     this.moveAndHide = function(element, duration) {
         this.move(element, duration * 0.4, {x: 100, y: 20});
-        this.fadeIn(element, duration * 0.6);
+        setTimeout(this.fadeOut, duration * 0.4, element, duration * 0.6);
     };
 
     this.heartbeat = function(element, duration) {
@@ -107,7 +107,7 @@ function animaster() {
 
     this.showAndHide = function(element, duration) {
         this.fadeIn(element, duration / 3);
-        setTimeout(this.fadeIn, duration / 3, element, duration / 3);
+        setTimeout(this.fadeOut, duration / 3, element, duration / 3);
     };
 
     return this;
