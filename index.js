@@ -113,13 +113,21 @@ function animaster() {
     }
 
     return {
+        _steps: [],
         scale: scale,
         move: move,
         fadeIn: fadeIn,
         fadeOut: fadeOut,
         moveAndHide: moveAndHide,
         showAndHide: showAndHide,
-        heartBeating: heartBeating
+        heartBeating: heartBeating,
+        addMove: (duration, translation) => {
+            this._steps.push([move, duration, translation]);
+            return this;
+        },
+        play: (element) => {
+            this._steps.forEach(step => step[0](element, ...step.slice(1)));
+        }
     };
 }
 
