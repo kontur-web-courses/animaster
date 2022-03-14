@@ -13,10 +13,22 @@ function addListeners() {
             animaster().move(block, 1000, {x: 100, y: 10});
         });
 
+    document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMoveAndScale(block);
+        });
+
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
+        });
+
+    document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().resetMoveAndScale(block);
         });
 
     let heartStopper;
@@ -60,6 +72,10 @@ function animaster() {
         element.classList.add('show');
     }
 
+    this.resetFadeIn = function(element) {
+        element.classList.remove('show');
+    }
+
     /**
      * Функция, передвигающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -80,6 +96,10 @@ function animaster() {
     this.scale = function(element, duration, ratio) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
+    }
+
+    this.resetMoveAndScale = function(element) {
+        element.style.transform = getTransform({x: 0, y: 0}, 1);
     }
 
     this.heartBeating = function(element) {
@@ -103,6 +123,10 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
+    }
+
+    this.resetFadeOut = function(element) {
+        element.classList.remove('hide');
     }
 
     this.moveAndHide = function(element, duration) {
