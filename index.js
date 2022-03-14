@@ -3,6 +3,8 @@ addListeners();
 function addListeners() {
     let anim = animaster();
     let heartbeatObj;
+    let moveAndHideObj;
+    
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -42,7 +44,13 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            anim.moveAndHide(block, 1000);
+            moveAndHideObj = anim.moveAndHide(block, 1000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            moveAndHideObj.reset(block);
         });
 
     document.getElementById('showAndHidePlay')
@@ -70,11 +78,11 @@ function animaster() {
         element.classList.add('hide');
     }
 
-    this.fadeOut =  function(element, duration) {
+    this.fadeOut = function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.add('hide');
         element.classList.remove('show');
-    }
+    };
 
     function resetFadeOut(element) {
         element.style.transitionDuration = null;
@@ -112,7 +120,13 @@ function animaster() {
 
     this.moveAndHide = function(element, duration) {
         this.move(element, duration * 0.4, {x: 100, y: 20});
-        setTimeout(this.fadeOut, duration * 0.4, element, duration * 0.6);
+        let sched = setTimeout(this.fadeOut, duration * 0.4, element, duration * 0.6);
+        this.reset = function() {
+            clearTimeout(sched);
+            resetMoveAndScale(element);
+            resetFadeOut(element);
+        };
+        return this;
     };
 
     this.heartbeat = function(element, duration) {
@@ -130,7 +144,7 @@ function animaster() {
         let timer = setInterval(() => changeScale(), 500);
         this.stop = function() {
             clearInterval(timer);
-        }
+        };
         return this;
     };
     this.showAndHide = function(element, duration) {
