@@ -1,23 +1,88 @@
 addListeners();
 
 function addListeners() {
+    let isFadeIn = true;
+    const dur = 1000;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
+            const animasterObj = animaster();
             const block = document.getElementById('fadeInBlock');
-            fadeIn(block, 5000);
+            if (isFadeIn){
+                animasterObj.fadeIn(block, dur);
+                isFadeIn = false;
+            } else {
+                animasterObj.fadeOut(block, dur);
+                isFadeIn = true;
+            }
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHideBtn')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000, {x: 100, y: 10});
+        });
+    document.getElementById('showAndHideBtn')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
+    document.getElementById('heartBeatingBtn')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        });
+}
+
+function animaster() {
+    return {
+        fadeIn: (element, duration) => {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        fadeOut: (element, duration) => {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        move: (element, duration, translation) => {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        },
+        scale: (element, duration, ratio) => {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        },
+        moveAndHide: function (element, duration, translation) {
+            this.move(element, duration * 0.4, translation);
+            setTimeout(() => this.fadeOut(element, duration * 0.6), duration * 0.4);
+        },
+        showAndHide: function (element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3);
+        },
+        heartBeating: function (element) {
+            setInterval(() => {
+                this.scale(element, 500, 1.4);
+
+                setTimeout(() => {
+                    this.scale(element, 500, 1);
+                }, 500);
+            }, 1500);
+        }
+    }
 }
 
 /**
@@ -25,11 +90,7 @@ function addListeners() {
  * @param element — HTMLElement, который надо анимировать
  * @param duration — Продолжительность анимации в миллисекундах
  */
-function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
-}
+
 
 /**
  * Функция, передвигающая элемент
@@ -37,10 +98,6 @@ function fadeIn(element, duration) {
  * @param duration — Продолжительность анимации в миллисекундах
  * @param translation — объект с полями x и y, обозначающими смещение блока
  */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
 
 /**
  * Функция, увеличивающая/уменьшающая элемент
