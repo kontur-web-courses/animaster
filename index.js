@@ -56,8 +56,12 @@ function animaster() {
     }
 
     this.moveAndHide = function(element, duration) {
-        this.move(element, duration*2/5, {x: 100, y: 20});
-        this.fadeOut(element, duration*3/5);
+        this.move(element, duration * 2 / 5, {x: 100, y: 20});
+        this.fadeOut(element, duration * 3 / 5);
+    }
+    
+    this.showAndHide = function(element, duration) {
+        
     }
     return this;
 }
