@@ -38,10 +38,17 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 5000);
         });
-    document.getElementById('heartBeatingBtn')
+
+    let heart;
+    document.getElementById('heartBeatingBtnPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            heart = animaster().heartBeating(block);
+        });
+    document.getElementById('heartBeatingBtnStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            heart.stop();
         });
 }
 
@@ -73,14 +80,19 @@ function animaster() {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3);
         },
-        heartBeating: function (element) {
-            setInterval(() => {
-                this.scale(element, 500, 1.4);
+    heartBeating: function (element) {
+        let id = setInterval(() => {
+            this.scale(element, 500, 1.4);
 
-                setTimeout(() => {
-                    this.scale(element, 500, 1);
-                }, 500);
-            }, 1500);
+            setTimeout(() => {
+                this.scale(element, 500, 1);
+            }, 500);
+        }, 1500);
+
+        return {
+
+                stop: () => clearInterval(id)
+        }
         }
     }
 }
