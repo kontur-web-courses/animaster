@@ -203,6 +203,15 @@ function animaster() {
             time += action.duration;
         }
         this._steps = [];
+
+        return {
+            stop() {
+
+            },
+            reset() {
+
+            }
+        }
     }
 
     this.addFadeIn = function(duration) {
