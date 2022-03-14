@@ -28,24 +28,27 @@ function addListeners() {
 
 function animaster() {
 
-    function MoveAndHide() {
-        this.move(element, 400, 100);
-        this.scale(element, 600, 0);
+    function MoveAndHide(element) {
+        Move(element, 400, {x:100, y:0});
+        Scale(element, 600, 0);
     }
 
-    function ShowAndHide() {
-        this.fadeIn(element, 500);
+    function ShowAndHide(element) {
+        FadeIn(element, 500);
         setTimeout(500);
-        this.fadeOut(element, 500);
-
+        FadeOut(element, 500);
     }
 
-    function HeartBeating() {
-        while (true){
-            this.scale(element, 500, 1.4);
-            this.scale(element, 500, (1/1.4));
+    function HeartBeating(element) {
+        let inter = setInterval(function () {
+            Scale(element, 500, 1.4);
+            Scale(element, 500, (1 / 1.4));
+        }, 1000);
+        return {
+            stop: function () {
+                clearInterval(inter);
+            }
         }
-
     }
 
     /**
@@ -54,13 +57,13 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      */
     function FadeIn(element, duration) {
-        element.style.transitionDuration =  `${duration}ms`;
+        element.style.transitionDuration = `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
     }
 
-    function FadeOut(element, duration){
-        element.style.transitionDuration =  `${duration}ms`;
+    function FadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
     }
@@ -75,16 +78,16 @@ function animaster() {
         element.style.transform = getTransform(translation, null);
     }
 
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
+    /**
+     * Функция, увеличивающая/уменьшающая элемент
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+     */
     function Scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
-}
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        }
 
     return {
         _steps: [],
