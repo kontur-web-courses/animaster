@@ -21,7 +21,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000);
+            movedAndHidden = animaster().moveAndHide(block, 5000);
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
@@ -42,6 +42,11 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             objectiveShit.stop(block);
+        });
+    document.getElementById('resetPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            movedAndHidden.reset(block);
         });
 }
 
@@ -66,6 +71,12 @@ function animaster() {
     function moveAndHide(element, duration) {
         this.move(element, duration*0.4, {x: 100, y: 20});
         setTimeout(() => this.fadeOut(element, duration*0.6), duration*0.4);
+        return {
+            reset: (block) => {
+                resetMoveAndScale(block);
+                resetFadeOut(block);
+            }
+        }
     }
 
     function showAndHide(element, duration) {
@@ -99,6 +110,26 @@ function animaster() {
     function move(element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
+    }
+
+    function resetFadeIn(element) {
+
+        element.style.transitionDuration =  null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut(element) {
+
+        element.style.transitionDuration =  null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration =  null;
+        element.style.transform = null;
+        element.style.transform = null;
     }
 
     /**
