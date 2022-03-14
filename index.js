@@ -8,6 +8,12 @@ function addListeners() {
             anim.fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            anim.fadeOut(block, 5000);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -19,6 +25,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             anim.scale(block, 1000, 1.25);
         });
+    
+    document.getElementById('heartbeatPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartbeatBlock');
+            anim.heartbeat(block, 1000, 1.25);
+        });
 }
 
 function animaster() {
@@ -27,10 +39,16 @@ function animaster() {
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
      */
-    this.fadeIn = function fadeIn(element, duration) {
+    this.fadeIn = function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
+    }
+
+    this.fadeOut =  function(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.add('hide');
+        element.classList.remove('show');
     }
 
     /**
@@ -39,7 +57,7 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      * @param translation — объект с полями x и y, обозначающими смещение блока
      */
-    this.move = function move(element, duration, translation) {
+    this.move = function(element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
     }
@@ -50,9 +68,24 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
      */
-    this.scale = function scale(element, duration, ratio) {
+    this.scale = function(element, duration, ratio) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
+    }
+
+    this.heartbeat = function(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        let isBig = false;
+        function changeScale(isBig) {
+            if (isBig) {
+                this.scale(element, 100, 1 / 1.4);
+                isBig = false;
+            } else {
+                this.scale(element, 100, 1.4);
+                isBig = true;
+            }
+        }
+        setInterval(() => changeScale(isBig), 500);
     }
 
     return this;
