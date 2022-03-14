@@ -71,7 +71,7 @@ function addListeners() {
 
     document.getElementById('AddMove')
         .addEventListener('click', function() {
-            singleAnimaster.AddMove(500, {x: 100, y: -50});
+            singleAnimaster.AddMove(50, {x: getRandomInt(100), y: -getRandomInt(50)});
         });
 
     document.getElementById('Play')
@@ -82,7 +82,9 @@ function addListeners() {
 
 }
 
-
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
 
 function animaster() {
     /**
@@ -182,17 +184,12 @@ function animaster() {
     };
 
     this.play = function(element) {
-        console.log(this._steps)
-        let actions = this._steps.slice();
-        this._steps = [];
         let time = 0;
-        console.log(actions);
-        for (let action of actions) {
-            console.log('this shit happened');
-            console.log(action);
+        for (let action of this._steps) {
             setTimeout(() => this[action.name](element, action.duration, action.params), time);
             time += action.duration;
         }
+        this._steps = [];
     }
 
     return this;
