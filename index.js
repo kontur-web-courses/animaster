@@ -23,7 +23,11 @@ function addListeners() {
     document.getElementById('moveAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animations.moveAndHide(block, 1000);
+            let controller = animations.moveAndHide(block, 1000);
+            document.getElementById('moveAndHideReset')
+                .addEventListener('click', function () {
+                    controller.reset();
+                });
         });
 
     document.getElementById('heartBeating')
@@ -51,18 +55,22 @@ function animaster() {
 
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
+        lement.classList.remove('show');
     }
 
     function resetFadeOut(element) {
         element.style.transitionDuration = null;
+        element.classList.remove('hide');
     }
 
-    function resetMoveAndScale(element){
+    function resetMoveAndScale(element) {
         element.style.transitionDuration = null;
         element.style.transform = null;
     }
 
     return {
+
+        _steps: [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -106,6 +114,12 @@ function animaster() {
                 this.fadeOut(element, duration * 3 / 5);
             }, duration * 2 / 5);
 
+            return {
+                reset: () => {
+                    resetFadeOut(element);
+                    resetMoveAndScale(element);
+                }
+            };
         },
 
         heartBeating: function (element) {
@@ -120,6 +134,15 @@ function animaster() {
                     clearInterval(idInterval);
                 }
             };
+        },
+
+        addMove: function (duration, translation) {
+
+            return this;
+        },
+
+        play: function (element) {
+
         }
     };
 }
