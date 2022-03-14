@@ -50,6 +50,12 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             anim.showAndHide(block, 1000);
         });
+
+    document.getElementById('customPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customBlock');
+            anim.addMove(1000, {x: 100, y: 10}).addMove(1000, {x:50, y:5}).play(block);
+        });
 }
 
 function animaster() {
@@ -58,6 +64,34 @@ function animaster() {
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
      */
+
+    this._steps = []
+
+    this.addMove = function(duration, translation) {
+        this._steps.push(
+            {
+                name: 'move',
+                duration: duration,
+                translation: translation
+            }
+        )
+        return this;
+    }
+
+    this.play = function(element){
+        let duration = 0;
+        for (step of this._steps){
+            switch(step.name) {
+                case 'move':
+                    this.move(element, step.duration, step.translation);
+                    break;
+                case 'fadeIn':
+                    this.fadeIn(element, step.duration);
+                    break;
+            }
+        }
+    }
+
     this.fadeIn = function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
