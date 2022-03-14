@@ -68,3 +68,9 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
+
+function fadeOut(element, duration) {
+    element.style.transitionDuration = `${duration}ms`;
+    element.classList.add('hide');
+}
