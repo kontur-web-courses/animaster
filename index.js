@@ -127,8 +127,6 @@ function animaster() {
             stop() {
                 clearInterval(heartGrowingInterval);
                 clearInterval(heartDecreasingInterval);
-                console.log(heartGrowingInterval);
-                clearInterval(heartGrowingInterval);
             }
         }
     }
