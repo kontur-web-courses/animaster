@@ -36,7 +36,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            objectiveShit = animaster().heartBeating(block);
+        });
+    document.getElementById('stopPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            objectiveShit.stop(block);
         });
 }
 
@@ -70,7 +75,7 @@ function animaster() {
 
     function heartBeating(element){
         let count = true;
-        setInterval(function run() {
+        let timerId = setInterval(function run() {
             if (count) {
                 scale(element, 500, 1.4);
                 count = false;
@@ -80,6 +85,9 @@ function animaster() {
                 scale(element, 500, 1)
             }
         }, 500);
+        return {
+            stop: (block) => clearInterval(timerId)
+        }
     }
 
     /**
