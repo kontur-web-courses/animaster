@@ -42,6 +42,19 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             anim.heartBeating(block);
         });
+    document.getElementById('customPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customBlock');
+            anim.addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
+            anim.play(block);
+        });
 }
 
 function animaster() {
@@ -65,7 +78,7 @@ function animaster() {
     }
     function moveAndHide(element, duration) {
         move(element, 2 * duration / 5, {x: 100, y: 20});
-        fadeOut(element, 3 * duration / 5)
+        fadeOut(element, 3 * duration / 5);
     }
     function showAndHide(element, duration) {
         fadeIn(element, duration / 3);
@@ -75,6 +88,27 @@ function animaster() {
         let inter = setInterval(() =>
         {scale(element, 500, 5/7); setTimeout(scale, 500, element, 500, 7/5)}, 1000);
     }
+    function addMove(duration, translation){
+        this._steps.push((element) => this.move(element, duration, translation));
+        return this;
+    }
+    function addScale(duration, ratio){
+        this._steps.push((element) => this.scale(element, duration, ratio));
+        return this;
+    }
+    function addFadeIn(duration){
+        this._steps.push((element) => this.fadeIn(element, duration));
+        return this;
+    }
+    function addFadeOut(duration){
+        this._steps.push((element) => this.fadeOut(element, duration));
+        return this;
+    }
+    function play(element){
+        for (let step of this._steps){
+            step(element);
+        }
+    }
     let res = {};
     res.fadeIn = fadeIn;
     res.fadeOut = fadeOut;
@@ -83,31 +117,14 @@ function animaster() {
     res.moveAndHide = moveAndHide;
     res.showAndHide = showAndHide;
     res.heartBeating = heartBeating;
+    res.play = play;
+    res.addMove = addMove;
+    res.addScale = addScale;
+    res.addFadeIn = addFadeIn;
+    res.addFadeOut = addFadeOut;
+    res._steps = [];
     return res;
 }
-
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-
-
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-
 
 function getTransform(translation, ratio) {
     const result = [];
