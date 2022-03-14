@@ -42,7 +42,7 @@ function addListeners() {
 
             document.getElementById('heartBeatingStop')
                 .addEventListener('click', function () {
-                    animation.stop()
+                    animation.stop();
                 });
         });
 }
@@ -116,22 +116,16 @@ function animaster() {
     }
 
     function moveAndHide(element, duration) {
-        move(element, duration * 2 / 5, {x: 100, y: 20})
-        let timeout = setTimeout(fadeOut, duration * 3 / 5, element, duration * 3 / 5);
-
-        function reset() {
-            resetMoveAndScale(element);
-            resetFadeOut(element);
-            clearTimeout(timeout);
-        }
-
-        return {reset};
+        this.addMove(duration * 2 / 5, {x: 100, y: 20})
+            .addFadeOut(duration * 3 / 5)
+            .play(element);
     }
 
     function showAndHide(element, duration) {
-        fadeIn(element, duration / 3);
-        setTimeout(move, duration / 3, element, duration / 3, {x: 0, y: 0});
-        setTimeout(fadeOut, duration / 3, element, duration / 3);
+        this.addFadeIn(duration / 3)
+            .addDelay(duration / 3)
+            .addFadeOut(duration / 3)
+            .play(element);
     }
 
     function heartBeating(element) {
@@ -159,14 +153,18 @@ function animaster() {
         return this;
     }
 
-    function addFadeIn(duration, argument) {
-        this._steps.push({func: fadeIn, duration: duration, argument: argument})
+    function addFadeIn(duration) {
+        this._steps.push({func: fadeIn, duration: duration})
         return this;
     }
 
-    function addFadeOut(duration, argument) {
-        this._steps.push({func: fadeOut, duration: duration, argument: argument})
+    function addFadeOut(duration) {
+        this._steps.push({func: fadeOut, duration: duration})
         return this;
+    }
+
+    function addDelay(duration) {
+        return this.addMove(duration, {x: 0, y:0});
     }
 
     function play(element) {
@@ -186,6 +184,7 @@ function animaster() {
         addScale: addScale,
         addFadeIn: addFadeIn,
         addFadeOut: addFadeOut,
+        addDelay: addDelay,
         play: play,
         fadeIn: fadeIn,
         fadeOut: fadeOut,
