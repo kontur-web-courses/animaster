@@ -207,6 +207,15 @@ function animaster() {
             return this;
         },
 
+        addDelay: function (duration) {
+            let step = {
+                name: "Delay",
+                duration: duration
+            };
+            this._steps.push(step);
+            return this;
+        },
+
 
         play: function (element) {
             let s = 0;
