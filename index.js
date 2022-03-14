@@ -136,37 +136,27 @@ function animaster() {
         },
 
         moveAndHide: function (element, duration) {
-            this.addMove(duration * 2 / 5, {x: 100, y: 20}).play(element);
-            setTimeout(() => {
-                this.fadeOut(element, duration * 3 / 5);
-            }, duration * 2 / 5);
-
-            return {
-                reset: () => {
-                    resetFadeOut(element);
-                    resetMoveAndScale(element);
-                }
-            };
+            return animaster().addMove(duration * 2 / 5, {x: 100, y: 20})
+                .addFadeOut(duration * 3 / 5)
+                .play(element);
+            // return {
+            //     reset: () => {
+            //         resetFadeOut(element);
+            //         resetMoveAndScale(element);
+            //     }
+            // };
         },
         showAndHide: function (element, duration) {
-            this.fadeIn(element, duration / 3);
-            setTimeout(() => {
-                this.fadeOut(element, duration / 3);
-            }, duration * 2 / 3);
+            return animaster().addFadeIn(duration / 3)
+                .addDelay(duration / 3)
+                .addFadeOut(duration / 3)
+                .play(element);
         },
 
         heartBeating: function (element) {
-            let idInterval = setInterval(() => {
-                this.scale(element, 500, 1.4);
-                setTimeout(() => {
-                    this.scale(element, 500, 1);
-                }, 500);
-            }, 1000);
-            return {
-                stop: () => {
-                    clearInterval(idInterval);
-                }
-            };
+            return animaster().addScale(500, 1.4)
+                .addScale(500, 1)
+                .play(element, true);
         },
 
         addMove: function (duration, translation) {
@@ -217,26 +207,42 @@ function animaster() {
         },
 
 
-        play: function (element) {
-            let s = 0;
-            let allSteps = {};
-            for (const step of this._steps) {
-                setTimeout(() => {
-                    if (step.name === "Move") {
-                        allSteps.translation = step.translation;
-                    } else if (step.name === "Scale") {
-                        allSteps.ratio = step.ratio;
-                    } else if (step.name === "FadeIn") {
-                        this.fadeIn(element, step.duration);
-                        return;
-                    } else if (step.name === "FadeOut") {
-                        this.fadeIn(element, step.duration);
-                        return;
-                    }
-                    this.moveAndScale(element, step.duration, allSteps.translation, allSteps.ratio);
-                }, s);
-                s += step.duration;
+        play: function (element, cycled=false) {
+            let innerPlay = () => {
+                let s = 0;
+                let allSteps = {};
+                for (const step of this._steps) {
+                    setTimeout(() => {
+                        if (step.name === "Move") {
+                            allSteps.translation = step.translation;
+                        } else if (step.name === "Scale") {
+                            allSteps.ratio = step.ratio;
+                        } else if (step.name === "FadeIn") {
+                            this.fadeIn(element, step.duration);
+                            return;
+                        } else if (step.name === "FadeOut") {
+                            this.fadeOut(element, step.duration);
+                            return;
+                        }
+                        this.moveAndScale(element, step.duration, allSteps.translation, allSteps.ratio);
+                    }, s);
+                    s += step.duration;
+                }
             }
+
+            if (cycled === true){
+                let delay = this._steps.map(x => x.duration).reduce((partialSum, a) => partialSum + a, 0);
+                var idInterval = setInterval(innerPlay, delay);
+            } else{
+                innerPlay();
+            }
+
+            return {
+                stop: () => clearInterval(idInterval),
+                reset: () => {
+
+                }
+            };
         }
     };
 }
