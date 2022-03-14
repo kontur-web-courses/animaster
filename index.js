@@ -19,6 +19,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             anim.scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            anim.moveAndHide(block, 1000);
+        });
 }
 
 function animaster() {
@@ -27,11 +33,11 @@ function animaster() {
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
      */
-    this.fadeIn = function fadeIn(element, duration) {
+    this.fadeIn = function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
-    }
+    };
 
     /**
      * Функция, передвигающая элемент
@@ -39,10 +45,10 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      * @param translation — объект с полями x и y, обозначающими смещение блока
      */
-    this.move = function move(element, duration, translation) {
+    this.move = function(element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
-    }
+    };
 
     /**
      * Функция, увеличивающая/уменьшающая элемент
@@ -50,10 +56,15 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
      */
-    this.scale = function scale(element, duration, ratio) {
+    this.scale = function(element, duration, ratio) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
-    }
+    };
+
+    this.moveAndHide = function(element, duration) {
+        this.move(element, duration * 0.4, {x: 100, y: 20});
+        this.fadeIn(element, duration * 0.6);
+    };
 
     return this;
 }
