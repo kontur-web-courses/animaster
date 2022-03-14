@@ -118,11 +118,13 @@ function animaster() {
     function moveAndHide(element, duration) {
         move(element, duration * 2 / 5, {x: 100, y: 20})
         let timeout = setTimeout(fadeOut, duration * 3 / 5, element, duration * 3 / 5);
+
         function reset() {
             resetMoveAndScale(element);
             resetFadeOut(element);
             clearTimeout(timeout);
         }
+
         return {reset};
     }
 
@@ -137,14 +139,32 @@ function animaster() {
             scale(element, 500, 1.4);
             setTimeout(scale, 500, element, 500, 1);
         }
+
         let interval = setInterval(beat, 1500);
+
         function stop() {
             clearInterval(interval);
         }
+
         return {stop};
     }
 
+    function addMove(duration, translation) {
+        this._steps.push({func: move, duration: duration, translation: translation})
+        return this;
+    }
+
+    function play(element) {
+        for (let i = 0; i < this._steps.length; ++i) {
+            if (i === 0) this._steps[i].func();
+            else setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration, this._steps[i].translation);
+        }
+    }
+
     return {
+        _steps: [],
+        addMove: addMove,
+        play: play,
         fadeIn: fadeIn,
         fadeOut: fadeOut,
         move: move,
