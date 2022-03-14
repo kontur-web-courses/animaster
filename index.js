@@ -72,6 +72,8 @@ function animaster() {
 
 
     return {
+        _steps: [],
+
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -90,8 +92,7 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.addMove(duration, translation).play(element);
         },
 
         /**
@@ -144,6 +145,21 @@ function animaster() {
                 stop() {
                     clearInterval(intervalId);
                 }
+            }
+        },
+
+
+        addMove(duration, translation) {
+            this._steps.push((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.style.transform = getTransform(translation, null);
+            });
+            return this;
+        },
+
+        play(element) {
+            for (let func of this._steps){
+                func(element);
             }
         },
     }
