@@ -71,12 +71,17 @@ function addListeners() {
 
     document.getElementById('AddMove')
         .addEventListener('click', function() {
-            singleAnimaster.AddMove(50, {x: getRandomInt(100), y: -getRandomInt(50)});
+            singleAnimaster.addMove(250, {x: getRandomInt(100), y: -getRandomInt(50)});
+        });
+
+    document.getElementById('AddScale')
+        .addEventListener('click', function() {
+            singleAnimaster.addScale(250, getRandomInt(5));
         });
 
     document.getElementById('Play')
         .addEventListener('click', function() {
-            const block = document.getElementById('AddMoveBlock');
+            const block = document.getElementById('Block');
             singleAnimaster.play(block);
         })
 
@@ -174,7 +179,7 @@ function animaster() {
 
     this._steps = [];
 
-    this.AddMove = function(duration, translation) {
+    this.addMove = function(duration, translation) {
         this._steps.push({
             name: 'move',
             duration: duration,
@@ -182,6 +187,14 @@ function animaster() {
         });
         return this;
     };
+
+    this.addScale = function(duration, ratio) {
+        this._steps.push({
+            name: 'scale',
+            duration: duration,
+            params: ratio
+        })
+    }
 
     this.play = function(element) {
         let time = 0;
