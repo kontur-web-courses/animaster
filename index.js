@@ -22,7 +22,12 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            let animation = animaster().moveAndHide(block, 1000);
+
+            document.getElementById('moveAndHideReset')
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -112,7 +117,13 @@ function animaster() {
 
     function moveAndHide(element, duration) {
         move(element, duration * 2 / 5, {x: 100, y: 20})
-        fadeOut(element, duration * 3 / 5);
+        let timeout = setTimeout(fadeOut, duration * 3 / 5, element, duration * 3 / 5);
+        function reset() {
+            resetMoveAndScale(element);
+            resetFadeOut(element);
+            clearTimeout(timeout);
+        }
+        return {reset};
     }
 
     function showAndHide(element, duration) {
