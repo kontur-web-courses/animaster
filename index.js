@@ -78,10 +78,25 @@ function animaster(){
         element.style.transform = getTransform(null, ratio);
     }
 
-    return{
+    function moveAndHide(element, duration, ratio) {
+
+    }
+
+    function showAndHide(element, duration, ratio){
+
+    }
+
+    function heartBeating(element, duration, ratio){
+
+    }
+
+    return {
         move: move,
         fadeOut: fadeOut,
         scale: scale,
-        fadeIn: fadeIn
+        fadeIn: fadeIn,
+        moveAndHide: moveAndHide,
+        showAndHide: showAndHide,
+        heartBeating: heartBeating,
     }
 }
