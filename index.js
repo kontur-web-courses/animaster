@@ -8,10 +8,22 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().resetFadeIn(block);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             animaster().move(block, 1000, {x: 100, y: 10});
+        });
+
+    document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMoveAndScale(block);
         });
 
     document.getElementById('scalePlay')
@@ -20,10 +32,22 @@ function addListeners() {
             animaster().scale(block, 1000, 1.25);
         });
 
+    document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().resetMoveAndScale(block);
+        });
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 1000, 1.25);
+        });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().resetFadeOut(block);
         });
 
     document.getElementById('moveAndHidePlay')
@@ -87,7 +111,20 @@ function animaster() {
             return {interval,
                 stop(){clearTimeout(this.interval)}
             }
-
+        },
+        resetFadeIn: function (element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        resetFadeOut: function (element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        resetMoveAndScale: function (element) {
+            element.style.transitionDuration = null;
+            element.style.transform = null;
         }
 
     }
