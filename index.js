@@ -65,10 +65,22 @@ function animaster() {
         element.classList.add('show');
     }
 
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
     function fadeOut(element, duration) {
         element.style.transitionDuration = `${duration}ms`;
         element.classList.add('hide');
         element.classList.remove('show');
+    }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
     }
 
     /**
@@ -91,6 +103,11 @@ function animaster() {
     function scale(element, duration, ratio) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
     }
 
     function moveAndHide(element, duration) {
