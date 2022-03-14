@@ -32,19 +32,38 @@ function addListeners() {
         })
 
     document.getElementById('moveAndHidePlay')
-        .addEventListener('click', function (){
+        .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000);
         })
 
     document.getElementById('showAndHidePlay')
-        .addEventListener('click', function (){
+        .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 1000);
         })
 }
 
 function animaster() {
+    const resetFadeIn = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    const resetFadeOut = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.add('show');
+        element.classList.remove('hide');
+    }
+
+
+    const resetMoveAndScale = (element) => {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -90,10 +109,10 @@ function animaster() {
             setTimeout(() => this.fadeOut(element, duration * 0.6), duration * 0.4)
         },
 
-        showAndHide(element, duration){
-            console.log(duration * 1/3)
-            this.fadeIn(element, duration * 1/3)
-            setTimeout(() => this.fadeOut(element, duration * 1/3), 1000)
+        showAndHide(element, duration) {
+            console.log(duration * 1 / 3)
+            this.fadeIn(element, duration * 1 / 3)
+            setTimeout(() => this.fadeOut(element, duration * 1 / 3), 1000)
         },
 
         heartBeating(element) {
