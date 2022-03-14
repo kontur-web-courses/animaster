@@ -153,20 +153,15 @@ function animaster() {
         },
 
         heartBeating(element) {
-            const heartBeatStep = () => {
-                this.scale(element, 500, 1.4);
-                setTimeout(() => {
-                    this.scale(element, 500, 1);
-                }, 500);
-            }
+            this.addScale(500, 1.4)
+                .addDelay(100)
+                .addScale(500, 1)
+                .addDelay(500)
+                .play(element, true)
 
-            heartBeatStep();
-            const intervalId = setInterval(() => {
-                heartBeatStep();
-            }, 1500);
             return {
                 stop() {
-                    clearInterval(intervalId);
+                    // clearInterval(intervalId);
                 }
             }
         },
@@ -230,9 +225,26 @@ function animaster() {
             return this;
         },
 
-        play(element) {
+        addDelay(duration) {
+            const step = {
+                duration,
+                play(element) {
+                },
+                reset: (element) => null
+            }
+
+            this._steps.push(step);
+            return this;
+        },
+
+
+        play(element, cycled = false) {
             const player = (i) => {
-                if (i >= this._steps.length) return
+                if (i >= this._steps.length) {
+                    if (!cycled) return;
+                    console.log(i);
+                    return player(0);
+                }
 
                 this._steps[i].play(element);
                 setTimeout(() => {
@@ -241,20 +253,6 @@ function animaster() {
             }
 
             player(0);
-        },
-
-
-        addDelay(duration) {
-            const step = {
-                duration,
-                play(element) {
-
-                },
-                reset: (element) => null
-            }
-
-            this._steps.push(step);
-            return this;
         },
     }
 }
