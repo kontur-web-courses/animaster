@@ -1,56 +1,61 @@
 addListeners();
 
 function addListeners() {
+    let anim = animaster();
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            fadeIn(block, 5000);
+            anim.fadeIn(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            move(block, 1000, {x: 100, y: 10});
+            anim.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            scale(block, 1000, 1.25);
+            anim.scale(block, 1000, 1.25);
         });
 }
 
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
-}
+function animaster() {
+    /**
+     * Блок плавно появляется из прозрачного.
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     */
+    this.fadeIn = function fadeIn(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
 
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
+    /**
+     * Функция, передвигающая элемент
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     * @param translation — объект с полями x и y, обозначающими смещение блока
+     */
+    this.move = function move(element, duration, translation) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+    }
 
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-function scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
+    /**
+     * Функция, увеличивающая/уменьшающая элемент
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+     */
+    this.scale = function scale(element, duration, ratio) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.style.transform = getTransform(null, ratio);
+    }
+
+    return this;
 }
 
 function getTransform(translation, ratio) {
