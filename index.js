@@ -25,7 +25,14 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 3000);
+            let stopButton = document.getElementById('moveAndHideRest');
+            let restObj = animaster().moveAndHide(block, 3000);
+            stopButton.disabled = false;
+            stopButton.addEventListener('click', function (){
+                restObj.rest();
+                stopButton.disabled = true;
+                stopButton.removeEventListener('click', arguments.callee)
+            });
         });
 
     document.getElementById('showAndHidePlay')
@@ -43,11 +50,26 @@ function addListeners() {
             stopButton.addEventListener('click', function (){
                 stopper.stop();
                 stopButton.disabled = true;
-            })
+                stopButton.removeEventListener('click', arguments.callee);
+            });
         });
 }
 
 function animaster() {
+    let resetFadeIn = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+    let resetFadeOut = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+    let resetMoveAndScale = (element) => {
+        element.style.transform = null;
+        element.style.transitionDuration = null;
+    }
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -100,7 +122,14 @@ function animaster() {
          */
         moveAndHide(element, duration) {
             this.move(element, duration * 0.4, {x: 100, y: 20})
-            setTimeout(this.fadeOut, duration * 0.4, element, duration * 0.6)
+            let timeout = setTimeout(this.fadeOut, duration * 0.4, element, duration * 0.6);
+            return {
+                rest() {
+                    clearTimeout(timeout);
+                    resetMoveAndScale(element);
+                    resetFadeOut(element);
+                }
+            }
         },
 
         /**
