@@ -23,7 +23,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            anim.scale(block, 1000, 1.25);
+            anim._scale(block, 1000, 1.25);
         });
 
     document.getElementById('moveAndHidePlay')
@@ -68,33 +68,37 @@ function addListeners() {
 }
 
 function animaster() {
-    function fadeIn(element, duration) {
+    function fadeIn(element, duration, callBack) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
+        setTimeout(callBack, duration);
     }
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
         element.classList.remove('show');
         element.classList.add('hide');
     }
-    function fadeOut(element, duration) {
+    function fadeOut(element, duration, callBack) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
+        setTimeout(callBack, duration);
     }
     function resetFadeOut(element) {
         element.style.transitionDuration = null;
         element.classList.remove('hide');
         element.classList.add('show');
     }
-    function move(element, duration, translation) {
+    function move(element, duration, translation, callBack) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
+        setTimeout(callBack, duration);
     }
-    function scale(element, duration, ratio) {
+    function _scale(element, duration, ratio, callBack) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
+        setTimeout(callBack, duration);
     }
     function resetMoveAndScale(element) {
         element.style.transitionDuration = null;
@@ -114,37 +118,41 @@ function animaster() {
     }
     function heartBeating(element) {
         let inter = setInterval(() =>
-        {scale(element, 500, 7/5); setTimeout(scale, 500, element, 500, 5/7)}, 1000);
+        {_scale(element, 500, 7/5); setTimeout(_scale, 500, element, 500, 5/7)}, 1000);
         let heart = {};
         heart.stop = () => {clearInterval(inter)};
         return heart;
     }
     function addMove(duration, translation){
-        this._steps.push((element) => this.move(element, duration, translation));
+        this._steps.push((element, i) => this.move(element, duration, translation,
+            () => {if(i + 1 < this._steps.length) this._steps[i + 1](element, i + 1)}));
         return this;
     }
     function addScale(duration, ratio){
-        this._steps.push((element) => this.scale(element, duration, ratio));
+        this._steps.push((element, i) => this._scale(element, duration, ratio,
+            () => {if(i + 1 < this._steps.length) this._steps[i + 1](element, i + 1)}));
         return this;
     }
     function addFadeIn(duration){
-        this._steps.push((element) => this.fadeIn(element, duration));
+        this._steps.push((element, i) => this.fadeIn(element, duration,
+            () => {if(i + 1 < this._steps.length) this._steps[i + 1](element, i + 1)}));
         return this;
     }
     function addFadeOut(duration){
-        this._steps.push((element) => this.fadeOut(element, duration));
+        this._steps.push((element, i) => this.fadeOut(element, duration,
+            () => {if(i + 1 < this._steps.length) this._steps[i + 1](element, i + 1)}));
         return this;
     }
     function play(element){
-        for (let step of this._steps){
-            step(element);
-        }
+        if (this._steps.length === 0)
+            return;
+        this._steps[0](element, 0);
     }
     let res = {};
     res.fadeIn = fadeIn;
     res.fadeOut = fadeOut;
     res.move = move;
-    res.scale = scale;
+    res._scale = _scale;
     res.moveAndHide = moveAndHide;
     res.showAndHide = showAndHide;
     res.heartBeating = heartBeating;
