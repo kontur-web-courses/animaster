@@ -103,10 +103,12 @@ function animaster() {
             }
         }
         setInterval(() => changeScale(isBig), 500);
+    };
+    
     this.showAndHide = function(element, duration) {
         this.fadeIn(element, duration / 3);
         setTimeout(this.fadeIn, duration / 3, element, duration / 3);
-    }
+    };
 
     return this;
 }
