@@ -24,6 +24,12 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 1000);
         });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        })
 }
 
 function animaster() {
@@ -64,7 +70,21 @@ function animaster() {
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.add('hide');
-        }
+        },
+
+        heartBeating(element) {
+            const heartBeatStep = () => {
+                this.scale(element, 500, 1.4);
+                setTimeout(() => {
+                    this.scale(element, 500, 1);
+                }, 500);
+            }
+
+            heartBeatStep();
+            setInterval(() => {
+                heartBeatStep();
+            }, 1500);
+        },
     }
 }
 
