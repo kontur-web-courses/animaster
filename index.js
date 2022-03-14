@@ -62,7 +62,7 @@ function addListeners() {
     document.getElementById('customPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('customBlock');
-            anim.addMove(1000, {x: 100, y: 10}).addMove(1000, {x:50, y:5}).play(block);
+            anim.addScale(1000, 1.5).play(block);
         });
 }
 
@@ -86,6 +86,39 @@ function animaster() {
         return this;
     }
 
+    this.addScale = function(duration, ratio) {
+        this._steps.push(
+            {
+                name: 'scale',
+                duration: duration,
+                ratio: ratio
+            }
+        )
+        return this;
+    }
+
+    this.addFadeIn = function(duration) {
+        this._steps.push(
+            {
+                name: 'fadeIn',
+                duration: duration
+            }
+        )
+        return this;
+    }
+
+    this.addFadeOut = function(duration) {
+        this._steps.push(
+            {
+                name: 'fadeOut',
+                duration: duration
+            }
+        )
+        return this;
+    }
+    
+
+
     this.play = function(element){
         let duration = 0;
         for (step of this._steps){
@@ -95,6 +128,12 @@ function animaster() {
                     break;
                 case 'fadeIn':
                     this.fadeIn(element, step.duration);
+                    break;
+                case 'fadeOut':
+                    this.fadeOut(element, step.duration);
+                    break;
+                case 'scale':
+                    this.scale(element, step.duration, step.ratio);
                     break;
             }
         }
