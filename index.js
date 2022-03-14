@@ -93,18 +93,18 @@ function animaster() {
     this.heartbeat = function(element, duration) {
         element.style.transitionDuration = `${duration}ms`;
         let isBig = false;
-        function changeScale(isBig) {
+        function changeScale() {
             if (isBig) {
-                this.scale(element, 100, 1 / 1.4);
+                this.scale(element, 100, 1);
                 isBig = false;
             } else {
                 this.scale(element, 100, 1.4);
                 isBig = true;
             }
         }
-        setInterval(() => changeScale(isBig), 500);
+        setInterval(() => changeScale(), 500);
     };
-    
+
     this.showAndHide = function(element, duration) {
         this.fadeIn(element, duration / 3);
         setTimeout(this.fadeIn, duration / 3, element, duration / 3);
