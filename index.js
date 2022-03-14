@@ -31,6 +31,12 @@ function fadeIn(element, duration) {
     element.classList.add('show');
 }
 
+function fadeOut(element, duration) {
+    element.style.transitionDuration =  `${duration}ms`;
+    element.classList.remove('show');
+    element.classList.add('hide');
+}
+
 /**
  * Функция, передвигающая элемент
  * @param element — HTMLElement, который надо анимировать
