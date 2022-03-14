@@ -205,6 +205,22 @@ function animaster() {
         this._steps = [];
     }
 
+    this.addFadeIn = function(duration) {
+        this._steps.push({
+            name: 'fadeIn',
+            duration: duration
+        });
+        return this;
+    }
+
+    this.addFadeOut = function(duration) {
+        this._steps.push({
+            name: 'fadeOut',
+            duration: duration
+        });
+        return this;
+    }
+
     return this;
 }
 
