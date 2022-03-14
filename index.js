@@ -55,6 +55,11 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().resetMoveAndHide(block);
         });
+    document.getElementById('beautifulAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('beautifulAnimationBlock');
+            animaster().beautifulAnimation(block, 1000);
+        });
 }
 
 function animaster() {
@@ -113,6 +118,17 @@ function animaster() {
             }, 1500);
 
             return {stop: () => clearInterval(id)}
+        },
+        beautifulAnimation: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.borderRadius = "0% 100%";
+            setInterval(() => {
+                element.style.borderRadius = "100% 0%";
+
+                setTimeout(() => {
+                    element.style.borderRadius = "0% 100%";
+                }, duration);
+            }, 2 * duration);
         },
         resetMoveAndHide: function (element) {
             resetMoveAndScale(element);
