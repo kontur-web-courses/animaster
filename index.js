@@ -29,6 +29,18 @@ function addListeners() {
         .addEventListener('click', function() {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 3000);
+        });
+
+    let h = animaster();
+    document.getElementById('AddMove')
+        .addEventListener('click', function() {
+            h.AddMove(500, {x: 100, y: -50});
+        });
+
+    document.getElementById('Play')
+        .addEventListener('click', function() {
+            const block = document.getElementById('AddMoveBlock');
+            h.play(block);
         })
 }
 
@@ -44,7 +56,7 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
-    }
+    };
 
     /**
      * Функция, передвигающая элемент
@@ -55,7 +67,7 @@ function animaster() {
     this.move = function(element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
-    }
+    };
 
     /**
      * Функция, увеличивающая/уменьшающая элемент
@@ -66,22 +78,46 @@ function animaster() {
     this.scale = function(element, duration, ratio) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
-    }
+    };
 
     this.fadeOut = function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
-    }
+    };
 
     this.moveAndHide = function(element, duration) {
         this.move(element, duration / 5 * 2, {x: 100, y: 20});
         setTimeout(() => this.fadeOut(element, duration / 5 * 3), duration / 5 * 2);
-    }
+    };
 
     this.showAndHide = function(element, duration) {
         this.fadeIn(element, duration / 3);
         setTimeout(() => this.fadeOut(element, duration / 3), duration / 3 * 2);
+    };
+
+    this._steps = [];
+
+    this.AddMove = function(duration, translation) {
+        this._steps.push({
+            name: 'move',
+            duration: duration,
+            params: translation,
+        });
+        return this;
+    };
+
+    this.play = function(element) {
+        console.log(this._steps)
+        let actions = this._steps.slice();
+        this._steps = [];
+        let time = 0;
+        for (let action of actions) {
+            console.log('this shit happened');
+            console.log(time);
+            setTimeout(() => this[action.name](element, action.duration, action.params), time);
+            time += action.duration;
+        }
     }
 
     return this;
