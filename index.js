@@ -37,7 +37,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            let stopper = animaster().heartBeating(block);
+            let stopButton = document.getElementById('heartBeatingStop');
+            stopButton.disabled = false;
+            stopButton.addEventListener('click', function (){
+                stopper.stop();
+                stopButton.disabled = true;
+            })
         });
 }
 
@@ -117,7 +123,12 @@ function animaster() {
                 setTimeout(this.scale, 500, element, 500, 1)
             }
             heartBeat();
-            setInterval(heartBeat, 1200);
+            let interval = setInterval(heartBeat, 1200);
+            return {
+                stop(){
+                    clearInterval(interval);
+                }
+            }
         },
 
     }
