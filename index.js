@@ -26,13 +26,13 @@ function animaster(){
         },
         showAndHide(element, duration) {
             this.fadeOut(element, duration * 1/3);
-            setTimeout(() => 0, duration * 1/3);
+            setTimeout(() => {}, duration * 1/3);
             this.fadeIn(element, duration * 1/3);
         },
         heartBeating(element){
             let timerId = setInterval(() => {
-                this.scale(element, 0.5, 1.4);
-                this.scale(element, 0.5, 5/7);
+                this.scale(element, 500, 1.4);
+                setTimeout(this.scale,500, element, 500, 5/7);
             }, 1000);
             return {stop: () => {clearInterval(timerId)}};
         }
