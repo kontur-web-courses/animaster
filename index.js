@@ -2,6 +2,7 @@ addListeners();
 
 function addListeners() {
     let anim = animaster();
+    let heartbeatObj;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -29,7 +30,13 @@ function addListeners() {
     document.getElementById('heartbeatPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartbeatBlock');
-            anim.heartbeat(block, 1000, 1.25);
+            heartbeatObj = anim.heartbeat(block, 1000);
+        });
+    
+    document.getElementById('heartbeatStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartbeatBlock');
+            heartbeatObj.stop();
         });
 
     document.getElementById('moveAndHidePlay')
@@ -93,20 +100,25 @@ function animaster() {
     this.heartbeat = function(element, duration) {
         element.style.transitionDuration = `${duration}ms`;
         let isBig = false;
-        function changeScale(isBig) {
+        function changeScale() {
             if (isBig) {
-                this.scale(element, 100, 1 / 1.4);
+                this.scale(element, 500, 1);
                 isBig = false;
             } else {
-                this.scale(element, 100, 1.4);
+                this.scale(element, 500, 1.4);
                 isBig = true;
             }
         }
-        setInterval(() => changeScale(isBig), 500);
+        let timer = setInterval(() => changeScale(), 500);
+        this.stop = function() {
+            clearInterval(timer);
+        }
+        return this;
+    };
     this.showAndHide = function(element, duration) {
         this.fadeIn(element, duration / 3);
         setTimeout(this.fadeIn, duration / 3, element, duration / 3);
-    }
+    };
 
     return this;
 }
