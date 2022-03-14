@@ -1,5 +1,6 @@
 addListeners();
 
+let anim = animaster();
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -110,13 +111,13 @@ function animaster() {
         showAndHide: function (){return ShowAndHide()},
         heartBeating: function (){return HeartBeating()},
         addMove: function (duration, translation) {
-            this._steps.add((element) => Move(element, duration, translation))},
+            this._steps.push((element) => Move(element, duration, translation))},
         addScale: function (duration, ratio) {
-            this._steps.add((element) => Scale(element, duration, ratio))},
+            this._steps.push((element) => Scale(element, duration, ratio))},
         addFadeIn: function (duration) {
-            this._steps.add((element) => FadeIn(element, duration))},
+            this._steps.push((element) => FadeIn(element, duration))},
         addFadeOut: function (duration) {
-            this._steps.add((element) => FadeOut(element, duration))},
+            this._steps.push((element) => FadeOut(element, duration))},
         play: function(element) {this._steps.forEach(func => func(element))}
     }
 }
