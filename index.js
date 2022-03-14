@@ -107,7 +107,7 @@ function animaster() {
 
     function resetMoveAndScale(element) {        
         element.style.transitionDuration = null;
-        element.style.transform = getTransform(null, 1);
+        element.style.transform = getTransform(null, null);
     }
 
     this.moveAndHide = function(element, duration) {
