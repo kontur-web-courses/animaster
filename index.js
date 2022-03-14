@@ -24,6 +24,24 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000, {x: 100, y: 20});
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block, 5000, 1.4);
+        });
 }
 
 
@@ -78,16 +96,39 @@ function animaster(){
         element.style.transform = getTransform(null, ratio);
     }
 
-    function moveAndHide(element, duration, ratio) {
+    function moveAndHide(element, duration, translation) {
+        setTimeout(function (){
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        }, duration*(3/5))
 
+        element.style.transitionDuration = `${duration*(2/5)}ms`;
+        element.style.transform = getTransform(translation, null);
     }
 
-    function showAndHide(element, duration, ratio){
+    function showAndHide(element, duration){
+        const timeLimit = duration * 1/3;
 
+        fadeIn(element, timeLimit);
+
+        setTimeout(function (){
+            fadeOut(element, timeLimit)
+        }, timeLimit * 2)
     }
 
-    function heartBeating(element, duration, ratio){
+    function heartBeating(element, duration, ratio, isPlay = true){
+        const timeLimit = duration * 1/2;
+        let counter = 0;
 
+        while (counter < 10){
+            setTimeout(function () {
+                scale(element, timeLimit, 1)
+            }, timeLimit)
+
+            scale(element, timeLimit, ratio)
+            counter += 1;
+        }
     }
 
     return {
