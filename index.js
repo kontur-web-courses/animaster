@@ -21,6 +21,7 @@ function addListeners() {
 }
 
 
+
 function animaster() {
     /**
      * Блок плавно появляется из прозрачного.
@@ -53,6 +54,12 @@ function animaster() {
     this.scale = function(element, duration, ratio) {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
+    }
+
+    this.fadeOut = function(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
     }
 
     return this;
