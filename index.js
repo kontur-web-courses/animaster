@@ -84,10 +84,9 @@ function animaster() {
                 setTimeout(() => this.scale(element, duration / 2, scaleDown), duration / 2);
             }, 1000)
 
-            let o ={interval,
+            return {interval,
                 stop(){clearTimeout(this.interval)}
             }
-            return o
 
         }
 
