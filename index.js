@@ -2,6 +2,18 @@ addListeners();
 let animations = animaster();
 
 function addListeners() {
+
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+
+    document
+        .getElementById('worryAnimationBlock')
+        .addEventListener('click', worryAnimationHandler);
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -139,12 +151,6 @@ function animaster() {
             return animaster().addMove(duration * 2 / 5, {x: 100, y: 20})
                 .addFadeOut(duration * 3 / 5)
                 .play(element);
-            // return {
-            //     reset: () => {
-            //         resetFadeOut(element);
-            //         resetMoveAndScale(element);
-            //     }
-            // };
         },
         showAndHide: function (element, duration) {
             return animaster().addFadeIn(duration / 3)
@@ -207,7 +213,7 @@ function animaster() {
         },
 
 
-        play: function (element, cycled=false) {
+        play: function (element, cycled = false) {
             let innerPlay = () => {
                 let s = 0;
                 let allSteps = {};
@@ -230,19 +236,36 @@ function animaster() {
                 }
             }
 
-            if (cycled === true){
+            let aaa = {
+                classes: [...element.classList],
+                scale: element.style.scale,
+                transform: element.style.transform,
+                transitionDuration: element.style.transitionDuration
+            };
+
+            if (cycled === true) {
                 let delay = this._steps.map(x => x.duration).reduce((partialSum, a) => partialSum + a, 0);
                 var idInterval = setInterval(innerPlay, delay);
-            } else{
+            } else {
                 innerPlay();
             }
 
             return {
                 stop: () => clearInterval(idInterval),
                 reset: () => {
-
+                    element.style.scale = aaa.scale;
+                    element.style.transform = aaa.transform;
+                    element.style.transitionDuration = aaa.transitionDuration;
+                    element.classList = aaa.classes;
                 }
             };
+        },
+
+        buildHandler: function () {
+            let anim = this;
+            return function () {
+                return anim.play(this);
+            }
         }
     };
 }
