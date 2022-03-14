@@ -37,7 +37,10 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            const moveAndHideAnimation = animaster().moveAndHide(block, 1000);
+
+            document.getElementById('moveAndHideStop')
+                .addEventListener('click', moveAndHideAnimation.stop)
         })
 
     document.getElementById('showAndHidePlay')
@@ -58,6 +61,7 @@ function animaster() {
         element.style.transitionDuration = null;
         element.classList.add('show');
         element.classList.remove('hide');
+        console.log('hi');
     }
 
 
@@ -109,11 +113,17 @@ function animaster() {
 
         moveAndHide(element, duration) {
             this.move(element, duration * 0.4, {x: 100, y: 20})
-            setTimeout(() => this.fadeOut(element, duration * 0.6), duration * 0.4)
+            const timeoutInterval = setTimeout(() => this.fadeOut(element, duration * 0.6), duration * 0.4)
+            return {
+                stop() {
+                    clearTimeout(timeoutInterval);
+                    resetMoveAndScale(element);
+                    resetFadeOut(element);
+                }
+            }
         },
 
         showAndHide(element, duration) {
-            console.log(duration * 1 / 3)
             this.fadeIn(element, duration * 1 / 3)
             setTimeout(() => this.fadeOut(element, duration * 1 / 3), 1000)
         },
@@ -131,7 +141,7 @@ function animaster() {
                 heartBeatStep();
             }, 1500);
             return {
-                stop(){
+                stop() {
                     clearInterval(intervalId);
                 }
             }
