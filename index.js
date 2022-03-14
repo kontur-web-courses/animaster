@@ -26,6 +26,24 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             anim.fadeOut(block, 5000);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            anim.moveAndHide(block);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            anim.showAndHide(block);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            anim.heartBeating(block);
+        });
 }
 
 function animaster() {
@@ -51,83 +69,82 @@ function animaster() {
             stop: function () {
                 clearInterval(inter);
             }
-
         }
 
-    }
 
-    /**
-     * Блок плавно появляется из прозрачного.
-     * @param element — HTMLElement, который надо анимировать
-     * @param duration — Продолжительность анимации в миллисекундах
-     */
-    function FadeIn(element, duration) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.classList.remove('hide');
-        element.classList.add('show');
-    }
+        /**
+         * Блок плавно появляется из прозрачного.
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        function FadeIn(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        }
 
-    function FadeOut(element, duration) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.classList.remove('show');
-        element.classList.add('hide');
-    }
+        function FadeOut(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        }
 
-    /**
-     * Функция, передвигающая элемент
-     * @param element — HTMLElement, который надо анимировать
-     * @param duration — Продолжительность анимации в миллисекундах
-     * @param translation — объект с полями x и y, обозначающими смещение блока
-     */
-    function Move(element, duration, translation) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.style.transform = getTransform(translation, null);
-    }
+        /**
+         * Функция, передвигающая элемент
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param translation — объект с полями x и y, обозначающими смещение блока
+         */
+        function Move(element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        }
 
-    /**
-     * Функция, увеличивающая/уменьшающая элемент
-     * @param element — HTMLElement, который надо анимировать
-     * @param duration — Продолжительность анимации в миллисекундах
-     * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
-     */
-    function Scale(element, duration, ratio) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.style.transform = getTransform(null, ratio);
-    }
+        /**
+         * Функция, увеличивающая/уменьшающая элемент
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+         */
+        function Scale(element, duration, ratio) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        }
 
-    return {
-        move: function (element, duration, translation) {
-            return Move(element, duration, translation)
-        },
-        scale: function (element, duration, ratio) {
-            return Scale(element, duration, ratio)
-        },
-        fadeIn: function (element, duration) {
-            return FadeIn(element, duration)
-        },
-        fadeOut: function (element, duration) {
-            return FadeOut(element, duration)
-        },
-        moveAndHide: function () {
-            return MoveAndHide()
-        },
-        showAndHide: function () {
-            return ShowAndHide()
-        },
-        heartBeating: function () {
-            return HeartBeating()
+        return {
+            move: function (element, duration, translation) {
+                return Move(element, duration, translation)
+            },
+            scale: function (element, duration, ratio) {
+                return Scale(element, duration, ratio)
+            },
+            fadeIn: function (element, duration) {
+                return FadeIn(element, duration)
+            },
+            fadeOut: function (element, duration) {
+                return FadeOut(element, duration)
+            },
+            moveAndHide: function () {
+                return MoveAndHide()
+            },
+            showAndHide: function () {
+                return ShowAndHide()
+            },
+            heartBeating: function () {
+                return HeartBeating()
+            }
         }
     }
-}
 
 
-function getTransform(translation, ratio) {
-    const result = [];
-    if (translation) {
-        result.push(`translate(${translation.x}px,${translation.y}px)`);
+    function getTransform(translation, ratio) {
+        const result = [];
+        if (translation) {
+            result.push(`translate(${translation.x}px,${translation.y}px)`);
+        }
+        if (ratio) {
+            result.push(`scale(${ratio})`);
+        }
+        return result.join(' ');
     }
-    if (ratio) {
-        result.push(`scale(${ratio})`);
-    }
-    return result.join(' ');
 }
