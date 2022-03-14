@@ -64,6 +64,13 @@ function animaster() {
         showAndHide: function (element, duration) {
             this.fadeIn(element, duration);
             setTimeout(() => this.fadeOut(element, duration), duration / 3);
+        },
+        heartBeating: function (element, duration, scaleUp, scaleDown) {
+            while (true){
+                this.scale(element, duration / 2, scaleUp);
+                setTimeout(() => this.scale(element, duration / 2, scaleDown), duration / 2);
+            }
+            
         }
     }
 }
