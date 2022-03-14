@@ -57,11 +57,24 @@ function animaster() {
         element.classList.add('show');
     };
 
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
     this.fadeOut =  function(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.add('hide');
         element.classList.remove('show');
     }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
 
     /**
      * Функция, передвигающая элемент
