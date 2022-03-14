@@ -25,6 +25,16 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animations.moveAndHide(block, 1000);
         });
+
+    document.getElementById('heartBeating')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            let controller = animations.heartBeating(block);
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    controller.stop();
+                });
+        });
 }
 
 function animaster() {
@@ -37,6 +47,19 @@ function animaster() {
             result.push(`scale(${ratio})`);
         }
         return result.join(' ');
+    }
+
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+    }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+    }
+
+    function resetMoveAndScale(element){
+        element.style.transitionDuration = null;
+        element.style.transform = null;
     }
 
     return {
@@ -79,8 +102,24 @@ function animaster() {
         },
         moveAndHide: function (element, duration) {
             this.move(element, duration * 2 / 5, {x: 100, y: 20});
-            setTimeout(() => {this.fadeOut(element, duration * 3 / 5);}, duration * 2 / 5);
+            setTimeout(() => {
+                this.fadeOut(element, duration * 3 / 5);
+            }, duration * 2 / 5);
 
+        },
+
+        heartBeating: function (element) {
+            let idInterval = setInterval(() => {
+                this.scale(element, 500, 1.4);
+                setTimeout(() => {
+                    this.scale(element, 500, 1);
+                }, 500);
+            }, 1000);
+            return {
+                stop: () => {
+                    clearInterval(idInterval);
+                }
+            };
         }
     };
 }
