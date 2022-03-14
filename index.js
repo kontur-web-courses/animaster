@@ -1,6 +1,18 @@
 addListeners();
 
 function animaster(){
+
+/*    function resetFadeIn(element){
+        element.style.fadeIn = null
+    }
+    function resetFadeOut(element){
+        element.style.fadeOut = null
+    }
+    function resetMoveAndScale(element){
+        element.style.move = null
+        element.style.scale = null
+    }*/
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -67,6 +79,11 @@ function addListeners() {
             animaster().move(block, 1000, {x: 100, y: 10});
         });
     document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000);
+        });
+    document.getElementById('moveAndHideReset')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000);
