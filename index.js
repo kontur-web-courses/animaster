@@ -30,6 +30,12 @@ function addListeners() {
                 });
         });
 
+    document.getElementById('showAndHide')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animations.showAndHide(block, 3000);
+        });
+
     document.getElementById('heartBeating')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
@@ -120,6 +126,10 @@ function animaster() {
                     resetMoveAndScale(element);
                 }
             };
+        },
+        showAndHide: function (element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => {this.fadeOut(element, duration / 3);}, duration * 2 / 3);
         },
 
         heartBeating: function (element) {
