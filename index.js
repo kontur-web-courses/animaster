@@ -133,20 +133,23 @@ function animaster() {
         },
 
         moveAndHide(element, duration) {
-            this.move(element, duration * 0.4, {x: 100, y: 20})
-            const timeoutInterval = setTimeout(() => this.fadeOut(element, duration * 0.6), duration * 0.4)
+            this.addMove(duration * 0.4, {x: 100, y: 20})
+                .addFadeOut(duration * 0.6)
+                .play(element);
             return {
                 stop() {
-                    clearTimeout(timeoutInterval);
-                    resetMoveAndScale(element);
-                    resetFadeOut(element);
+                    // clearTimeout(timeoutInterval);
+                    // resetMoveAndScale(element);
+                    // resetFadeOut(element);
                 }
             }
         },
 
         showAndHide(element, duration) {
-            this.fadeIn(element, duration * 1 / 3)
-            setTimeout(() => this.fadeOut(element, duration * 1 / 3), 1000)
+            this.addFadeIn(duration * 1 / 3)
+                .addDelay(duration * 1 / 3)
+                .addFadeOut(duration * 1 / 3)
+                .play(element);
         },
 
         heartBeating(element) {
@@ -238,6 +241,20 @@ function animaster() {
             }
 
             player(0);
+        },
+
+
+        addDelay(duration) {
+            const step = {
+                duration,
+                play(element) {
+
+                },
+                reset: (element) => null
+            }
+
+            this._steps.push(step);
+            return this;
         },
     }
 }
