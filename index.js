@@ -174,7 +174,7 @@ function animaster() {
 
     this._steps = [];
 
-    this.AddMove = function(duration, translation) {
+    this.addMove = function(duration, translation) {
         this._steps.push({
             name: 'move',
             duration: duration,
@@ -190,6 +190,22 @@ function animaster() {
             time += action.duration;
         }
         this._steps = [];
+    }
+
+    this.addFadeIn = function(duration) {
+        this._steps.push({
+            name: 'fadeIn',
+            duration: duration
+        });
+        return this;
+    }
+
+    this.addFadeOut = function(duration) {
+        this._steps.push({
+            name: 'fadeOut',
+            duration: duration
+        });
+        return this;
     }
 
     return this;
