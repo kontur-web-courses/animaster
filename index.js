@@ -163,8 +163,9 @@ function animaster() {
     }
 
     this.moveAndHide = function(element, duration) {
-        this.move(element, duration / 5 * 2, {x: 100, y: 20});
-        setTimeout(() => this.fadeOut(element, duration / 5 * 3), duration / 5 * 2);
+        this.addMove(duration / 5 * 2, {x: 100, y: 20})
+            .addFadeOut(duration / 5 * 3);
+        this.play(element);
     };
 
     this.resetMoveAndHide = function(element) {
@@ -173,11 +174,24 @@ function animaster() {
     }
 
     this.showAndHide = function(element, duration) {
-        this.fadeIn(element, duration / 3);
-        setTimeout(() => this.fadeOut(element, duration / 3), duration / 3 * 2);
+        this.addFadeIn(duration / 3)
+            .addDelay(duration / 3)
+            .addFadeOut(duration / 3);
+        this.play(element);
     };
 
+    this.delay = function (duration) {};
+
     this._steps = [];
+
+    this.addDelay = function(duration) {
+        this._steps.push({
+            name: 'delay',
+            duration: duration,
+            params: null
+        });
+        return this;
+    };
 
     this.addMove = function(duration, translation) {
         this._steps.push({
