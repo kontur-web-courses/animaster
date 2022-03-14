@@ -73,7 +73,7 @@ function animaster() {
      * @param duration — Продолжительность анимации в миллисекундах
      */
 
-    this._steps = []
+    this._steps = [];
 
     this.addMove = function(duration, translation) {
         this._steps.push(
@@ -87,8 +87,12 @@ function animaster() {
     }
 
     this.play = function(element){
-        let duration = 0;
-        for (step of this._steps){
+        let rec = function(i) {
+            if (i >= this._steps.length) {
+                this._steps = [];
+                return;
+            }
+            let step = this._steps[i];
             switch(step.name) {
                 case 'move':
                     this.move(element, step.duration, step.translation);
@@ -97,7 +101,9 @@ function animaster() {
                     this.fadeIn(element, step.duration);
                     break;
             }
+            setTimeout(rec, step.duration, i + 1);
         }
+        rec(0);
     }
 
     this.fadeIn = function(element, duration) {
