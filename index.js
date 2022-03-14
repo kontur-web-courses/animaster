@@ -28,8 +28,11 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            const stop = animaster().heartBeating(block);
+            document.getElementById('showAndHideStop')
+                .addEventListener('click', stop.stop)
         })
+
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function (){
@@ -105,9 +108,14 @@ function animaster() {
             }
 
             heartBeatStep();
-            setInterval(() => {
+            const intervalId = setInterval(() => {
                 heartBeatStep();
             }, 1500);
+            return {
+                stop(){
+                    clearInterval(intervalId);
+                }
+            }
         },
     }
 }
