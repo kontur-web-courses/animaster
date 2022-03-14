@@ -42,9 +42,28 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block, 500);
         });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            window.intervalStopper.stop();
+        });
 }
 
 function animaster(){
+     function resetFadeIn(element) {
+        element.style.transitionDuration = `0ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+    function resetFadeOut(element) {
+        element.style.transitionDuration = `0ms`;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+    function resetMoveAndScale(element) {
+
+    }
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -102,16 +121,21 @@ function animaster(){
             }, duration / 3, duration / 3);
         },
         heartBeating: function (element, duration) {
-            setInterval(()=>{
+            let interval2 = "";
+            let interval1 = setInterval(()=>{
                 element.style.transitionDuration = `${duration}ms`;
                 element.style.transform = getTransform(null, 7/5);
             }, duration);
             setTimeout(()=>{
-                setInterval(()=>{
+                 interval2 = setInterval(()=>{
                     element.style.transitionDuration = `${duration}ms`;
                     element.style.transform = getTransform(null, 5/7);
                 }, duration)
             }, duration/2)
+            window.intervalStopper = {stop : ()=>{
+                clearInterval(interval1);
+                clearInterval(interval2);
+            }}
         }
     }
 }
