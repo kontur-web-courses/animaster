@@ -149,21 +149,43 @@ function animaster() {
         return {stop};
     }
 
-    function addMove(duration, translation) {
-        this._steps.push({func: move, duration: duration, translation: translation})
+    function addMove(duration, argument) {
+        this._steps.push({func: move, duration: duration, argument: argument})
+        return this;
+    }
+
+    function addScale(duration, argument) {
+        this._steps.push({func: scale, duration: duration, argument: argument})
+        return this;
+    }
+
+    function addFadeIn(duration, argument) {
+        this._steps.push({func: fadeIn, duration: duration, argument: argument})
+        return this;
+    }
+
+    function addFadeOut(duration, argument) {
+        this._steps.push({func: fadeOut, duration: duration, argument: argument})
         return this;
     }
 
     function play(element) {
+        let sumDuration = 0;
         for (let i = 0; i < this._steps.length; ++i) {
-            if (i === 0) this._steps[i].func();
-            else setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration, this._steps[i].translation);
+            sumDuration += this._steps[i].duration;
+            if (i === 0)
+                this._steps[i].func(element, this._steps[i].duration, this._steps[i].argument);
+            else setTimeout(this._steps[i].func,
+                sumDuration, element, this._steps[i].duration, this._steps[i].argument);
         }
     }
 
     return {
         _steps: [],
         addMove: addMove,
+        addScale: addScale,
+        addFadeIn: addFadeIn,
+        addFadeOut: addFadeOut,
         play: play,
         fadeIn: fadeIn,
         fadeOut: fadeOut,
