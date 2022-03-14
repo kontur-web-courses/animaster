@@ -47,6 +47,7 @@ function addListeners() {
             animaster()
                 .AddMove( 900, {x: -100, y: 0})
                 .AddMove( 1000, {x: 100, y: 0})
+                .AddScale( 1000, 2)
                 .AddMove(1000, {x: 100, y: 100})
                 .AddMove(3000, {x: 200, y: 50})
                 .play(block);
@@ -81,7 +82,12 @@ function animaster() {
         element.style.transform = null;
         element.style.transitionDuration = null;
     }
+    let move = (element, duration, translation) => {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+    };
     return {
+        _steps: [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -111,8 +117,7 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.AddMove(duration, translation).play(element);
         },
 
         /**
@@ -170,7 +175,7 @@ function animaster() {
                 }
             }
         },
-        _steps: [],
+
 
         /**
          * Функция, добавляющая передвигание в очередь
@@ -179,8 +184,22 @@ function animaster() {
          */
         AddMove(duration, translation) {
             this._steps.push({
-                func: this.move,
+                func: move,
                 args: [duration, translation],
+                duration: duration,
+            });
+            return this;
+        },
+
+        /**
+         * Функция, добавляющая масштабирование в очередь
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+         */
+        AddScale(duration, ratio) {
+            this._steps.push({
+                func: this.scale,
+                args: [duration, ratio],
                 duration: duration,
             });
             return this;
