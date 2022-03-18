@@ -19,26 +19,20 @@ function animaster() {
         element.style.transform = null
     }
 
-
     return {
         _steps: [],
 
         play: function (element){
-            let wait = 0
+            let wait = 0;
             for (let step of this._steps){
-                if (step.name === 'move'){
-                    setTimeout(() => this.move(element, step.duration, step.translation), wait)
-                    wait += step.duration
-                } else if (step.name === 'scale'){
-                    setTimeout(() => this.scale(element, step.duration, step.ratio), wait)
-                    wait += step.duration
-                } else if (step.name === 'fadeIn'){
-                    setTimeout(() => this.fadeIn(element, step.duration), wait)
-                    wait += step.duration
-                } else if (step.name === 'fadeOut'){
-                    setTimeout(() => this.fadeOut(element, step.duration), wait)
-                    wait += step.duration
+                if (step.translation !== null) {
+                    setTimeout(() => step.method(element, step.duration, step.translation), wait)
+                } else if (step.ratio !== null){
+                    setTimeout(() => step.method(element, step.duration, step.ratio), wait)
+                } else {
+                    setTimeout(() => step.method(element, step.duration), wait)
                 }
+                wait += step.duration
             }
         },
 
@@ -55,8 +49,12 @@ function animaster() {
 
         addFadeIn: function (duration) {
             this._steps.push({
+                method: this.fadeIn,
                 name: 'fadeIn',
-                duration: duration
+                duration: duration,
+                translation: null,
+                ratio: null,
+                cycled: false
             })
             return this
         },
@@ -75,8 +73,12 @@ function animaster() {
 
         addFadeOut: function (duration) {
             this._steps.push({
+                method: this.fadeOut,
                 name: 'fadeOut',
-                duration: duration
+                duration: duration,
+                translation: null,
+                ratio: null,
+                cycled: false
             })
             return this
         },
@@ -93,9 +95,12 @@ function animaster() {
 
         addMove: function (duration, translation) {
             this._steps.push({
+                method: this.move,
                 name: 'move',
                 duration: duration,
-                translation: translation
+                translation: translation,
+                ratio: null,
+                cycled: false
             })
             return this
         },
@@ -112,9 +117,12 @@ function animaster() {
 
         addScale: function (duration, ratio) {
             this._steps.push({
+                method: this.scale,
                 name: 'scale',
                 duration: duration,
-                ratio: ratio
+                translation: null,
+                ratio: ratio,
+                cycled: false
             })
             return this
         },
