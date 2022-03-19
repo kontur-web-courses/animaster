@@ -63,3 +63,7 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
+function animaster() {
+
+}
