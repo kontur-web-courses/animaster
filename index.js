@@ -18,6 +18,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -65,5 +71,16 @@ function animaster() {
         element.classList.add('show');
     }
 
-    return {fadeIn: fadeIn, move: move, scale: scale}
+    /**
+     * Блок плавно пропадает.
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     */
+    function fadeOut(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    return {fadeIn: fadeIn, move: move, scale: scale, fadeOut: fadeOut}
 }
