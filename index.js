@@ -40,7 +40,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            setInterval(animaster().heartBeating, 1500, block);
+            let animation = animaster().heartBeating(block);
+
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    animation.stop()
+                });
         });
 }
 
@@ -111,8 +116,15 @@ function animaster() {
     }
 
     function heartBeating(element) {
-        scale(element, 500, 1.4);
-        setTimeout(scale, 500, element, 500, 1);
+        function beat() {
+            scale(element, 500, 1.4);
+            setTimeout(scale, 500, element, 500, 1);
+        }
+        let interval = setInterval(beat, 1500);
+        function stop() {
+            clearInterval(interval);
+        }
+        return {stop:stop};
     }
 
     return {fadeIn: fadeIn, move: move, scale: scale, fadeOut: fadeOut, moveAndHide: moveAndHide,
