@@ -155,6 +155,27 @@ function animaster() {
         return {stop:stop};
     }
 
-    return {fadeIn: fadeIn, move: move, scale: scale, fadeOut: fadeOut, moveAndHide: moveAndHide,
-        showAndHide: showAndHide, heartBeating: heartBeating}
+    function addMove(duration, translation) {
+        this._steps.push({func: move, duration: duration, translation: translation})
+        return this;
+    }
+
+    function play(element) {
+        for (let i = 0; i < this._steps.length; ++i) {
+            if (i === 0) this._steps[i].func();
+            else setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration, this._steps[i].translation);
+        }
+    }
+
+    return {
+        _steps: [],
+        addMove: addMove,
+        play: play,
+        fadeIn: fadeIn,
+        move: move,
+        scale: scale,
+        fadeOut: fadeOut,
+        moveAndHide: moveAndHide,
+        showAndHide: showAndHide,
+        heartBeating: heartBeating}
 }
