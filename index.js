@@ -94,6 +94,12 @@ function animaster() {
         element.classList.add('show');
     }
 
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
     /**
      * Блок плавно пропадает.
      * @param element — HTMLElement, который надо анимировать
@@ -105,9 +111,20 @@ function animaster() {
         element.classList.add('hide');
     }
 
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
     function moveAndHide(element, duration, translation) {
         move(element, duration * 2 / 5, translation);
         setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
     }
 
     function showAndHide(element, duration) {
