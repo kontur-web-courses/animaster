@@ -32,7 +32,7 @@ function addListeners() {
 
             document.getElementById('moveAndHideReset')
                 .addEventListener('click', function () {
-                    animation.reset();
+                    animation.reset(block);
                 })
         });
 
@@ -49,9 +49,20 @@ function addListeners() {
 
             document.getElementById('heartBeatingStop')
                 .addEventListener('click', function () {
-                    animation.stop()
+                    animation.stop(animation._interval)
                 });
         });
+
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+
+    document
+        .getElementById('worryAnimationBlock')
+        .addEventListener('click', worryAnimationHandler);
 }
 
 function getTransform(translation, ratio) {
@@ -66,6 +77,11 @@ function getTransform(translation, ratio) {
 }
 
 function animaster() {
+
+    this._steps = [];
+    this._interval;
+
+
     /**
      * Функция, увеличивающая/уменьшающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -123,7 +139,7 @@ function animaster() {
     }
 
     function moveAndHide(element, duration, translation) {
-        return this.addMove(duration * 2 / 5, {x: 100, y: 20})
+        return this.addMove(duration * 2 / 5, translation)
             .addFadeOut(duration * 3 / 5)
             .play(element);
     }
@@ -172,47 +188,37 @@ function animaster() {
     }
 
     function play(element, cycled = false) {
-        let sumDuration = 0;
-        let animation = function() {
-            for (let i = 0; i < this._steps.length; ++i) {
-                if (i === 0) {
-                    this._steps[i].func();
-                } else {
-                    setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration,
-                        this._steps[i].translation);
-                }
-                sumDuration += this._steps[i].duration;
-                if (i === 0) {
-                    this._steps[i].func(element, this._steps[i].duration, this._steps[i].argument);
-                } else {
-                    setTimeout(this._steps[i].func,
-                        sumDuration, element, this._steps[i].duration, this._steps[i].argument);
-                }
-            }
+        let prefixDurations = [];
+        prefixDurations.push(0);
+        for (let i = 1; i < this._steps.length; ++i) {
+            prefixDurations.push(this._steps[i].duration + prefixDurations[i-1])
         }
+        let animation = () => {
+            for (let i = 0; i < this._steps.length; ++i) {
+                setTimeout(this._steps[i].func,
+                    prefixDurations[i], element, this._steps[i].duration, this._steps[i].argument);
+            }
+        };
+
+        animation();
 
         if (cycled) {
-            this.interval = setInterval(animation, sumDuration);
+            _interval = setInterval(animation, prefixDurations[this._steps.length-1]);
         }
 
-        function stop() {
-            clearInterval(this.interval);
+
+        function reset(someElement) {
+            resetFadeIn(someElement);
+            resetFadeOut(someElement);
+            resetMoveAndScale(someElement);
         }
 
-        function reset() {
-            resetFadeIn(element);
-            resetFadeOut(element);
-            resetMoveAndScale(element);
-        }
-
-        return {stop:stop, reset:reset};
-
+        return {stop:(interval) => {clearInterval(interval)}, reset:reset, _interval: _interval};
     }
-
-
 
     return {
         _steps: [],
+        _interval: this._interval,
         addMove: addMove,
         play: play,
         addScale: addScale,
@@ -225,5 +231,6 @@ function animaster() {
         fadeOut: fadeOut,
         moveAndHide: moveAndHide,
         showAndHide: showAndHide,
-        heartBeating: heartBeating}
+        heartBeating: heartBeating
+    }
 }
