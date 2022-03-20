@@ -123,14 +123,9 @@ function animaster() {
     }
 
     function moveAndHide(element, duration, translation) {
-        move(element, duration * 2 / 5, translation);
-        let timeout = setTimeout(fadeOut, duration * 3 / 5, element, duration * 3 / 5);
-        function reset() {
-            resetMoveAndScale(element);
-            resetFadeOut(element);
-            clearTimeout(timeout);
-        }
-        return {reset: reset};
+        return this.addMove(duration * 2 / 5, {x: 100, y: 20})
+            .addFadeOut(duration * 3 / 5)
+            .play(element);
     }
 
     function resetMoveAndScale(element) {
@@ -139,38 +134,91 @@ function animaster() {
     }
 
     function showAndHide(element, duration) {
-        fadeIn(element, duration / 3 );
-        setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
+        this.addFadeIn(duration / 3)
+            .addDelay(duration / 3)
+            .addFadeOut(duration / 3)
+            .play(element);
+    }
+
+    function addDelay(duration) {
+        return this.addMove(duration, {x: 0, y:0});
     }
 
     function heartBeating(element) {
-        function beat() {
-            scale(element, 500, 1.4);
-            setTimeout(scale, 500, element, 500, 1);
-        }
-        let interval = setInterval(beat, 1500);
-        function stop() {
-            clearInterval(interval);
-        }
-        return {stop:stop};
+        return this.addScale(500, 1.4)
+            .addDelay(500)
+            .addScale(500, 1)
+            .play(element, true);
     }
 
-    function addMove(duration, translation) {
-        this._steps.push({func: move, duration: duration, translation: translation})
+    function addMove(duration, argument) {
+        this._steps.push({func: move, duration: duration, argument: argument})
         return this;
     }
 
-    function play(element) {
-        for (let i = 0; i < this._steps.length; ++i) {
-            if (i === 0) this._steps[i].func();
-            else setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration, this._steps[i].translation);
-        }
+    function addScale(duration, argument) {
+        this._steps.push({func: scale, duration: duration, argument: argument})
+        return this;
     }
+
+    function addFadeIn(duration) {
+        this._steps.push({func: fadeIn, duration: duration})
+        return this;
+    }
+
+    function addFadeOut(duration) {
+        this._steps.push({func: fadeOut, duration: duration})
+        return this;
+    }
+
+    function play(element, cycled = false) {
+        let sumDuration = 0;
+        let animation = function() {
+            for (let i = 0; i < this._steps.length; ++i) {
+                if (i === 0) {
+                    this._steps[i].func();
+                } else {
+                    setTimeout(this._steps[i].func, this._steps[i].duration, element, this._steps[i].duration,
+                        this._steps[i].translation);
+                }
+                sumDuration += this._steps[i].duration;
+                if (i === 0) {
+                    this._steps[i].func(element, this._steps[i].duration, this._steps[i].argument);
+                } else {
+                    setTimeout(this._steps[i].func,
+                        sumDuration, element, this._steps[i].duration, this._steps[i].argument);
+                }
+            }
+        }
+
+        if (cycled) {
+            this.interval = setInterval(animation, sumDuration);
+        }
+
+        function stop() {
+            clearInterval(this.interval);
+        }
+
+        function reset() {
+            resetFadeIn(element);
+            resetFadeOut(element);
+            resetMoveAndScale(element);
+        }
+
+        return {stop:stop, reset:reset};
+
+    }
+
+
 
     return {
         _steps: [],
         addMove: addMove,
         play: play,
+        addScale: addScale,
+        addFadeIn: addFadeIn,
+        addFadeOut: addFadeOut,
+        addDelay: addDelay,
         fadeIn: fadeIn,
         move: move,
         scale: scale,
