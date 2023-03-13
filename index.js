@@ -1,6 +1,8 @@
 addListeners();
 
 function addListeners() {
+    let moveAndHideController = {stop: 'kek'}
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -52,7 +54,12 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBLock');
-            animaster().moveAndHide(block, 5000, {x: 100, y: 20})
+            moveAndHideController = animaster().moveAndHide(block, 5000, {x: 100, y: 20})
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            moveAndHideController.stop();
         });
 
     document.getElementById('showAndHidePlay')
@@ -104,10 +111,6 @@ function animaster() {
             element.style.transitionDuration = null;
             element.style.transform = null
         },
-        moveAndHide: function (element, duration, translation) {
-            this.move(element, 2 / 5 * duration, translation);
-            setTimeout(() => this.fadeOut(element, 3 / 5 * duration), 2 / 5 * duration)
-        },
         showAndHide: function (element, duration) {
             this.fadeIn(element, 1 / 3 * duration);
             setTimeout(() => this.fadeOut(element, 1 / 3 * duration), 2 / 3 * duration);
@@ -126,7 +129,18 @@ function animaster() {
             element.style.transitionDuration = null;
             element.style.transform = `translate(${-element.x}px,${-element.y}px)`
             element.style.transform = null;
-        }
+        },
+        moveAndHide: function (element, duration, translation) {
+            this.move(element, 2 / 5 * duration, translation);
+            let timeoutId = setTimeout(() => this.fadeOut(element, 3 / 5 * duration), 2 / 5 * duration);
+            return {
+                stop: () => {
+                    this.moveReset(element);
+                    this.fadeOutReset(element);
+                    clearInterval(timeoutId);
+                }
+            }
+        },
     }
 }
 
