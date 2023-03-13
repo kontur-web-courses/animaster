@@ -35,6 +35,11 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 5000);
         });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        });
 }
 
 /**
@@ -42,11 +47,7 @@ function addListeners() {
  * @param element — HTMLElement, который надо анимировать
  * @param duration — Продолжительность анимации в миллисекундах
  */
-// function fadeIn(element, duration) {
-//     element.style.transitionDuration =  `${duration}ms`;
-//     element.classList.remove('hide');
-//     element.classList.add('show');
-// }
+
 
 /**
  * Функция, передвигающая элемент
@@ -97,16 +98,17 @@ function animaster() {
             element.classList.remove('show');
             element.classList.add('hide');
         },
-        moveAndHide: function moveAndHide(block, time){
-            this.move(block,time*2/5, {x: 100, y: -20});
-            this.fadeOut(block,time*3/5);
+        moveAndHide: function moveAndHide(block, time) {
+            this.move(block, time * 2 / 5, {x: 100, y: -20});
+            this.fadeOut(block, time * 3 / 5);
         },
-        showAndHide: function showAndHide(element, duration){
+        showAndHide: function showAndHide(element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
         },
-        heartBeating: function heartBeating(){
-
+        heartBeating: function heartBeating(block) {
+            setInterval(() => this.scale(block, 500, 1.4), 500);
+            setInterval(() => this.scale(block, 500, 1), 1000);
         }
     };
 
