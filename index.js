@@ -24,6 +24,13 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            console.log(block);
+            animaster().showAndHide(block, 3000);
+        });
 }
 
 
@@ -77,6 +84,12 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        showAndHide(element, duration) {
+
+            this.fadeIn(element, Math.floor(duration / 3));
+            setTimeout(this, Math.floor(duration / 3));
+            setTimeout(this.fadeOut, Math.floor(duration / 3), element, Math.floor(duration / 3));
         }
     }
     return obj;
