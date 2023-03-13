@@ -23,9 +23,9 @@ function addListeners() {
             const block = document.getElementById('fadeOut');
             animaster().fadeOut(block, 5000);
         });
-    document.getElementById('showAndHide')
+    document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('ShowAndHideBlock');
+            const block = document.getElementById('showAndHide');
             animaster().showAndHide(block, 5000);
         });
     document.getElementById('heartBeatingPlay')
