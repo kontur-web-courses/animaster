@@ -39,11 +39,29 @@ function getTransform(translation, ratio) {
 }
 
 function animaster () {
+    function resetFadeIn (element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut (element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetMoveAndScale (element, translation) {
+        element.style.transitionDuration = null;
+        element.style.transform = getTransform(translation, null)
+    }
+
     return {
         fadeIn (element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+
         },
         fadeOut (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
