@@ -29,11 +29,47 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000, {x: 100, y: 20});
         });
-    document.getElementById('showAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, 1000);
-        });
+}
+
+/**
+ * Блок плавно появляется из прозрачного.
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ */
+function fadeIn(element, duration) {
+    animaster().fadeIn(element, duration);
+}
+
+/**
+ * Функция, передвигающая элемент
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ * @param translation — объект с полями x и y, обозначающими смещение блока
+ */
+function move(element, duration, translation) {
+    animaster().move(element, duration, translation);
+}
+
+/**
+ * Функция, увеличивающая/уменьшающая элемент
+ * @param element — HTMLElement, который надо анимировать
+ * @param duration — Продолжительность анимации в миллисекундах
+ * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+ */
+function scale(element, duration, ratio) {
+    animaster().scale(element, duration, ratio);
+}
+
+function getTransform(translation, ratio) {
+    animaster().getTransform(translation, ratio);
+}
+
+function fadeOut(element, duration) {
+    animaster().fadeOut(element, duration);
+}
+
+function moveAndHide(element, duration, translation) {
+    animaster().moveAndHide(element, duration, translation);
 }
 
 function animaster(){
@@ -67,13 +103,20 @@ function animaster(){
             element.classList.add('hide');
         },
         moveAndHide: function(element, duration, translation){
-            this.move(element, duration * 2/5, translation);
-            this.fadeOut(element, duration * 3/5, translation);
+            this.move(element, duration * 2/5, translation)
+            this.fadeOut(element, duration * 3/5, translation)
         },
         showAndHide: function (element, duration){
-            this.fadeIn(element, duration * 1/3);
-            setTimeout(() => this.fadeOut(element, duration * 1/3),
-                duration * 1/3);
+            this.fadeIn(element, duration * 1/3)
+            setTimeout(function() {
+            }, duration * 1/3);
+            this.fadeOut(element, duration * 1/3)
+        },
+        heartBeating: function (element, duration, ratio){
+            for (let i = 0; i < Infinity; i++) {
+                this.scale(element, duration * 1/2, ratio * 14/10)
+                this.scale(element, duration * 1/2, ratio * 10/14)
+            }
         }
     }
 }
