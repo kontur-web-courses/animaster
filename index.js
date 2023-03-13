@@ -1,11 +1,10 @@
 addListeners();
 
 function addListeners() {
-    let anim = animaster();
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            anim.fadeIn(block, 5000);
+            animaster().addFadeIn(5000).play(block);
         });
     document.getElementById('fadeInReset')
         .addEventListener('click', function () {
@@ -16,7 +15,7 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            anim.fadeOut(block, 5000);
+            animaster().addFadeOut(5000).play(block)
         });
     document.getElementById('fadeOutReset')
         .addEventListener('click', function () {
@@ -28,7 +27,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            stopBeating = anim.heartBeating(block, 1.4, 500);
+            stopBeating = animaster().heartBeating(block, 1.4, 500);
         });
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
@@ -39,7 +38,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            anim.addMove(1000, {x: 100, y: 10}).play(block);
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
     document.getElementById('moveReset')
         .addEventListener('click', function () {
@@ -50,7 +49,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            anim.scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
     document.getElementById('scaleReset')
         .addEventListener('click', function () {
@@ -62,7 +61,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            stopMoveAndHide = anim.moveAndHide(block, 1000);
+            stopMoveAndHide = animaster().moveAndHide(block, 1000);
         });
     document.getElementById('moveAndHideReset')
         .addEventListener('click', function () {
@@ -76,7 +75,22 @@ function addListeners() {
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            anim.showAndHide(block, 1000);
+            animaster().showAndHide(block, 1000);
+        });
+
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1)
+                .play(block);
         });
 }
 
@@ -206,21 +220,25 @@ function animaster() {
         },
 
         play: function play(element){
+            let cur_dur = 0;
             for (let step of this._steps){
-                switch (step.operation){
-                    case 'move':
-                        this.move(element, step.duration, step.translation);
-                        break;
-                    case 'scale':
-                        this.scale(element, step.duration, step.ratio)
-                        break;
-                    case 'fadeIn':
-                        this.fadeIn(element, step.duration);
-                        break;
-                    case 'fadeOut':
-                        this.fadeOut(element, step.duration)
-                        break;
-                }
+                setTimeout(() => {
+                    switch (step.operation){
+                        case 'move':
+                            this.move(element, step.duration, step.translation);
+                            break;
+                        case 'scale':
+                            this.scale(element, step.duration, step.ratio)
+                            break;
+                        case 'fadeIn':
+                            this.fadeIn(element, step.duration);
+                            break;
+                        case 'fadeOut':
+                            this.fadeOut(element, step.duration)
+                            break;
+                    }
+                    cur_dur += step.duration;
+                }, cur_dur);
             }
         }
     }
