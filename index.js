@@ -104,6 +104,9 @@ function animaster() {
         showAndHide: function showAndHide(element, duration){
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
+        },
+        heartBeating: function heartBeating(){
+
         }
     };
 
