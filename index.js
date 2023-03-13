@@ -39,6 +39,11 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block);
         });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
+        });
 }
 
 
@@ -90,7 +95,10 @@ function animaster(){
 
             setInterval(beating, 1000);
 
-            return {stop: function () {clearTimeout(beating)}}
+            return {
+                stop: function () {
+                    clearTimeout(beating);
+            }}
         }
     }
 }
