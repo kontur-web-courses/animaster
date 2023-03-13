@@ -67,6 +67,12 @@ function getTransform(translation, ratio) {
     return result.join(' ');
 }
 
+function AnimationStruct(animationName, durationMS, params) {
+    this.animationName = animationName;
+    this.durationMS = durationMS;
+    this.params = params;
+}
+
 function animaster() {
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
@@ -154,6 +160,19 @@ function animaster() {
                     resetFadeOut(element)
                 }
             }
+        },
+
+        play(element) {
+            let i = 0;
+            setTimeout(function tick() {
+                const {animationName, durationMS, params} = this._steps[i];
+                this[animationName](element, durationMS, ...params);
+                i += 1;
+                if (i !== this._steps.length)
+                {
+                    setTimeout(tick, durationMS);
+                }
+            })
         }
     }
 }
