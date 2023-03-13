@@ -111,6 +111,12 @@ function animaster(){
             setTimeout(function() {
             }, duration * 1/3);
             this.fadeOut(element, duration * 1/3)
+        },
+        heartBeating: function (element, duration, ratio){
+            for (let i = 0; i < Infinity; i++) {
+                this.scale(element, duration * 1/2, ratio * 14/10)
+                this.scale(element, duration * 1/2, ratio * 10/14)
+            }
         }
     }
 }
