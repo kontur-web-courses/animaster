@@ -7,6 +7,16 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
             anim.fadeIn(block, 5000);
+            // const customAnimation = anim
+            //     .addMove(200, {x: 40, y: 40})
+            //     .addScale(800, 1.3)
+            //     .addMove(200, {x: 80, y: 0})
+            //     .addScale(800, 1)
+            //     .addMove(200, {x: 40, y: -40})
+            //     .addScale(800, 0.7)
+            //     .addMove(200, {x: 0, y: 0})
+            //     .addScale(800, 1);
+            // customAnimation.play(block);
         });
 
     document.getElementById('fadeOutPlay')
@@ -141,18 +151,24 @@ function animaster () {
         },
             
         addMove(duration, translation) {
+            console.log('Added move')
             this._steps.push([this.move, duration, translation]);
             return this;
         },
 
         addScale(duration, ratio) {
+            console.log('Added scale')
             this._steps.push([this.scale, duration, ratio]);
             return this;
         },
 
         play(element) {
-            for (const step of this._steps) {
-                step[0](element, ...step.slice(1));
+            let prevDur = 0;
+            for (const step of this._steps.map(e => e)) {
+                const awake = step[0].bind(...[this, element, ...step.slice(1)]);
+                setTimeout(awake, prevDur);
+                prevDur += step[1];
+                this._steps = this._steps.slice(1);
             }
         }
     }
