@@ -26,15 +26,15 @@ function animaster() {
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        move: function (element, duration, translation) {
+        move: function(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
-        scale: function (element, duration, ratio) {
-            element.style.transitionDuration = `${duration}ms`;
+        scale: function(element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        fadeOut: function (element, duration) {
+        fadeOut: function(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
