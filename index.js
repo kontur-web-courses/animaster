@@ -11,10 +11,22 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().resetFadeIn(block);
+        });
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
+        });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().resetFadeOut(block);
         });
 
     document.getElementById('moveAndHidePlay')
@@ -41,10 +53,22 @@ function addListeners() {
             animaster().move(block, 1000, {x: 100, y: 10});
         });
 
+    document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMoveAndScale(block, 1000, {x: 100, y: 10});
+        });
+
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
+        });
+
+    document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().resetMoveAndScale(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('showAndHidePlay')
@@ -71,10 +95,22 @@ function animaster() {
             element.classList.add('show');
         },
 
+        resetFadeIn(element) {
+            element.style.transitionDuration = `0ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+
+        resetFadeOut(element, duration) {
+            element.style.transitionDuration = `0ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
         },
 
         moveAndHide(element, duration) {
@@ -86,13 +122,21 @@ function animaster() {
             }, moveTime);
         },
 
+        resetMoveAndScale(element) {
+            element.style.transitionDuration = `0ms`;
+            element.style.transform = getTransform({x: 0, y: 0}, null);
+
+            element.style.transitionDuration = `0ms`;
+            element.style.transform = getTransform(null, 1);
+        },
+
         heartBeating(element) {
             clearInterval(increaseHeartSizeTime);
             clearInterval(decreaseHeartSizeTime);
 
             this.scale(element, 500, 1.4);
             decreaseHeartSizeTime = setTimeout(() => {
-                this.scale(element, 500, 1 / 1.4);
+                this.scale(element, 500, 1);
             }, 500)
 
             increaseHeartSizeTime = setTimeout(() => {
@@ -133,7 +177,6 @@ function animaster() {
             let time = duration/3.0
             this.fadeIn(element, time);
             setTimeout(() => {this.fadeOut(element, time)}, 2 * time);
-
         }
 
     }
