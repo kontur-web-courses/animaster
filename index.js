@@ -35,10 +35,16 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 5000);
         });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            animaster().heartBeating(block).play();
+        });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
         });
 }
 
@@ -82,7 +88,6 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
-
         fadeIn: function fadeIn(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
@@ -93,22 +98,34 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
+
         fadeOut: function fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
         },
+
         moveAndHide: function moveAndHide(block, time) {
             this.move(block, time * 2 / 5, {x: 100, y: -20});
             this.fadeOut(block, time * 3 / 5);
         },
+
         showAndHide: function showAndHide(element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
         },
-        heartBeating: function heartBeating(block) {
-            setInterval(() => this.scale(block, 500, 1.4), 500);
-            setInterval(() => this.scale(block, 500, 1), 1000);
+        TimerId: null,
+        heartBeating: function (element) {
+            return {
+                play: () => (TimerId = setInterval(() => {
+                        this.scale(element, 500, 1.4);
+                        setTimeout(() => this.scale(element, 500, 1), 500);
+                    },
+                    1000)),
+                stop: () => {
+                    clearInterval(TimerId)
+                }
+            }
         }
     };
 
