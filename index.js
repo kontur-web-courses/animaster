@@ -1,34 +1,70 @@
 addListeners();
 
-const anim = animaster();
 function addListeners() {
 
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            anim.fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            anim.move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            anim.scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            anim.fadeOut(block, 5000);
+            animaster().fadeOut(block, 5000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
+
+    const customHandler = animaster()
+        .addFadeOut(1000)
+        .addDelay(10)
+        .addFadeIn(10)
+        .addScale(1000, 1.5)
+        .addScale(1000, 0.5)
+        .buildHandler();
+
+    document.getElementById('customPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customBlock');
+            customHandler(block);
         });
 }
 
 function animaster() {
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     return {
 
         /**
@@ -68,6 +104,67 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        showAndHide(element, duration) {
+            animaster()
+                .addFadeIn(duration / 3)
+                .addDelay(duration / 3)
+                .addFadeOut(duration / 3)
+                .play(element);
+        },
+
+        _steps: [],
+
+        _addStep(step, duration, ...args) {
+            this._steps.push((element) => {
+                step(element, duration, ...args);
+                return new Promise((resolve) => {
+                    setTimeout(() => resolve(), duration);
+                });
+            });
+            return this;
+        },
+
+        addMove(duration, translation) {
+            return this._addStep(this.move, duration, translation);
+        },
+
+        addFadeIn(duration) {
+            return this._addStep(this.fadeIn, duration);
+        },
+
+        addFadeOut(duration) {
+            return this._addStep(this.fadeOut, duration);
+        },
+
+        addScale(duration, ratio) {
+            return this._addStep(this.scale, duration, ratio);
+        },
+
+        addDelay(duration) {
+            return this._addStep((element, duration) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => resolve(), duration);
+                });
+            }, duration);
+        },
+
+        _playSteps(element, steps) {
+            steps.reduce((promise, step) => {
+                return promise.then(() => step(element));
+            }, Promise.resolve());
+        },
+
+        play(element) {
+            this._playSteps(element, this._steps);
+        },
+
+        buildHandler() {
+            const copy = this._steps.slice();
+            return (element) => {
+                this._playSteps(element, copy);
+            }
         }
     };
 }
