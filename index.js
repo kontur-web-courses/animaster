@@ -53,6 +53,10 @@ function getTransform(translation, ratio) {
     animaster().getTransform(translation, ratio);
 }
 
+function fadeOut(element, duration) {
+    animaster().fadeOut(element, duration);
+}
+
 function animaster(){
     return {
         fadeIn: function(element, duration){
@@ -77,6 +81,11 @@ function animaster(){
                 result.push(`scale(${ratio})`);
             }
             return result.join(' ');
+        },
+        fadeOut: function(element, duration){
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
         }
     }
 }
