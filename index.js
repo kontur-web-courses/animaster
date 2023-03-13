@@ -20,39 +20,6 @@ function addListeners() {
         });
 }
 
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
-}
-
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-function scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
-}
-
 function getTransform(translation, ratio) {
     const result = [];
     if (translation) {
@@ -62,4 +29,58 @@ function getTransform(translation, ratio) {
         result.push(`scale(${ratio})`);
     }
     return result.join(' ');
+}
+
+function animaster() {
+    let _createObject = function (context, newStep) {
+        const obj = {};
+        for (let prop in context) {
+            obj[prop] = context[prop];
+        }
+        obj._steps = JSON.parse(JSON.stringify(context._steps));
+        obj._steps.push(newStep);
+        return obj;
+    };
+
+    return {
+        _steps: [],
+        addMove: function (duration, translation) {
+            let isMoveAndScale = true;
+            return _createObject(this, {name: "move", duration: duration, extraParameters: translation});
+        },
+        addScale: function (duration, ratio) {
+            let isMoveAndScale = true;
+            return _createObject(this, {name: 'scale', duration: duration, extraParameters: ratio});
+        },
+        addFadeIn: function (duration) {
+            let isFadeIn = true;
+            return _createObject(this, {name: "fadeIn", duration: duration});
+        },
+        addFadeOut: function (duration) {
+            let isFadeOut = false;
+            return _createObject(this, {name: "fadeOut", duration: duration});
+
+        },
+        fadeIn: function (element, duration) {
+            this.addFadeIn(duration).play(element);
+        },
+        fadeOut: function (element, duration) {
+            this.addFadeOut(duration).play(element);
+        },
+        move: function (element, duration, translation) {
+            this.addMove(duration, translation).play(element);
+        },
+        scale: function (element, duration, ratio) {
+            this.addScale(duration, ratio).play(element);
+        },
+        moveAndHide: function (element, duration) {
+            return this.addMove(duration * .4, {x: 100, y: 20}).addFadeOut(duration * .6).play(element);
+        },
+        showAndHide: function (element, duration) {
+            return this.addFadeIn(duration / 3).addDelay(duration / 3).addFadeOut(duration / 3).play(element);
+        },
+        heartBeating: function (element) {
+            return this.addScale(500, 1.4).addScale(500, 1).play(element, true);
+        }
+    };
 }
