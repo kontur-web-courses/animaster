@@ -3,6 +3,8 @@ addListeners();
 
 function animaster() {
      return {
+        _steps : [],
+
         fadeIn(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
@@ -14,8 +16,7 @@ function animaster() {
             element.classList.add('hide');
         },
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.addMove(duration, translation).play(element);
         },
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
@@ -42,7 +43,18 @@ function animaster() {
         resetMoveAndScale(element) {
             element.style.transitionDuration = null;
             element.style.transform = (null, null);
-        }
+        },
+        addMove (duration, translation) {
+            this._steps.push((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.style.transform = getTransform(translation, null);
+            });
+            return this;
+        },
+        play (element) {
+            for(const step of this._steps)
+                step(element);
+        },
     }
 
 }
