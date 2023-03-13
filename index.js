@@ -34,7 +34,7 @@ function getTransform(translation, ratio) {
 function animaster() {
     let _createObject = function (context, newStep) {
         const obj = {};
-        for (let prop in context) {
+        for (const prop in context) {
             obj[prop] = context[prop];
         }
         obj._steps = JSON.parse(JSON.stringify(context._steps));
