@@ -24,8 +24,33 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndFadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndFadeOutBlock');
+            animaster().moveAndHide(block, 1000, {x: 100, y: 10});
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 3000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).beat();
+        });
+    
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
+        });
 }
 
+let interval = 0;
 function animaster(){
     /**
      * Блок плавно появляется из прозрачного.
@@ -67,17 +92,46 @@ function animaster(){
         element.style.transform = getTransform(null, ratio);
     }
 
-    obj.moveAndHide = function (){
-
+    obj.moveAndHide = function (element, duration, translation){
+        obj.move(element, duration * (2 / 5), translation);
+        setTimeout(()=> {obj.fadeOut(element, duration * (3 / 5))}, duration * (2 / 5));
     }
 
-    obj.showAndHide = function (){
-
+    obj.showAndHide = function (element, duration){
+        obj.fadeIn(element, duration/3);
+        setTimeout(() => {}, duration/3);
+        setTimeout(() => {obj.fadeOut(element, duration/3)}, duration/3);
+    }
+    obj.heartBeating = function (element){
+        let heart = {}
+        heart.beat =function() {
+            interval = setInterval(() => {
+                obj.scale(element, 500, 1.4)
+                setTimeout(() => {obj.scale(element, 500, 1)}, 500);
+            }, 1000);
+        }
+        
+        heart.stop = function(){
+            console.log(interval);
+                clearInterval(interval);
+            }
+        return heart
     }
 
-    obj.heartBeating = function (){
-
+    function resetFadeIn(element){
+        element.style.transitionDuration = null;
+        obj.fadeOut(element, 0);
     }
+
+    function resetFadeOut(element){
+        element.style.transitionDuration = null;
+        obj.fadeIn(element, 0);
+    }
+
+    function resetMoveAndScale(element){
+        element.style.transform = getTransform(null, 1);
+    }
+
     return obj;
 }
 
