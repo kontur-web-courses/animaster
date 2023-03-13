@@ -18,6 +18,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             scale(block, 1000, 1.25);
         });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            fadeOut(block, 1000);
+        });
 }
 
 /**
