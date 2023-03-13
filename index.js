@@ -88,7 +88,7 @@ function addListeners() {
 
         document.getElementById('fadeOutReset')
         .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
+            const block = document.getElementById('fadeOutBlock');
             animaster().resetFadeOut(block);
         });
 }
