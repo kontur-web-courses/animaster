@@ -71,10 +71,10 @@ function animaster(){
         },
 
         heartBeating(element){
-            this.scale(element,500, 1.4);
-            this.scale(element,500, 1);
-
-        }
+                this.scale(element,500, 1.4);
+                setTimeout(() => this.scale(element,500, 1), 500);
+                setTimeout(() => this.heartBeating(element), 1000);
+        },
         showAndHide(element, duration){
             this.fadeIn(element, duration/3);
             setTimeout(() => this.fadeOut(element, duration/3), duration/3);
