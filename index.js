@@ -17,10 +17,8 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
         moveAndHide(element, duration) {
-            element.style.transitionDuration =  `${duration*2/5}ms`;
-            this.move(element, duration, {x: 100, y: 20});
-            element.style.transitionDuration =  `${duration*3/5}ms`;
-            this.move(element, duration, {x: 100, y: 20});
+            this.move(element, duration*2/5, {x: 100, y: 20});
+            setTimeout(() => this.fadeOut(element, duration*3/5), duration*2/5);
         },
         fadeOut(element, duration) {
              element.style.transitionDuration =  `${duration}ms`;
