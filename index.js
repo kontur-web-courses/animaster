@@ -55,8 +55,6 @@ function addListeners() {
 }
 
 
-
-
 function getTransform(translation, ratio) {
     const result = [];
     if (translation) {
@@ -110,18 +108,17 @@ function animaster() {
         },
 
         showAndHide(element, duration) {
-            this.fadeIn(element, duration / 3);
-            let out = this.fadeOut.bind(this);
-            setTimeout(() => {
-                out(element, duration / 3);
-            }, duration / 3)
+            this.addFadeIn(duration/3);
+            this.addDelay(duration/3);
+            this.addFadeOut(duration/3);
+            this.play(element);
         },
 
         heartBeating(element) {
+            this.addScale(500, 1.4);
+            this.addScale(500, 1);
             let f = () => {
-                this.scale(element, 500, 1.4);
-                let scale = this.scale.bind(this);
-                setTimeout(() => scale(element, 500, 1), 500)
+                this.play(element);
             }
             f = f.bind(this)
             let id = setInterval(f, 1000);
@@ -143,6 +140,10 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
+        delay(element, duration){
+
+        },
+
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -155,10 +156,9 @@ function animaster() {
         },
 
         moveAndHide(element, duration) {
-            element.style.transitionDuration = `${2 * duration / 5}ms`;
-            element.style.transform = getTransform({x: 100, y: 20});
-
-            setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
+            this.addMove(2 * duration / 5, {x: 100, y: 20});
+            this.addFadeOut(3 * duration / 5);
+            this.play(element);
 
             return {
                 stop() {
@@ -174,8 +174,7 @@ function animaster() {
                 const {animationName, durationMS, params} = this._steps[i];
                 this[animationName](element, durationMS, ...params);
                 i += 1;
-                if (i !== this._steps.length)
-                {
+                if (i !== this._steps.length) {
                     setTimeout(tick, durationMS);
                 }
             }
@@ -197,6 +196,10 @@ function animaster() {
         },
         addFadeOut(duration) {
             this._steps.push(new AnimationStruct("fadeOut", duration, []));
+            return this;
+        },
+        addDelay(duration) {
+            this._steps.push(new AnimationStruct("delay", duration, []));
             return this;
         }
     }
