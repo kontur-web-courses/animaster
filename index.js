@@ -25,6 +25,12 @@ function addListeners() {
             master.moveAndHide(block, 5000);
         });
 
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            resetMoveAndHide(block);
+        });
+
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
@@ -96,6 +102,22 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         }
     };
+}
+
+function resetFadeIn(element) {
+    element.classList.remove('show');
+    element.classList.add('hide');
+}
+
+function resetFadeOut(element) {
+    element.classList.remove('hide');
+    element.classList.add('show');
+}
+
+function resetMoveAndHide(element) {
+    element.style.transitionDuration = null;
+    element.style.transform = null;
+    resetFadeOut(element)
 }
 
 function getTransform(translation, ratio) {
