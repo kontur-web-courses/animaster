@@ -218,15 +218,19 @@ function animaster(){
 
         showAndHide(element, duration){
             this.addFadeIn(duration/3)
-                .add
-                .setTimeout(() => this.addFadeOut(duration/3), (duration*2)/3)
+                .addDelay(duration/3)
+                .addFadeOut(duration/3)
                 .play(element);
-
-            // setTimeout(() => this.fadeOut(element, duration/3), duration/3);
         },
 
         addDelay(duration){
-            setTimeout(
+            this._steps.push({
+                method: null,
+                name: 'null',
+                duration: duration,
+                translation: null,
+                ratio: null,
+            })
             return this;
         }
 
