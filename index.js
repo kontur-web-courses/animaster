@@ -6,9 +6,7 @@ function animaster() {
         _steps : [],
 
         fadeIn(element, duration) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+            this.addFadeIn(duration).play(element);
         },
         resetFadeIn(element) {
             element.style.transitionDuration = null;
@@ -19,8 +17,7 @@ function animaster() {
             this.addMove(duration, translation).play(element);
         },
         scale(element, duration, ratio) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            this.addScale(duration, ratio).play(element);
         },
         moveAndHide(element, duration) {
             this.move(element, duration*2/5, {x: 100, y: 20});
@@ -31,9 +28,7 @@ function animaster() {
             setTimeout(() => this.fadeOut(element, duration*1/3), duration*2/3);
         },
         fadeOut(element, duration) {
-             element.style.transitionDuration =  `${duration}ms`;
-             element.classList.remove('show');
-             element.classList.add('hide');
+             this.addFadeOut(duration).play(element);
         },
         resetFadeOut(element) {
             element.style.transitionDuration = null;
@@ -48,6 +43,29 @@ function animaster() {
             this._steps.push((element) => {
                 element.style.transitionDuration = `${duration}ms`;
                 element.style.transform = getTransform(translation, null);
+            });
+            return this;
+        },
+        addScale (duration, ratio) {
+            this._steps.push((element) => {
+                element.style.transitionDuration =  `${duration}ms`;
+                element.style.transform = getTransform(null, ratio);
+            });
+            return this;
+        },
+        addFadeIn (duration) {
+            this._steps.push((element) => {
+                element.style.transitionDuration =  `${duration}ms`;
+                element.classList.remove('hide');
+                element.classList.add('show');
+            });
+            return this;
+        },
+        addFadeOut (duration) {
+            this._steps.push((element) => {
+                element.style.transitionDuration =  `${duration}ms`;
+                element.classList.remove('show');
+                element.classList.add('hide');
             });
             return this;
         },
