@@ -149,6 +149,11 @@ function animaster () {
             
             return obj;
         },
+
+        addDelay(duration){
+            this._steps.push([(element=null) => {}, duration])
+            return this;
+        },
             
         addMove(duration, translation) {
             console.log('Added move')
