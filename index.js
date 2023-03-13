@@ -159,6 +159,9 @@ function animaster() {
         },
 
         play(element, cycled = true) {
+            const classList = element.classList;
+            const style = element.style;
+
             let i = 0;
             let tick = () => {
                 const {animationName, durationMS, params} = this._steps[i];
@@ -179,7 +182,8 @@ function animaster() {
                     clearTimeout(id);
                 },
                 reset(){
-
+                    element.style = style;
+                    element.classList = classList;
                 }
             }
         },
