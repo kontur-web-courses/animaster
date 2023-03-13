@@ -22,31 +22,28 @@ function animaster() {
 
     return {
         _steps: [],
+        _ratio: null,
+        _translation: null,
         fadeIn: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
-
-            return element;
         },
         move: function (element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
-
-            return element;
+            this._translation = translation;
+            element.style.transform = getTransform(translation, this._ratio);
         },
         scale: function (element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
-
-            return element;
+            this._ratio = ratio;
+            element.style.transform = getTransform(this._translation, ratio);
         },
         fadeOut: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
-
-            return element;        },
+        },
         moveAndHide: function (element, duration) {
             this.move(element, duration * 2 / 5, {x: 100, y: 20});
             moveAndHideTimeout = setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
@@ -202,7 +199,13 @@ function addListeners() {
             const block = document.getElementById('TestBlock');
             const customAnimation = animaster()
                 .addMove(200, {x: 40, y: 40})
-                .addScale(200, 1.3)
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
             console.log(customAnimation._steps);
             customAnimation.play(block);
         });
