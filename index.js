@@ -39,6 +39,10 @@ function animaster() {
             element.classList.remove('hide');
             element.classList.add('show');
         },
+        resetMoveAndScale(element) {
+            element.style.transitionDuration = null;
+            element.style.transform = (null, null);
+        }
     }
 
 }
@@ -90,6 +94,18 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().resetFadeOut(block);
+        });
+
+        document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMoveAndScale(block);
+        });
+
+        document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().resetMoveAndScale(block);
         });
 }
 
