@@ -45,7 +45,9 @@ function addListeners() {
             document.getElementById('resetMoveAndHide')
                 .addEventListener('click', function () {
                     animaster().resetMoveAndHide(block);
-                    clearTimeout(timer);
+                    for (let i of timer) {
+                        clearTimeout(i);
+                    }
                 });
         });
 }
@@ -104,8 +106,11 @@ function animaster() {
         'moveAndHide': function moveAndHide(element, duration) {
             let moveTime = (2 / 5) * duration;
             let fadeOutTime = (3 / 5) * duration;
-            this.move(element, moveTime, {x: 100, y: 10});
-            return setTimeout(() => this.fadeOut(element, fadeOutTime), moveTime);
+            this.move(element, moveTime,);
+            return animaster()
+                .addMove(moveTime, {x: 100, y: 10})
+                .addFadeOut(fadeOutTime)
+                .Play(element);
         },
         'resetMoveAndHide': function (element) {
             resetMoveAndScale(element);
@@ -133,26 +138,28 @@ function animaster() {
         },
         'Play': function play(element) {
             let timeout = 0;
+            let timeouts = [];
             while (this._steps.length > 0) {
                 let current = this._steps.shift();
                 switch (current.name) {
                     case "move":
-                        setTimeout(() => this.move(element, current.duration, current.coordinates), timeout);
+                        timeouts.push(setTimeout(() => this.move(element, current.duration, current.coordinates), timeout));
                         break;
                     case "scale":
-                        setTimeout(() => this.scale(element, current.duration, current.ratio), timeout);
+                        timeouts.push(setTimeout(() => this.scale(element, current.duration, current.ratio), timeout));
                         break;
                     case "fadeIn":
-                        setTimeout(() => this.fadeIn(element, current.duration), timeout);
+                        timeouts.push(setTimeout(() => this.fadeIn(element, current.duration), timeout));
                         break;
                     case "fadeOut":
-                        setTimeout(() => this.fadeOut(element, current.duration), timeout);
+                        timeouts.push(setTimeout(() => this.fadeOut(element, current.duration), timeout));
                         break;
                     case "delay":
                         break;
                 }
                 timeout += current.duration;
             }
+            return timeouts;
         },
         _steps: []
     }
