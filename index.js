@@ -51,9 +51,27 @@ function addListeners() {
             if (stopper !== undefined)
                 stopper.stop();
         });
+
+    document.getElementById('TestPlay')
+        .addEventListener('click', function () {
+            const customAnimation = animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
+            const block = document.getElementById('TestBlock');
+            customAnimation.play(block);
+        });
 }
 
 function animaster() {
+    let _steps = [];
+    let _interval;
+
     let resetFadeOut = (element) => {
         element.style.transitionDuration = null;
         element.classList.remove('hide');
@@ -72,7 +90,7 @@ function animaster() {
     };
 
     return {
-    /**
+        /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
@@ -84,7 +102,7 @@ function animaster() {
         },
 
         addFadeIn(duration) {
-            this._steps.push({func: this.fadeIn, duration: duration})
+            _steps.push({func: this.fadeIn, duration: duration})
             return this;
         },
 
@@ -100,7 +118,7 @@ function animaster() {
         },
 
         addFadeOut(duration) {
-            this._steps.push({func: this.fadeOut, duration: duration})
+            _steps.push({func: this.fadeOut, duration: duration})
             return this;
         },
 
@@ -152,9 +170,9 @@ function animaster() {
 
         addMove(duration, args) {
             _steps.push({
-                func : move,
-                duration,
-                args
+                func: this.move,
+                duration: duration,
+                argument: args
             })
             return this;
         },
@@ -171,7 +189,7 @@ function animaster() {
         },
 
         addScale(duration, argument) {
-            this._steps.push({func: this.scale, duration: duration, argument: argument})
+            _steps.push({func: this.scale, duration: duration, argument: argument})
             return this;
         },
 
@@ -188,22 +206,21 @@ function animaster() {
         play(element, cycled = false) {
             let prefixDurations = [];
             prefixDurations.push(0);
-            for (let i = 1; i < this._steps.length; ++i) {
-                prefixDurations.push(this._steps[i].duration + prefixDurations[i-1])
+            for (let i = 1; i < _steps.length; ++i) {
+                prefixDurations.push(_steps[i].duration + prefixDurations[i - 1])
             }
             let animation = () => {
-                for (let i = 0; i < this._steps.length; ++i) {
-                    setTimeout(this._steps[i].func,
-                        prefixDurations[i], element, this._steps[i].duration, this._steps[i].argument);
+                for (let i = 0; i < _steps.length; ++i) {
+                    setTimeout(_steps[i].func,
+                        prefixDurations[i], element, _steps[i].duration, _steps[i].argument);
                 }
             };
 
             animation();
 
             if (cycled) {
-                _interval = setInterval(animation, prefixDurations[this._steps.length-1]);
+                _interval = setInterval(animation, prefixDurations[_steps.length - 1]);
             }
-
 
             function reset(someElement) {
                 resetFadeIn(someElement);
@@ -211,10 +228,12 @@ function animaster() {
                 resetMoveAndScale(someElement);
             }
 
-            return {stop:(interval) => {clearInterval(interval)}, reset:reset, _interval: _interval};
-
+            return {
+                stop: (interval) => {
+                    clearInterval(interval)
+                }, reset: reset, _interval: _interval
+            };
         }
-
     }
 }
 
