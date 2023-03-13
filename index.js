@@ -74,6 +74,7 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
+
         scale: function scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
