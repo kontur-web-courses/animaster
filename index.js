@@ -19,20 +19,59 @@ function addListeners() {
             master.move(block, 1000, {x: 100, y: 10});
         });
 
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            master.moveAndHide(block, 5000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            master.showAndHide(block, 5000);
+        });
+
+
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             master.scale(block, 1000, 1.25);
         });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            master.heartBeating(block);
+        });
 }
 
 function animaster() {
     return {
+        moveAndHide(element, duration) {
+            master.move(element, 0.4*duration, {x: 100, y: 20});
+            master.fadeOut(element, 0.6*duration);
+        },
+
+        heartBeating (element) {
+            setInterval(()=> {
+                master.scale(element, 500, 1.4);
+                setTimeout(()=>master.scale(element, 500, 1), 1000)
+            }, 2000)
+        },
+
+        showAndHide(element, duration) {
+            const block = document.getElementById('showAndHideBlock');
+            master.fadeIn(block, 0.33*duration);
+            setTimeout(()=> master.fadeOut(block, 0.33*duration), 0.33*duration);
+        },
+
         fadeIn(element, duration) {
+            console.log('fade in')
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
         },
+
         fadeOut(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('show');
