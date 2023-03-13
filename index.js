@@ -41,9 +41,35 @@ function addListeners() {
             const block = document.getElementById('heartBreathBlock');
             animaster().heartBreath(block);
         });
+    document.getElementById('moveAndHideStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().reset(block);
+        });
+    
+   
 }
 
 function animaster() {
+    function resetFadeIn(element){
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut (element){
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+        
+        
+    }
+
+    function resetMoveAndScale(element){
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+    
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -65,6 +91,7 @@ function animaster() {
             element.classList.add('hide');
             element.classList.remove('show');
         },
+
 
         /**
          * Функция, передвигающая элемент
@@ -104,10 +131,15 @@ function animaster() {
             setInterval(() => {
                 animaster().scale(element, 500, 1.4);
 
-                animaster().scale(element, 500, 1 / 1.4);
+                //animaster().scale(element, 500, 1 / 1.4);
 
-            }, 500);
+            }, 1000);
         },
+        reset(element){
+            
+            resetFadeOut(element);
+            resetMoveAndScale(element);
+        }
     }
 
     function getTransform(translation, ratio) {
