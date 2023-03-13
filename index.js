@@ -3,6 +3,7 @@ addListeners();
 let a = 0;
 let f = 0;
 let g = 0;
+let h = 0;
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -41,8 +42,14 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000, {x: 100, y: 20});
+            h = animaster().moveAndHide(block, 1000, {x: 100, y: 20});
         });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            animaster().resetMoveAndHide(h);
+        });
+
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
@@ -107,6 +114,13 @@ function animaster(){
         moveAndHide: function(element, duration, translation){
             this.move(element, duration * 2/5, translation)
             this.fadeOut(element, duration * 3/5, translation)
+            return element;
+        },
+        resetMoveAndHide: function (element) {
+            element.style.animationDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
+            element.style.transform = null;
         },
         showAndHide: function (element, duration){
             this.fadeIn(element, duration * 1/3)
