@@ -95,12 +95,9 @@ function animaster() {
                 .Play(element);
         },
         'heartBeating': function heartBeating(element) {
-            let beating = setInterval(() => {
-                this.scale(element, 500, 1.4);
-                setTimeout(() => this.scale(element, 500, 1), 500);
-            }, 1000);
+            let interval = animaster().addScale(500, 1.4).addScale(500, 1).Play(element, true);
             return function stop() {
-                clearInterval(beating);
+                clearInterval(interval);
             };
         },
         'moveAndHide': function moveAndHide(element, duration) {
@@ -136,7 +133,35 @@ function animaster() {
             this._steps.push({name: 'delay', duration: duration});
             return this;
         },
-        'Play': function play(element) {
+        'Play': function play(element, cycled = false) {
+            if (cycled) {
+                let play = () => {
+                    let st = this._steps;
+                    let timeout = 0;
+                    let timeouts = [];
+                    for (let current of st) {
+                        switch (current.name) {
+                            case "move":
+                                timeouts.push(setTimeout(() => this.move(element, current.duration, current.coordinates), timeout));
+                                break;
+                            case "scale":
+                                timeouts.push(setTimeout(() => this.scale(element, current.duration, current.ratio), timeout));
+                                break;
+                            case "fadeIn":
+                                timeouts.push(setTimeout(() => this.fadeIn(element, current.duration), timeout));
+                                break;
+                            case "fadeOut":
+                                timeouts.push(setTimeout(() => this.fadeOut(element, current.duration), timeout));
+                                break;
+                            case "delay":
+                                break;
+                        }
+                        timeout += current.duration;
+                    }
+                    return timeouts;
+                }
+                return setInterval(() => play(), 1000);
+            }
             let timeout = 0;
             let timeouts = [];
             while (this._steps.length > 0) {
