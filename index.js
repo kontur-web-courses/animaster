@@ -36,6 +36,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
 }
 
 
@@ -97,7 +103,15 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        showAndHide(element, duration){
+            let time = duration/3.0
+            this.fadeIn(element, time);
+            setTimeout(() => {this.fadeOut(element, time)}, 2 * time);
+
         }
+
     }
 }
 
