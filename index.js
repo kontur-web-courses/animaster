@@ -113,11 +113,11 @@ function animaster() {
             return this;
         },
         'addFadeIn': function addScale(duration) {
-            this._steps.push({name: 'fadeout', duration:duration});
+            this._steps.push({name: 'fadeIn', duration:duration});
             return this;
         },
-        'addFadeOut': function addScale(duration {
-            this._steps.push({name: 'fadeIn', duration:duration});
+        'addFadeOut': function addScale(duration) {
+            this._steps.push({name: 'fadeOut', duration:duration});
             return this;
         },
         'addScale': function addScale(duration, ratio) {
@@ -139,7 +139,7 @@ function animaster() {
                         setTimeout(() => this.fadeIn(element, current.duration));
                         break;
                     case "fadeOut":
-                        setTimeout(() => this.move(element, current.duration));
+                        setTimeout(() => this.fadeOut(element, current.duration));
                         break;
                 }
                 timeout+=current.duration;
