@@ -203,7 +203,9 @@ function animaster() {
 
         buildEventHandler(){
             let run = this.play.bind(this);
-            return (e) => run(e);
+            return function () {
+                run(this);
+            }
         }
     }
 }
