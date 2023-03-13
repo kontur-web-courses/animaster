@@ -40,11 +40,39 @@ function addListeners() {
         .addScale(1000, 0.5)
         .buildHandler();
 
-    document.getElementById('customPlay')
+    document.getElementById('customBlock')
+        .addEventListener('click', customHandler);
+
+    document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('customBlock');
-            customHandler(block);
+            const block = document.getElementById('moveAndHideBlock');
+            const ctrl = animaster().moveAndHide(block, 5000);
+            const rstBtn = document.getElementById('moveAndHideReset');
+            rstBtn.addEventListener('click', () => {
+                ctrl.reset();
+            });
         });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            const ctrl = animaster().heartBeating(block);
+            const stopBtn = document.getElementById('heartBeatingStop');
+            stopBtn.addEventListener('click', () => {
+                ctrl.stop();
+            });
+        });
+
+
+    document.getElementById('customCycledPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customCycledBlock');
+            animaster()
+                .addMove(1000, {x: 100, y: 20})
+                .addMove(1000, {x: 0, y: 0})
+                .play(block, true);
+        });
+
 }
 
 function animaster() {
@@ -73,15 +101,15 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+            return animaster()
+                .addFadeIn(duration)
+                .play(element);
         },
 
         fadeOut(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('show');
-            element.classList.add('hide');
+            return animaster()
+                .addFadeOut(duration)
+                .play(element);
         },
 
         /**
@@ -91,8 +119,9 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            return animaster()
+                .addMove(duration, translation)
+                .play(element);
         },
 
         /**
@@ -102,12 +131,27 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            return animaster()
+                .addScale(duration, ratio)
+                .play(element);
+        },
+
+        moveAndHide(element, duration) {
+            return animaster()
+                .addMove(duration * 2 / 5, {x: 100, y: 20})
+                .addFadeOut(duration * 3 / 5)
+                .play(element);
+        },
+
+        heartBeating(element) {
+            return animaster()
+                .addScale(500, 1.4)
+                .addScale(500, 1)
+                .play(element, true);
         },
 
         showAndHide(element, duration) {
-            animaster()
+            return animaster()
                 .addFadeIn(duration / 3)
                 .addDelay(duration / 3)
                 .addFadeOut(duration / 3)
@@ -116,58 +160,114 @@ function animaster() {
 
         _steps: [],
 
-        _addStep(step, duration, ...args) {
-            this._steps.push((element) => {
-                step(element, duration, ...args);
-                return new Promise((resolve) => {
-                    setTimeout(() => resolve(), duration);
-                });
+        _addStep(step, duration, resetFunc = null) {
+            this._steps.push({
+                duration,
+                resetFunc,
+                play(element) {
+                    step(element, duration);
+                    return new Promise((resolve) => {
+                        setTimeout(() => resolve(), duration);
+                    });
+                }
             });
             return this;
         },
 
         addMove(duration, translation) {
-            return this._addStep(this.move, duration, translation);
+            return this._addStep((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.style.transform = getTransform(translation, null);
+            }, duration, resetMoveAndScale);
         },
 
         addFadeIn(duration) {
-            return this._addStep(this.fadeIn, duration);
+            return this._addStep((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.classList.remove('hide');
+                element.classList.add('show');
+            }, duration, resetFadeIn);
         },
 
         addFadeOut(duration) {
-            return this._addStep(this.fadeOut, duration);
+            return this._addStep((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.classList.remove('show');
+                element.classList.add('hide');
+            }, duration, resetFadeOut);
         },
 
         addScale(duration, ratio) {
-            return this._addStep(this.scale, duration, ratio);
+            return this._addStep((element) => {
+                element.style.transitionDuration = `${duration}ms`;
+                element.style.transform = getTransform(null, ratio);
+            }, duration, resetMoveAndScale);
         },
 
         addDelay(duration) {
-            return this._addStep((element, duration) => {
+            return this._addStep((element) => {
                 return new Promise((resolve) => {
                     setTimeout(() => resolve(), duration);
                 });
             }, duration);
         },
 
-        _playSteps(element, steps) {
-            steps.reduce((promise, step) => {
-                return promise.then(() => step(element));
-            }, Promise.resolve());
+        _playSteps(element, steps, cycled = false) {
+            let totalDuration = 0;
+            steps.forEach((step) => {
+                totalDuration += step.duration;
+            });
+
+            let isStopped = false;
+
+            function doCycle() {
+                if (isStopped) {
+                    return;
+                }
+                steps.reduce((promise, step) => {
+                    return promise.then(() => step.play(element));
+                }, Promise.resolve());
+            }
+
+            doCycle()
+            if (cycled) {
+                setInterval(doCycle, totalDuration);
+            }
+
+            const obj = this;
+
+            return {
+                stop() {
+                    isStopped = true;
+                    clearInterval(doCycle);
+                },
+
+                reset() {
+                    stop();
+                    for (let step of obj._steps) {
+                        if (step.resetFunc) {
+                            step.resetFunc(element);
+                        }
+                    }
+                }
+            }
         },
 
-        play(element) {
-            this._playSteps(element, this._steps);
+        play(element, cycled = false) {
+            return this._playSteps(element, this._steps, cycled);
         },
 
         buildHandler() {
             const copy = this._steps.slice();
-            return (element) => {
-                this._playSteps(element, copy);
+            const obj = this;
+            return function () {
+                const dom = this;
+                obj._playSteps(dom, copy);
             }
         }
-    };
+    }
 }
+
 function getTransform(translation, ratio) {
     const result = [];
     if (translation) {
