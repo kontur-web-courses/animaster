@@ -30,6 +30,13 @@ function addListeners() {
             const block = document.getElementById('moveAndFadeOutBlock');
             animaster().moveAndHide(block, 1000, {x: 100, y: 10});
         });
+    
+    document.getElementById('moveAndFadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndFadeOutBlock');
+            animaster().reset(block);
+        });
+
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -57,7 +64,9 @@ function animaster(){
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
      */
-    let obj = {}
+    let obj = {
+        _steps : []
+    }
     obj.fadeIn = function (element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
@@ -118,18 +127,32 @@ function animaster(){
         return heart
     }
 
+    obj.addMove = function(duration, translation){
+        return obj
+    }
+
+    obj.play = function(duration, translation){
+        return obj
+    }
+
+    obj.reset = function(element){
+        resetFadeOut(element);
+        resetMoveAndScale(element);
+    }
+
     function resetFadeIn(element){
         element.style.transitionDuration = null;
-        obj.fadeOut(element, 0);
+        element.classList.remove('show');
     }
 
     function resetFadeOut(element){
         element.style.transitionDuration = null;
-        obj.fadeIn(element, 0);
+        element.classList.remove('hide');
     }
 
     function resetMoveAndScale(element){
-        element.style.transform = getTransform(null, 1);
+        element.style.transform = null;
+        element.style.transitionDuration = null;
     }
 
     return obj;
