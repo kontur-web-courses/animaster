@@ -169,11 +169,19 @@ function animaster() {
                     i %= this._steps.length;
                 }
                 if (i !== this._steps.length) {
-                    setTimeout(tick, durationMS);
+                    id = setTimeout(tick, durationMS);
                 }
             }
             tick = tick.bind(this);
-            setTimeout(tick, 0)
+            let id = setTimeout(tick, 0)
+            return {
+                stop() {
+                    clearTimeout(id);
+                },
+                reset(){
+
+                }
+            }
         },
 
         addMove(duration, transition) {
