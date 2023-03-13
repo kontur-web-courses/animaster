@@ -1,4 +1,5 @@
 addListeners();
+let animations = {}
 
 function addListeners() {
     document.getElementById('fadeInPlay')
@@ -32,7 +33,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 1000, 1.4);
+            animations['heartBeating'] = animaster().heartBeating(block, 1000, 1.4);
+        });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animations['heartBeating'].stop();
         });
 }
 
@@ -70,6 +76,12 @@ function animaster() {
                 this.scale(element, duration / 2, ratio);
                 setTimeout(this.scale, duration / 2, element, duration / 2, 1 / ratio)
             }, duration);
+
+            return {
+                stop: function () {
+                    clearTimeout(beat);
+                }
+            }
         },
 
         scale: function (element, duration, ratio) {
