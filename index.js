@@ -24,6 +24,11 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             master.fadeOut(block, 5000);
         });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            master.showAndHide(block, 5000);
+        });
 }
 
 
@@ -50,6 +55,11 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
+        showAndHide(element, duration){
+            this.fadeIn(element, duration/3);
+            setTimeout(() => this.fadeOut(element, duration/3), duration/3);
+
+        }
     };
 }
 
