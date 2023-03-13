@@ -159,8 +159,7 @@ function animaster() {
         },
 
         play(element, cycled = true) {
-            const classList = element.classList;
-            const style = element.style;
+            const classList = {...element.classList};
 
             let i = 0;
             let tick = () => {
@@ -182,8 +181,10 @@ function animaster() {
                     clearTimeout(id);
                 },
                 reset(){
-                    element.style = style;
-                    element.classList = classList;
+                    element.classList.clear();
+                    for (let cl of classList) {
+                        element.classList.add(cl);
+                    }
                 }
             }
         },
