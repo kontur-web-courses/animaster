@@ -97,6 +97,19 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
+        _steps:[],
+        addMove(duration, translation) {
+            this._steps.push(`move ${duration} ${translation}`);
+            return this;
+        },
+        play(element) {
+            for(const step of this._steps) {
+                const args = step.split(' ');
+                if(args[0] === 'move') {
+                    this.move(element, args[1], args[2]);
+                }
+            }
+        },
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
