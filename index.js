@@ -19,7 +19,9 @@ function addListeners() {
             scale(block, 1000, 1.25);
         });
 }
+function animaster(){
 
+}
 /**
  * Блок плавно появляется из прозрачного.
  * @param element — HTMLElement, который надо анимировать
@@ -63,3 +65,4 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
