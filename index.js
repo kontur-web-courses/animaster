@@ -4,7 +4,14 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            block.unchangedClassList = block.classList;
+            block.fadeIn = animaster().fadeIn(block, 5000);
+        });
+
+    document.getElementById('fadeInPlayReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            block.fadeIn.stop();
         });
 
     document.getElementById('fadeOutPlay')
@@ -132,6 +139,8 @@ class Animaster {
         }
 
         const playNextStep = () => {
+            if (this._steps.length === 0)
+                return;
             if(stopRequested)
                 return;
 
@@ -174,6 +183,7 @@ class Animaster {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
+        return this.play(element);
     }
 
     fadeOut(element, duration){
