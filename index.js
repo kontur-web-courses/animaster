@@ -40,38 +40,50 @@ function animaster() {
             element.style.transform = (null, null);
         },
         addMove (duration, translation) {
-            this._steps.push((element) => {
+            this._steps.push({
+                duration : duration, 
+                play : (element) => {
                 element.style.transitionDuration = `${duration}ms`;
-                element.style.transform = getTransform(translation, null);
+                element.style.transform = getTransform(translation, null);}
             });
             return this;
         },
         addScale (duration, ratio) {
-            this._steps.push((element) => {
+            this._steps.push({
+                duration : duration, 
+                play : (element) => {
                 element.style.transitionDuration =  `${duration}ms`;
-                element.style.transform = getTransform(null, ratio);
+                element.style.transform = getTransform(null, ratio);}
             });
             return this;
         },
         addFadeIn (duration) {
-            this._steps.push((element) => {
+            this._steps.push({
+                duration : duration, 
+                play : (element) => {
                 element.style.transitionDuration =  `${duration}ms`;
                 element.classList.remove('hide');
-                element.classList.add('show');
+                element.classList.add('show');}
             });
             return this;
         },
         addFadeOut (duration) {
-            this._steps.push((element) => {
+            this._steps.push({
+                duration : duration, 
+                play : (element) => {
                 element.style.transitionDuration =  `${duration}ms`;
                 element.classList.remove('show');
-                element.classList.add('hide');
+                element.classList.add('hide'); }
             });
             return this;
         },
         play (element) {
+            let t = 0;
             for(const step of this._steps)
-                step(element);
+            {
+                setTimeout(() => step.play(element), t);
+                t += step.duration;
+            }
         },
     }
 
@@ -80,13 +92,13 @@ function animaster() {
 
 const customAnimation = animaster()
     .addMove(200, {x: 40, y: 40})
-    // .addScale(800, 1.3)
-    // .addMove(200, {x: 80, y: 0})
-    // .addScale(800, 1)
-    // .addMove(200, {x: 40, y: -40})
-    // .addScale(800, 0.7)
-    // .addMove(200, {x: 0, y: 0})
-    // .addScale(800, 1);
+    .addScale(800, 1.3)
+    .addMove(200, {x: 80, y: 0})
+    .addScale(800, 1)
+    .addMove(200, {x: 40, y: -40})
+    .addScale(800, 0.7)
+    .addMove(200, {x: 0, y: 0})
+    .addScale(800, 1);
 
 
 function addListeners() {
@@ -154,7 +166,6 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('customAnimationBlock');
             customAnimation.play(block);
-            console.log('looool');
         });
 }
 
