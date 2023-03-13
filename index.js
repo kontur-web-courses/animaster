@@ -18,6 +18,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
 }
 
 function animaster() {
@@ -64,9 +70,20 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        /**
+         * Функция, показывающая/скрывающая элемент
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration * 1 / 3);
+            setTimeout(this.fadeOut, duration * 2 / 3, element, duration * 1 / 3);
         }
     }
 }
+
 
 function getTransform(translation, ratio) {
     const result = [];
