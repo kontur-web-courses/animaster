@@ -1,6 +1,19 @@
 addListeners();
+function makeStep(step, element, animaster){
+    if (step.type === 'move') {
+        element.style.transitionDuration = `${step.params[0]}ms`;
+        element.style.transform = getTransform(step.params[1], null);
+    }
+    if (step.type === 'scale')
+        animaster.scale(element, step.params[0], step.params[1]);
+    if (step.type === 'fadeOut')
+        animaster.fadeOut(element, step.params[0]);
+    if (step.type === 'fadeIn')
+        animaster.fadeIn(element, step.params[0]);
+}
 
 function animaster(){
+    this._steps = []
     /**
      * Блок плавно появляется из прозрачного.
      * @param element — HTMLElement, который надо анимировать
@@ -25,8 +38,7 @@ function animaster(){
      * @param translation — объект с полями x и y, обозначающими смещение блока
      */
     function move(element, duration, translation) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.style.transform = getTransform(translation, null);
+        addMove(duration, translation);
     }
 
     /**
@@ -77,8 +89,42 @@ function animaster(){
         }, 1000);
         return {stop: () => clearInterval(interval)};
     }
+    function addMove(duration, translation){
+        this._steps.push({
+            type: 'move',
+            params: [duration, translation]
+        });
+        return this;
+    }
+    function play(element, cycled=false){
+        let duration = 0;
+        for (const step of this._steps){
+            setTimeout(() => {makeStep(step, element, this)}, duration);
+            duration += step.params[0];
+        }
+        if (cycled){
+            let timer = setInterval(() => {
+                let duration = 0;
+                for (const step of this._steps){
+                    setTimeout(() => {makeStep(step, element, this)}, duration);
+                    duration += step.params[0];
+                }
+            }, duration);
+            return {
+                stop(){
+                    clearInterval(timer);
+                }
+            }
+        }
+        else
+            this._steps = [];
+    }
 
-    return {scale, move, fadeIn, fadeOut, showAndHide, heartBeating, moveAndHide}
+    return {
+        _steps,
+        addMove,
+        play,
+        scale, move, fadeIn, fadeOut, showAndHide, heartBeating, moveAndHide}
 }
 
 function addListeners() {
@@ -94,6 +140,7 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             anim.move(block, 1000, {x: 100, y: 10});
+            anim.play(block);
         });
 
     document.getElementById('scalePlay')
