@@ -112,6 +112,14 @@ function animaster() {
             this._steps.push({name: 'move', duration: duration, coordinates: coordinates});
             return this;
         },
+        'addFadeIn': function addScale(duration, ratio) {
+            this._steps.push({name: 'fadeIn', duration:duration});
+            return this;
+        },
+        'addScale': function addScale(duration, ratio) {
+            this._steps.push({name: 'scale', duration:duration, ratio: ratio});
+            return this;
+        },
         'Play': function play(element) {
             let timeout = 0;
             while (this._steps.length > 0) {
