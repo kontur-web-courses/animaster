@@ -2,6 +2,7 @@ addListeners();
 
 function addListeners() {
     let anim = animaster();
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -58,6 +59,8 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     return {
+        _steps: this._steps = [],
+
         fadeIn: function fadeIn(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
@@ -93,7 +96,25 @@ function animaster() {
 
         showAndHide: function showAndHide(element, duration){
             this.fadeIn(element, duration * 1/3);
-            setTimeout(() => this.fadeOut(duration * 1/3), duration * 2/3);
+            setTimeout(() => this.fadeOut(element, duration * 1/3), duration * 2/3);
+        },
+
+        addMove: function addMove(duration, translation){
+            this._steps.push({
+                operation: 'move',
+                duration,
+                translation,
+            });
+            return this;
+        },
+
+        play: function play(element){
+            for (let step of this._steps){
+                switch (step.operation){
+                    case 'move':
+                        this.move(element, step.duration, step.translation);
+                }
+            }
         }
     }
 }
