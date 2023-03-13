@@ -19,6 +19,23 @@ function addListeners() {
             animaster().move(block, 1000, {x: 100, y: 10});
         });
 
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            let animation = animaster().heartBeating(block);
+
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    animation.stop();
+                });
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
+        });
+
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
@@ -66,6 +83,23 @@ function animaster() {
         element.style.transform = getTransform(null, ratio);
     }
 
+    function heartBeating(element) {
+            // element.style.transitionDuration =  `${500}ms`;
+            // element.style.transform = getTransform(null, 1.4);
+
+        // setTimeout(() => scale(element, 500, 1.4), 1000);
+        const interval = setInterval(() => {
+            scale(element, 500, 1.4);
+            setTimeout(() => scale(element, 500, 1), 500);
+        }, 1000);
+
+        function stop() {
+            clearInterval(interval);
+        }
+
+        return {stop};
+    }
+
     function fadeOut(element, duration) {
         element.style.transitionDuration = `${duration}ms`;
         element.classList.remove('show');
@@ -74,13 +108,14 @@ function animaster() {
 
     function moveAndHide(element, duration, translation) {
         move(element, duration * (2/5), translation);
-        // fadeOut(element, duration * (3/5));
         setTimeout(() => fadeOut(element,duration * (3/5)), duration*(2/5));
     }
     function showAndHide(element, duration) {
         fadeIn(element, duration * (1/3));
         setTimeout(() => fadeOut(element,duration * (1/3)), duration*(2/3));
     }
+
+
 
     return {
         fadeIn,
@@ -89,5 +124,6 @@ function animaster() {
         fadeOut,
         moveAndHide,
         showAndHide,
+        heartBeating,
     }
 }
