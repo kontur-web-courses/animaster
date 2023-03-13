@@ -1,46 +1,53 @@
 addListeners();
 
 function addListeners() {
+    let Animaster = new animaster()
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            Animaster.fadeIn(block, 5000);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000);
+            Animaster.fadeOut(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            Animaster.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            Animaster.scale(block, 1000, 1.25);
         });
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            Animaster.moveAndHide(block, 1000);
         });
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            Animaster.heartBeating(block);
         });
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             console.log(block);
-            animaster().showAndHide(block, 3000);
+            Animaster.showAndHide(block, 1000);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            Animaster.stopHeartBeating(block);
         });
 }
 
@@ -58,6 +65,7 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     obj = {
+        Timer: setInterval(() => {}, 0),
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -101,10 +109,13 @@ function animaster() {
             setTimeout(this.fadeOut, 2 * duration / 5, element, 3 * duration / 5,);
         },
         heartBeating(element) {
-            setInterval((el) => {
+            this.Timer = setInterval((el) => {
                 this.scale(el, 500, 1.4);
                 setTimeout(this.scale, 500, el, 500,  1);
             }, 1000,element);
+        },
+        stopHeartBeating(element) {
+            clearInterval(this.Timer);
         },
         showAndHide(element, duration) {
 
