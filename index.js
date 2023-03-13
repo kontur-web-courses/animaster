@@ -109,22 +109,20 @@ function animaster() {
             resetFadeOut(element);
         },
         'addMove': function addMove(duration, coordinates) {
-            this._steps.push({name: 'move', duration:duration, coordinates: coordinates});
+            this._steps.push({name: 'move', duration: duration, coordinates: coordinates});
             return this;
         },
-        'addScale': function addScale(duration, ratio) {
-            this._steps.push({name: 'scale', duration:duration, ratio: ratio});
-            return this;
-        },
-        'Play':function play(element) {
-            while(this._steps.length>0){
-                let current=this._steps.shift();
-                if (current.name==='move'){
-                    this.move(element,current.duration,current.coordinates)
+        'Play': function play(element) {
+            let timeout = 0;
+            while (this._steps.length > 0) {
+                let current = this._steps.shift();
+                if (current.name === 'move') {
+                   setTimeout(() => this.move(element, current.duration, current.coordinates));
+                   timeout+=current.duration;
                 }
             }
         },
-        _steps:[]
+        _steps: []
     }
 }
 
