@@ -20,7 +20,21 @@ function addListeners() {
         });
 }
 function animaster(){
-
+    return {
+        'fadeIn': function fadeIn(element, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        'move' : function move(element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        },
+        'scale': function scale(element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        }
+    }
 }
 /**
  * Блок плавно появляется из прозрачного.
@@ -28,10 +42,15 @@ function animaster(){
  * @param duration — Продолжительность анимации в миллисекундах
  */
 function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
+    animaster().fadeIn(element, duration);
 }
+function move(element, duration, translation) {
+    animaster().move(element, duration, translation);
+}
+function scale(element, duration, ratio) {
+    animaster().scale(element, duration, ratio);
+}
+
 
 /**
  * Функция, передвигающая элемент
@@ -39,10 +58,7 @@ function fadeIn(element, duration) {
  * @param duration — Продолжительность анимации в миллисекундах
  * @param translation — объект с полями x и y, обозначающими смещение блока
  */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
+
 
 /**
  * Функция, увеличивающая/уменьшающая элемент
@@ -50,10 +66,7 @@ function move(element, duration, translation) {
  * @param duration — Продолжительность анимации в миллисекундах
  * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
  */
-function scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
-}
+
 
 function getTransform(translation, ratio) {
     const result = [];
