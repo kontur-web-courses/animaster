@@ -2,6 +2,24 @@ addListeners();
 
 function addListeners() {
     let master = animaster();
+
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            const customAnimation = animaster()
+                .addFadeIn(500)
+                .addMove(500, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(500, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1)
+                .addFadeOut(500);
+            customAnimation.play(block);
+        });
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -135,8 +153,11 @@ function animaster(){
             element.style.transform = getTransform(null, ratio);
         },
         moveAndHide(element, duration) {
-            this.move(element, 0.4 * duration, {x: 100, y: 20});
-            this.fadeOut(element, 0.6 * duration);
+            this.addMove(0.4 * duration, {x: 100, y: 20})
+                .addFadeOut(0.6 * duration)
+                .play(element);
+            // this.move(element, 0.4 * duration, {x: 100, y: 20});
+            // this.fadeOut(element, 0.6 * duration);
         },
 
         heartBeating(element){
@@ -150,10 +171,21 @@ function animaster(){
             element.classList.remove('hide');
             element.classList.add('show');
         },
+
         showAndHide(element, duration){
-            this.fadeIn(element, duration/3);
-            setTimeout(() => this.fadeOut(element, duration/3), duration/3);
+            this.addFadeIn(duration/3)
+                .add
+                .setTimeout(() => this.addFadeOut(duration/3), (duration*2)/3)
+                .play(element);
+
+            // setTimeout(() => this.fadeOut(element, duration/3), duration/3);
+        },
+
+        addDelay(duration){
+            setTimeout(
+            return this;
         }
+
     };
 }
 
