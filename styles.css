@@ -18,8 +18,17 @@
     font-style: italic;
 }
 
-.button {
+.left-button {
     margin-left: 15px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    background: none;
+    border: 1px solid #ccc;
+}
+
+.right-button {
+    margin-left: 20px;
     padding: 5px 10px;
     border-radius: 3px;
     font-size: 12px;
