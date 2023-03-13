@@ -30,6 +30,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('heartPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBlock');
+            animaster().heartBeating(block);
+        });
 }
 
 
@@ -69,6 +75,16 @@ function animaster() {
             this.fadeIn(element,duration/3);
             let out = this.fadeOut.bind(this);
             setTimeout(()=>{out(element, duration/3);}, duration/3)
+        },
+
+        heartBeating(element) {
+            let f = () => {
+                this.scale(element, 500, 1.4);
+                let scale = this.scale.bind(this);
+                setTimeout(()=>scale(element, 500, 1), 500)
+            }
+            f = f.bind(this)
+            setInterval(f, 1000);
         },
 
         /**
