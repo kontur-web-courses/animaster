@@ -18,6 +18,81 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             scale(block, 1000, 1.25);
         });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().addFadeOut(1500).play(block);
+        });
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            if (fadeOut) {
+                fadeOut.reset();
+                fadeOut = undefined;
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 3000, 1.25);
+        });
+    document.getElementById('moveAndHideStop')
+        .addEventListener('click', function () {
+            if (moveAndHide) {
+                moveAndHide.stop();
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            if (moveAndHide) {
+                moveAndHide.reset();
+                moveAndHide = undefined;
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 3000, 1.25);
+        });
+    document.getElementById('showAndHideStop')
+        .addEventListener('click', function () {
+            if (showAndHide) {
+                showAndHide.stop();
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
+    document.getElementById('showAndHideReset')
+        .addEventListener('click', function () {
+            if (showAndHide) {
+                showAndHide.reset();
+                showAndHide = undefined;
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
+
+    document.getElementById('hearthBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('hearthBlock');
+            animaster().heartBeating(block);
+        });
+    document.getElementById('hearthBeatingStop')
+        .addEventListener('click', function () {
+            if (hearthBeating) {
+                hearthBeating.stop();
+            } else {
+                alert("Анимация не запущена");
+            }
+        });
 }
 
 function getTransform(translation, ratio) {
