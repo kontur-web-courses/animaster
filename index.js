@@ -107,9 +107,13 @@ function animaster() {
         'resetMoveAndHide': function (element) {
             resetMoveAndScale(element);
             resetFadeOut(element);
-        }
+        },
         'addMove': function addMove(duration, coordinates) {
             this._steps.push({name: 'move', duration:duration, coordinates: coordinates});
+            return this;
+        },
+        'addScale': function addScale(duration, ratio) {
+            this._steps.push({name: 'scale', duration:duration, ratio: ratio});
             return this;
         },
         'Play':function play(element) {
