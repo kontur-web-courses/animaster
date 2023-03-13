@@ -37,7 +37,7 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 1000, 1.25);
+            animaster().heartBeating(block);
         });
 }
 
@@ -56,6 +56,7 @@ function animaster(){
         scale: function(element, duration, ratio){
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = this.getTransform(null, ratio);
+            return element;
         },
         getTransform: function(translation, ratio){
             const result = [];
@@ -81,11 +82,13 @@ function animaster(){
             setTimeout(() => this.fadeOut(element, duration * 1/3),
                 duration * 1/3);
         },
-        heartBeating: function (element, duration, ratio){
-            for (let i = 0; i < Infinity; i++) {
-                this.scale(element, duration * 1/2, ratio * 14/10)
-                this.scale(element, duration * 1/2, ratio * 10/14)
+        heartBeating: function (element){
+            let beating = () => {
+                this.scale(element, 500, 1.4)
+                setTimeout(this.scale.bind(this, element, 500, 1 / 1.4), 500);
             }
+
+            setInterval(beating, 1000);
         }
     }
 }
