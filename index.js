@@ -2,6 +2,7 @@ addListeners();
 
 function animaster() {
     let moveAndHideTimeout;
+
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
         element.classList.remove('show');
@@ -20,21 +21,21 @@ function animaster() {
     }
 
     return {
-        _steps : [],
+        _steps: [],
         fadeIn: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        move: function(element, duration, translation) {
+        move: function (element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
-        scale: function(element, duration, ratio) {
-            element.style.transitionDuration =  `${duration}ms`;
+        scale: function (element, duration, ratio) {
+            element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        fadeOut: function(element, duration) {
+        fadeOut: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
@@ -47,20 +48,22 @@ function animaster() {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3);
         },
-        TimerId : null,
+        TimerId: null,
         resetMoveAndHide: function (element) {
             resetMoveAndScale(element);
             resetFadeOut(element);
             clearTimeout(moveAndHideTimeout);
         },
-        heartBeating: function(element) {
+        heartBeating: function (element) {
             return {
                 play: () => (TimerId = setInterval(() => {
                         this.scale(element, 500, 1.4);
                         setTimeout(() => this.scale(element, 500, 1), 500);
                     },
                     1000)),
-                stop: () => {clearInterval(TimerId)}
+                stop: () => {
+                    clearInterval(TimerId)
+                }
             }
         },
 
@@ -102,22 +105,27 @@ function animaster() {
             return this;
         },
 
-        play : function (element) {
+        play: function (element) {
+            let dur = 0;
             for (const step of this._steps) {
-                switch (step.name) {
-                    case "move":
-                        this.move(element, step.duration, step.translation);
-                        break;
-                    case "scale":
-                        this.scale(element, step.duration, step.ratio);
-                        break;
-                    case "fadeIn":
-                        this.fadeIn(element, step.duration);
-                        break;
-                    case "fadeOut":
-                        this.fadeOut(element, step.duration);
-                        break;
-                }
+                setTimeout(() => {
+                        switch (step.name) {
+                            case "move":
+                                this.move(element, step.duration, step.translation);
+                                break;
+                            case "scale":
+                                this.scale(element, step.duration, step.ratio);
+                                break;
+                            case "fadeIn":
+                                this.fadeIn(element, step.duration);
+                                break;
+                            case "fadeOut":
+                                this.fadeOut(element, step.duration);
+                                break;
+                        }
+                        dur = step.duration;
+                    }, dur
+                )
             }
         }
     }
@@ -186,8 +194,6 @@ function addListeners() {
             const block = document.getElementById('TestBlock');
             const customAnimation = animaster()
                 .addMove(200, {x: 40, y: 40})
-            alert(customAnimation._steps);
-            console.log(customAnimation._steps);
             customAnimation.play(block);
         });
 }
