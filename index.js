@@ -1,6 +1,13 @@
 addListeners();
 
 function animaster() {
+    const _steps = [];
+
+    function move (element, duration, translation) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+    }
+
     function resetFadeIn(element) {
         animaster().fadeOut(element, 0);
     }
@@ -21,10 +28,7 @@ function animaster() {
             element.classList.add('show');
             },
 
-        move: (element, duration, translation) => {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
-        },
+        move,
 
         scale: (element, duration, ratio) => {
             element.style.transitionDuration = `${duration}ms`;
@@ -87,6 +91,23 @@ function animaster() {
                     clearInterval(intervalId);
                 }
             }
+        },
+
+        addMove: (duration, translation) => {
+            _steps.push({method: move, duration, args: [translation]});
+            return this;
+        },
+
+        play: (element) => {
+            let duration = 0;
+            for (const step of _steps){
+                switch ( step.method ){
+                    case move:
+                        setTimeout(() => move(element, step.duration, ...step.args), duration)
+                        duration += step.duration;
+                        break;
+                }
+            }
         }
     }
 }
@@ -103,7 +124,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove( 1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
