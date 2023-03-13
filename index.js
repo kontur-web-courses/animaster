@@ -57,8 +57,62 @@ function animaster() {
                 1000
             )
         },
-        play : function () {
 
+        addFadeIn: function (duration) {
+            this._steps.push({
+                name: "fadeIn",
+                duration: duration,
+            });
+
+            return this;
+        },
+
+        addFadeOut: function (duration) {
+            this._steps.push({
+                name: "fadeOut",
+                duration: duration
+            });
+
+            return this;
+        },
+
+        addScale: function (duration, ratio) {
+            this._steps.push({
+                name: "scale",
+                duration: duration,
+                ratio: ratio
+            });
+
+            return this;
+        },
+
+        addMove: function (duration, translation) {
+            this._steps.push({
+                name: "scale",
+                duration: duration,
+                translation: translation
+            });
+
+            return this;
+        },
+
+        play : function (element) {
+            for (const step of this._steps) {
+                switch (step.name) {
+                    case "move":
+                        this.move(element, step.duration, step.translation);
+                        break;
+                    case "scale":
+                        this.scale(element, step.duration, step.ratio);
+                        break;
+                    case "fadeIn":
+                        this.fadeIn(element, step.duration);
+                        break;
+                    case "fadeOut":
+                        this.fadeOut(element, step.duration);
+                        break;
+                }
+            }
         }
     }
 }
