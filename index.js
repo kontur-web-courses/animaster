@@ -1,28 +1,39 @@
 addListeners();
 
 function addListeners() {
+    let heartBeatingStopper;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            animaster().addFadeIn(5000).play(block);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(500, {x: 20, y: 20}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000);
+            animaster().addFadeOut(5000).play(block);
+        });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            heartBeatingStopper = animaster().heartBeating(block, 500, 1.4);
+        });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            heartBeatingStopper.stop();
         });
 }
 
@@ -63,6 +74,56 @@ function animaster() {
         scale: (element, duration, ratio) => {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+        heartBeating: function (element, interval, ratio) {
+            return {
+                currentSize: ratio,
+                intervalId: setInterval(() => {
+                    this.scale(element, interval, this.currentSize);
+                    this.currentSize = (this.currentSize === 1) ? ratio : 1;
+                }, interval),
+                stop: function () {
+                    clearInterval(this.intervalId)
+                }
+            }
+        },
+
+        _steps: [],
+
+        addMove: function (duration, translation) {
+            this._steps.push({name: "Move", duration: duration, translation: translation})
+            return this;
+        },
+        addScale: function (duration, ratio) {
+            this._steps.push({name: "Scale", duration: duration, ratio: ratio})
+            return this;
+        },
+        addFadeIn: function (duration) {
+            this._steps.push({name: "FadeIn", duration: duration})
+            return this;
+        },
+        addFadeOut: function (duration) {
+            this._steps.push({name: "FadeOut", duration: duration})
+            return this;
+        },
+
+        play: function (element) {
+            for (let step of this._steps) {
+                switch (step.name) {
+                    case "Move":
+                        this.move(element, step.duration, step.translation);
+                        break;
+                    case "Scale":
+                        this.scale(element, step.duration, step.ratio)
+                        break;
+                    case "FadeIn":
+                        this.fadeIn(element, step.duration)
+                        break;
+                    case "FadeOut":
+                        this.fadeOut(element, step.duration)
+                        break;
+                }
+            }
         }
     }
 }
