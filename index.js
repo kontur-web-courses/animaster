@@ -89,6 +89,8 @@ function animaster(){
             }
 
             setInterval(beating, 1000);
+
+            return {stop: function () {clearTimeout(beating)}}
         }
     }
 }
