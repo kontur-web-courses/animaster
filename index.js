@@ -25,6 +25,25 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             anim.scale(block, 1000, 1.25);
         });
+    
+    document.getElementById("moveAndHidePlay")
+      .addEventListener("click", function () {
+        const block = document.getElementById("moveAndHideBlock");
+        anim.moveAndHide(block, 1000);
+      });    
+
+    document
+      .getElementById("showAndHidePlay")
+      .addEventListener("click", function () {
+        const block = document.getElementById("showAndHideBlock");
+        anim.showAndHide(block, 1000);
+      }); 
+    document
+      .getElementById("heartBeatPlay")
+      .addEventListener("click", function () {
+        const block = document.getElementById("heartBeatBlock");
+        anim.heartBeating(block);
+      }); 
 }
 
 function getTransform(translation, ratio) {
@@ -41,6 +60,10 @@ function getTransform(translation, ratio) {
 function animaster () {
     return {
         fadeIn (element, duration) {
+            
+            console.log(element);
+
+
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
@@ -61,13 +84,26 @@ function animaster () {
 
 
         moveAndHide(element, duration){
-            move(element, duration * 2/5, [100, -20]);
-            fadeOut(element, duration * 3/5);
+            console.log(element);
+            this.move(element, duration * 2 / 5, { x: 100, y: 20 });
+            setTimeout(this.fadeOut.bind(this, element, duration), duration * 2 / 5);
         },
 
         showAndHide(element, duration){
-            fadeIn(element, duration * 1 / 3);
-            fadeOut(element, duration * 2 / 3);
+            this.fadeIn(element, duration * 1 / 3);
+            console.log("showed");
+            setTimeout(this.fadeOut.bind(this, element, duration), duration * 2 / 3);
+        },
+
+        heartBeating(element){
+            
+            let f = () => {
+                this.scale(element, 500, 1.4);
+                setTimeout(this.scale.bind(this, element, 500, 1 / 1.4), 500);    
+            }
+
+            setInterval(f, 1000);
+            
         }
     }
 }
