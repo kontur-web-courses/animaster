@@ -74,7 +74,7 @@ customAnimation.play(block);
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBLock');
-            moveAndHideController = animaster().moveAndHide(block, 5000, {x: 100, y: 20})
+            animaster().addMove(5000, {x: 100, y: 20}).addFadeOut(5000).play(block);
         });
 
     document.getElementById('moveAndHideReset')
