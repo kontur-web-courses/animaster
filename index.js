@@ -18,7 +18,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(500, {x: 20, y:20}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -127,15 +127,16 @@ function animaster(){
                     clearInterval(a);
             }}
         },
-        addMove: function () {
-            this._steps.push(step)
+        addMove: function (...args) {
+            this._steps.push({action: this.move, args: args})
             return this
         },
         play: function(elem) {
-            for (let action of this._steps){
-                elem.action()
+            debugger;
+            for (let step of this._steps){
+                step.action.bind(this)(elem, ...step.args)
             }
-        }
+        },
         _steps: []
     }
 }
