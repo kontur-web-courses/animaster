@@ -1,109 +1,5 @@
 
 
-function addListeners() {
-    document.getElementById('fadeInPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            block.unchangedClassList = block.classList;
-            block.fadeIn = animaster().fadeIn(block, 5000);
-        });
-
-    document.getElementById('fadeInPlayReset')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            block.style.transitionDuration = null;
-            block.classList.remove('show');
-            block.classList.add('hide');
-        });
-
-    document.getElementById('fadeOutPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000);
-        });
-
-    document.getElementById('fadeOutReset')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutBlock');
-            block.style.transitionDuration = null;
-            block.classList.remove('hide');
-            block.classList.add('show');
-        });
-
-    document.getElementById('moveAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            block.unchangedClassList = block.classList;
-            block.moveAndHide = animaster().moveAndHide(block, 5000);
-        });
-
-    document.getElementById('moveAndHideReset')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            block.moveAndHide.stop()
-        });
-
-    document.getElementById('showAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, 6000);
-        });
-
-    document.getElementById('heartBeatingPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            block.heartBeating = animaster().heartBeating(block);
-        });
-
-    document.getElementById('heartBeatingStop')
-        .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            block.heartBeating.stop();
-        });
-
-    document.getElementById('scalePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.4);
-        });
-
-    document.getElementById('movePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
-
-        });
-
-    const worryAnimationHandler = animaster()
-        .addStep('move',200, {x: 80, y: 0})
-        .addStep('move',200, {x: 0, y: 0})
-        .addStep('move',200, {x: 80, y: 0})
-        .addStep('move',200, {x: 0, y: 0})
-        .buildHandler();
-
-    document
-        .getElementById('worryBlock')
-        .addEventListener('click', worryAnimationHandler);
-
-
-}
-
-function getTransform(translation, ratio) {
-    const result = [];
-    if (translation) {
-        result.push(`translate(${translation.x}px,${translation.y}px)`);
-    }
-    if (ratio) {
-        result.push(`scale(${ratio})`);
-    }
-    return result.join(" ");
-}
-
-
-function animaster() {
-    return new Animaster();
-}
-
 class Step {
     constructor(name,duration,params) {
         this.name = name;
@@ -132,7 +28,7 @@ class Animaster {
         _funcs['showAndHide'] = this.showAndHide;
         _funcs['heartBeating'] = this.heartBeating;
         _funcs['addDelay'] = this.addDelay;
-
+        _funcs['spin'] = this.spin;
         return _funcs;
     }
 
@@ -193,7 +89,6 @@ class Animaster {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
         element.classList.add('show');
-        return this.play(element);
     }
 
     fadeOut(element, duration){
@@ -236,12 +131,164 @@ class Animaster {
         return this.play(element,true);
     }
 
+    spin(element, duration, iterations = Infinity){
+        const animation = element.animate([
+            { transform: `rotate(0deg)` },
+            { transform: `rotate(360deg)` }
+        ], {
+            duration: duration,
+            iterations: iterations,
+        });
+
+        const pause = () => {
+            animation.pause();
+        }
+
+        const stop = () => {
+            animation.cancel();
+            this.reset(element, element.classList);
+        }
+
+        return {
+            stop,
+            pause,
+        }
+    }
+
     buildHandler(){
         let animaster = this;
         return  function() {
             animaster.play(this);
         }
     }
+}
+
+
+
+
+function addListeners() {
+
+
+    document.getElementById('fadeInPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            block.unchangedClassList = block.classList;
+            block.fadeIn = animaster().fadeIn(block, 5000);
+        });
+
+    document.getElementById('fadeInPlayReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            block.style.transitionDuration = null;
+            block.classList.remove('show');
+            block.classList.add('hide');
+        });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
+        });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            block.style.transitionDuration = null;
+            block.classList.remove('hide');
+            block.classList.add('show');
+        });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            block.unchangedClassList = block.classList;
+            block.moveAndHide = animaster().moveAndHide(block, 5000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            block.moveAndHide.stop()
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 6000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            block.heartBeating = animaster().heartBeating(block);
+        });
+
+    document.getElementById('spinPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('spinBlock');
+            block.spin = animaster().spin(block,1000);
+        });
+
+    document.getElementById('spinPause')
+        .addEventListener('click', function () {
+            const block = document.getElementById('spinBlock');
+            block.spin.pause();
+        });
+
+    document.getElementById('spinStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('spinBlock');
+            block.spin.stop();
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            block.heartBeating.stop();
+        });
+
+    document.getElementById('scalePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().scale(block, 1000, 1.4);
+        });
+
+    document.getElementById('movePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().move(block, 1000, {x: 100, y: 10});
+
+        });
+
+
+    const worryAnimationHandler = animaster()
+        .addStep('move',200, {x: 80, y: 0})
+        .addStep('move',200, {x: 0, y: 0})
+        .addStep('move',200, {x: 80, y: 0})
+        .addStep('move',200, {x: 0, y: 0})
+        .buildHandler();
+
+    document
+        .getElementById('worryBlock')
+        .addEventListener('click', worryAnimationHandler);
+
+
+}
+
+function getTransform(translation, ratio) {
+    const result = [];
+    if (translation) {
+        result.push(`translate(${translation.x}px,${translation.y}px)`);
+    }
+    if (ratio) {
+        result.push(`scale(${ratio})`);
+    }
+    return result.join(" ");
+}
+
+
+function animaster() {
+    return new Animaster();
 }
 
 addListeners();
