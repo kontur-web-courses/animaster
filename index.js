@@ -31,6 +31,11 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             animasterObject.fadeOut(block, 1000, 1.25);
         });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animasterObject.showAndHide(block, 1000, 1.25);
+        });
 }
 
 function animaster() {
@@ -51,6 +56,14 @@ function animaster() {
             element.classList.add('hide');
             element.classList.add('none');
         },
+
+
+        showAndHide(element, duration) {
+            const stageDurationInMs = duration / 3;
+            this.fadeIn(element, stageDurationInMs);
+            setTimeout(this.fadeOut, stageDurationInMs, element, stageDurationInMs);
+        },
+
         /**
          * Функция, передвигающая элемент
          * @param element — HTMLElement, который надо анимировать
