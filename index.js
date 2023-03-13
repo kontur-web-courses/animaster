@@ -25,7 +25,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('fadeOutPlay')
@@ -137,7 +137,6 @@ function animaster(){
 
             return {
                 stop: function () {
-                    debugger;
                     clearInterval(a);
             }}
         },
@@ -146,10 +145,21 @@ function animaster(){
             return this
         },
         play: function(elem) {
-            debugger;
             for (let step of this._steps){
                 step.action.bind(this)(elem, ...step.args)
             }
+        },
+        addScale: function (...args) {
+            this._steps.push({action: this.scale, args: args})
+            return this
+        },
+        addFadeIn: function (...args) {
+            this._steps.push({action: this.fadeIn, args: args})
+            return this
+        },
+        addFadeOut: function (...args) {
+            this._steps.push({action: this.fadeOut, args: args})
+            return this
         },
         _steps: []
     }
