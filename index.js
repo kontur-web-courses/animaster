@@ -72,7 +72,7 @@ function animaster() {
     };
 
     return {
-        /**
+    /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
@@ -81,6 +81,11 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+        },
+
+        addFadeIn(duration) {
+            this._steps.push({func: this.fadeIn, duration: duration})
+            return this;
         },
 
         /**
@@ -92,6 +97,11 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+
+        addFadeOut(duration) {
+            this._steps.push({func: this.fadeOut, duration: duration})
+            return this;
         },
 
         /**
@@ -160,6 +170,11 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
 
+        addScale(duration, argument) {
+            this._steps.push({func: this.scale, duration: duration, argument: argument})
+            return this;
+        },
+
         /**
          * Функция, показывающая/скрывающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -168,8 +183,37 @@ function animaster() {
         showAndHide(element, duration) {
             this.fadeIn(element, duration * 1 / 3);
             setTimeout(this.fadeOut, duration * 2 / 3, element, duration * 1 / 3);
-        }
+        },
 
+        play(element, cycled = false) {
+            let prefixDurations = [];
+            prefixDurations.push(0);
+            for (let i = 1; i < this._steps.length; ++i) {
+                prefixDurations.push(this._steps[i].duration + prefixDurations[i-1])
+            }
+            let animation = () => {
+                for (let i = 0; i < this._steps.length; ++i) {
+                    setTimeout(this._steps[i].func,
+                        prefixDurations[i], element, this._steps[i].duration, this._steps[i].argument);
+                }
+            };
+
+            animation();
+
+            if (cycled) {
+                _interval = setInterval(animation, prefixDurations[this._steps.length-1]);
+            }
+
+
+            function reset(someElement) {
+                resetFadeIn(someElement);
+                resetFadeOut(someElement);
+                resetMoveAndScale(someElement);
+            }
+
+            return {stop:(interval) => {clearInterval(interval)}, reset:reset, _interval: _interval};
+
+        }
 
     }
 }
