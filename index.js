@@ -29,6 +29,11 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             master.moveAndHide(block, 1000);
         });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            master.heartBeating(block);
+        });
 }
 
 
@@ -56,9 +61,15 @@ function animaster(){
             element.style.transform = getTransform(null, ratio);
         },
         moveAndHide(element, duration) {
-            this.move(element, 0.4 * duration, {x: 100, y: 20})
-            this.fadeOut(element, 0.6 * duration)
+            this.move(element, 0.4 * duration, {x: 100, y: 20});
+            this.fadeOut(element, 0.6 * duration);
         },
+
+        heartBeating(element){
+            this.scale(element,500, 1.4);
+            this.scale(element,500, 1);
+
+        }
     };
 }
 
