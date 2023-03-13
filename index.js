@@ -7,11 +7,11 @@ function addListeners() {
             animaster().addFadeIn(5000).play(block);
         });
 
-    document.getElementById('fadeOutPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutBlock');
-            animaster().addFadeOut(5000).play(block);
-        });
+    document.getElementById('fadeOutBlock')
+        .addEventListener(
+            'click',
+            animaster().addFadeOut(5000).buildEventHandler()
+        );
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -49,7 +49,7 @@ function addListeners() {
         });
     document.getElementById('moveAndHideStop')
         .addEventListener('click', function () {
-            reset.stop();
+            reset.reset();
         });
 }
 
@@ -107,16 +107,16 @@ function animaster() {
         },
 
         showAndHide(element, duration) {
-            this.addFadeIn(duration/3);
-            this.addDelay(duration/3);
-            this.addFadeOut(duration/3);
-            this.play(element);
+            this.addFadeIn(duration / 3);
+            this.addDelay(duration / 3);
+            this.addFadeOut(duration / 3);
+            return this.play(element);
         },
 
         heartBeating(element) {
             this.addScale(500, 1.4);
             this.addScale(500, 1);
-            this.play(element, true);
+            return this.play(element, true);
         },
 
         /**
@@ -130,7 +130,7 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
-        delay(element, duration){
+        delay(element, duration) {
 
         },
 
@@ -148,27 +148,19 @@ function animaster() {
         moveAndHide(element, duration) {
             this.addMove(2 * duration / 5, {x: 100, y: 20});
             this.addFadeOut(3 * duration / 5);
-            this.play(element);
-
-            return {
-                stop() {
-                    resetMoveAndScale(element);
-                    resetFadeOut(element)
-                }
-            }
+            return this.play(element);
         },
 
         play(element, cycled = true) {
-            const classList = element.classList;
-            const style = element.style;
+            const classList = {...element.classList};
+            const style = {...element.style};
 
             let i = 0;
             let tick = () => {
                 const {animationName, durationMS, params} = this._steps[i];
                 this[animationName](element, durationMS, ...params);
                 i += 1;
-                if (cycled)
-                {
+                if (cycled) {
                     i %= this._steps.length;
                 }
                 if (i !== this._steps.length) {
@@ -181,7 +173,7 @@ function animaster() {
                 stop() {
                     clearTimeout(id);
                 },
-                reset(){
+                reset() {
                     element.style = style;
                     element.classList = classList;
                 }
@@ -207,6 +199,11 @@ function animaster() {
         addDelay(duration) {
             this._steps.push(new AnimationStruct("delay", duration, []));
             return this;
+        },
+
+        buildEventHandler(){
+            let run = this.play.bind(this);
+            return (e) => run(e);
         }
     }
 }
