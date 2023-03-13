@@ -77,6 +77,18 @@ function animaster() {
 
 }
 
+
+const customAnimation = animaster()
+    .addMove(200, {x: 40, y: 40})
+    // .addScale(800, 1.3)
+    // .addMove(200, {x: 80, y: 0})
+    // .addScale(800, 1)
+    // .addMove(200, {x: 40, y: -40})
+    // .addScale(800, 0.7)
+    // .addMove(200, {x: 0, y: 0})
+    // .addScale(800, 1);
+
+
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -136,6 +148,13 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().resetMoveAndScale(block);
+        });
+
+        document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            customAnimation.play(block);
+            console.log('looool');
         });
 }
 
