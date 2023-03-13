@@ -18,7 +18,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -59,21 +59,19 @@ function addListeners() {
 }
 
 function animaster() {
-    function resetFadeIn(element){
+    function resetFadeIn(element) {
         element.style.transitionDuration = null;
         element.classList.remove('show');
         element.classList.add('hide');
     }
 
-    function resetFadeOut (element){
+    function resetFadeOut(element) {
         element.style.transitionDuration = null;
         element.classList.remove('hide');
         element.classList.add('show');
-
-
     }
 
-    function resetMoveAndScale(element){
+    function resetMoveAndScale(element) {
         element.style.transitionDuration = null;
         element.style.transform = null;
     }
@@ -124,23 +122,21 @@ function animaster() {
         },
 
         moveAndHide(element, duration) {
-            animaster().move(element, duration * 2 / 5, {x: 100, y: 20})
-            animaster().fadeOut(element, duration * 3 / 5)
+            animaster().addMove(duration * 2 / 5, {x: 100, y: 20})
+                .addFadeOut(duration * 3 / 5)
+                .play(element);
         },
 
         showAndHide(element, duration) {
-            animaster().fadeIn(element, duration / 3)
-            setTimeout(() => {
-                animaster().fadeOut(element, duration / 3)
-            }, duration / 3);
+            animaster().addFadeIn(duration / 3)
+                .addFadeOut(duration / 3)
+                .play(element);
         },
 
         heartBreath(element) {
             let refreshIntervalId = setInterval(() => {
-                animaster().scale(element, 500, 1.4);
-                setTimeout(() => {
-                    animaster().scale(element, 500, 1)
-                }, 500);
+                animaster().addScale(500, 1.4)
+                    .addScale(500, 1).play(element);
             }, 1000);
 
             return {
@@ -149,13 +145,24 @@ function animaster() {
                 }
             }
         },
-        reset(element){
-
+        reset(element) {
             resetFadeOut(element);
             resetMoveAndScale(element);
         },
         addMove(duration, param) {
             this._steps.push({act: this.move, duration: duration, param: param})
+            return this;
+        },
+        addScale(duration, ratio) {
+            this._steps.push({act: this.scale, duration: duration, param: ratio})
+            return this;
+        },
+        addFadeIn(duration) {
+            this._steps.push({act: this.fadeIn, duration: duration})
+            return this;
+        },
+        addFadeOut(duration) {
+            this._steps.push({act: this.fadeOut, duration: duration})
             return this;
         },
         play(element) {
