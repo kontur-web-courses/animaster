@@ -11,13 +11,23 @@ function addListeners() {
     document.getElementById('fadeInPlayReset')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            block.fadeIn.stop();
+            block.style.transitionDuration = null;
+            block.classList.remove('show');
+            block.classList.add('hide');
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
+        });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            block.style.transitionDuration = null;
+            block.classList.remove('hide');
+            block.classList.add('show');
         });
 
     document.getElementById('moveAndHidePlay')
@@ -208,15 +218,15 @@ class Animaster {
 
     moveAndHide(element, duration){
         this.addStep('move',duration * 0.4, {x: 100, y: 20});
-        this.addStep('fadeOut',duration*0.6);
+        this.addStep('fadeOut',duration * 0.6);
         return this.play(element);
     }
 
     showAndHide(element, duration){
         duration = duration*0.33;
-        this.addStep('fadeIn',duration);
+        this.addStep('fadeIn', duration);
         this.addStep('addDelay', duration);
-        this.addStep('fadeOut',duration);
+        this.addStep('fadeOut', duration);
         this.play(element);
     }
 
