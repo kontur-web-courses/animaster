@@ -27,6 +27,15 @@ function animaster() {
         showAndHide: function(element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration * 2 / 3);
+        },
+        heartBeating: function(element) {
+            setInterval(
+                 () => {
+                    this.scale(element, 500, 1.4);
+                    setTimeout(() => this.scale(element, 500, 1 / 1.4), 500);
+                },
+                1000
+            )
         }
     }
 }
@@ -66,6 +75,12 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
         });
 }
 
