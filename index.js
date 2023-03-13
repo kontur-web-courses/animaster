@@ -43,8 +43,18 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().addFadeOut(5000).play(block);
+            const customAnimation = animaster()
+    .addMove(200, {x: 40, y: 40})
+    .addScale(800, 1.3)
+    .addMove(200, {x: 80, y: 0})
+    .addScale(800, 1)
+    .addMove(200, {x: 40, y: -40})
+    .addScale(800, 0.7)
+    .addMove(200, {x: 0, y: 0})
+    .addScale(800, 1);
+customAnimation.play(block);
         });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
@@ -150,23 +160,28 @@ function animaster() {
         },
 
         play: function (element) {
+            let s = 0;
             for (let step of this._steps) {
                 switch (step.name) {
                     case "Move":
-                        this.move(element, step.duration, step.translation);
+                        setTimeout(() => this.move(element, step.duration, step.translation), s);
+                        s += step.duration;
                         break;
                     case "Scale":
-                        this.scale(element, step.duration, step.ratio)
+                        setTimeout(() => this.scale(element, step.duration, step.ratio), s);
+                        s += step.duration;
                         break;
                     case "FadeIn":
-                        this.fadeIn(element, step.duration)
+                        setTimeout(() => this.fadeIn(element, step.duration), s);
+                        s += step.duration;
                         break;
                     case "FadeOut":
-                        this.fadeOut(element, step.duration)
+                        setTimeout(() => this.fadeOut(element, step.duration), s);
+                        s += step.duration;
                         break;
                 }
             }
-        }
+        },
         scaleReset: (element) => {
             element.style.transitionDuration = null;
             element.style.transform = null
