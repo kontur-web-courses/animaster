@@ -140,6 +140,15 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
+        addMove(duration, args) {
+            _steps.push({
+                func : move,
+                duration , ... ,
+                args , ...
+            })
+            return this;
+        },
+
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
