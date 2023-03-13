@@ -4,30 +4,30 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            fadeOut(block, 1000);
+            animaster().fadeOut(block, 1000);
         });
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            moveAndHide(block, 1000, {x: 100, y: 20});
+            animaster().moveAndHide(block, 1000, {x: 100, y: 20});
         });
 }
 
@@ -81,11 +81,11 @@ function animaster(){
         },
         move: function(element, duration, translation){
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            element.style.transform = this.getTransform(translation, null);
         },
         scale: function(element, duration, ratio){
             element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            element.style.transform = this.getTransform(null, ratio);
         },
         getTransform: function(translation, ratio){
             const result = [];
