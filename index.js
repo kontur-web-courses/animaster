@@ -143,8 +143,8 @@ function animaster() {
         addMove(duration, args) {
             _steps.push({
                 func : move,
-                duration , ... ,
-                args , ...
+                duration,
+                args
             })
             return this;
         },
@@ -169,6 +169,8 @@ function animaster() {
             this.fadeIn(element, duration * 1 / 3);
             setTimeout(this.fadeOut, duration * 2 / 3, element, duration * 1 / 3);
         }
+
+
     }
 }
 
