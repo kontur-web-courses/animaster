@@ -16,7 +16,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().addScale( 1000, 1.25).Play(block);
+            animaster().addScale(1000, 1.25).Play(block);
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
@@ -86,8 +86,11 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
         'showAndHide': function scale(element, duration) {
-            this.fadeIn(element, duration / 3);
-            setTimeout(this.fadeOut, duration / 3, element, duration / 3);
+            animaster()
+                .addFadeIn(duration / 3)
+                .addDelay(duration / 3)
+                .addFadeOut(duration / 3)
+                .Play(element);
         },
         'heartBeating': function heartBeating(element) {
             let beating = setInterval(() => {
@@ -113,15 +116,19 @@ function animaster() {
             return this;
         },
         'addFadeIn': function addScale(duration) {
-            this._steps.push({name: 'fadeout', duration:duration});
+            this._steps.push({name: 'fadeIn', duration: duration});
             return this;
         },
-        'addFadeOut': function addScale(duration {
-            this._steps.push({name: 'fadeIn', duration:duration});
+        'addFadeOut': function addScale(duration) {
+            this._steps.push({name: 'fadeOut', duration: duration});
             return this;
         },
         'addScale': function addScale(duration, ratio) {
-            this._steps.push({name: 'scale', duration:duration, ratio: ratio});
+            this._steps.push({name: 'scale', duration: duration, ratio: ratio});
+            return this;
+        },
+        'addDelay': function addScale(duration) {
+            this._steps.push({name: 'delay', duration: duration});
             return this;
         },
         'Play': function play(element) {
@@ -130,19 +137,21 @@ function animaster() {
                 let current = this._steps.shift();
                 switch (current.name) {
                     case "move":
-                        setTimeout(() => this.move(element, current.duration, current.coordinates));
+                        setTimeout(() => this.move(element, current.duration, current.coordinates), timeout);
                         break;
                     case "scale":
-                        setTimeout(() => this.scale(element, current.duration, current.ratio));
+                        setTimeout(() => this.scale(element, current.duration, current.ratio), timeout);
                         break;
                     case "fadeIn":
-                        setTimeout(() => this.fadeIn(element, current.duration));
+                        setTimeout(() => this.fadeIn(element, current.duration), timeout);
                         break;
                     case "fadeOut":
-                        setTimeout(() => this.move(element, current.duration));
+                        setTimeout(() => this.fadeOut(element, current.duration), timeout);
+                        break;
+                    case "delay":
                         break;
                 }
-                timeout+=current.duration;
+                timeout += current.duration;
             }
         },
         _steps: []
