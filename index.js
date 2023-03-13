@@ -39,7 +39,7 @@ function addListeners() {
     document.getElementById('heartBreathPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBreathBlock');
-            animaster().heartBreath(block, 1000);
+            animaster().heartBreath(block);
         });
 }
 
@@ -100,14 +100,14 @@ function animaster() {
             }, duration / 3);
         },
 
-        heartBreath(element, duration) {
-            animaster().scale(element, 1000, 1.4);
-            setTimeout(() => {
-                animaster().fadeOut(element, duration / 3)
-            }, duration / 3);
+        heartBreath(element) {
+            setInterval(() => {
+                animaster().scale(element, 500, 1.4);
+
+                animaster().scale(element, 500, 1 / 1.4);
+
+            }, 500);
         },
-
-
     }
 
     function getTransform(translation, ratio) {
