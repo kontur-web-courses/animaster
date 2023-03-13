@@ -1,59 +1,61 @@
 addListeners();
 
 function addListeners() {
-    let Animaster = new animaster()
+    let animaster1 = new animaster();
+    let animaster2 = new animaster();
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            Animaster.fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            Animaster.fadeOut(block, 5000);
+            animaster().fadeOut(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            Animaster.move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x:100, y:20}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            Animaster.scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            Animaster.moveAndHide(block, 1000);
+            animaster().moveAndHide(block, 1000);
         });
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            Animaster.heartBeating(block);
+            animaster1.heartBeating(block);
         });
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             console.log(block);
-            Animaster.showAndHide(block, 1000);
+            animaster2.showAndHide(block, 1000);
         });
 
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            Animaster.stopHeartBeating(block);
+            animaster1.stopHeartBeating(block);
         });
 
     document.getElementById('moveAndHideStop')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            Animaster.resetMoveAndHide(block);
+            animaster2.resetMoveAndHide(block);
         });
 }
 
@@ -85,7 +87,11 @@ function animaster() {
 
 
     obj = {
-        Timer: setInterval(() => {}, 0),
+        _steps: [],
+        _translation: null,
+        _ratio: null,
+        Timer: setInterval(() => {
+        }, 0),
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -95,7 +101,7 @@ function animaster() {
 
         scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            this.ratio = ratio;
         },
 
         /**
@@ -106,7 +112,7 @@ function animaster() {
          */
         move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.translation= translation;
         },
 
         /**
@@ -130,8 +136,9 @@ function animaster() {
         },
         heartBeating(element) {
             this.Timer = setInterval((el) => {
-                this.scale(el, 500, 1.4);
-                setTimeout(this.scale, 500, el, 500,  1);
+                this.addScale(500, 1.4);
+                this.addScale(500, 1);
+                this.play(el);
             }, 1000,element);
         },
         stopHeartBeating(element) {
@@ -146,6 +153,63 @@ function animaster() {
         resetMoveAndHide(element) {
             resetMove(element);
             resetFadeOut(element);
+        },
+        addMove(duration, translation) {
+            obj = {
+                name: 'move',
+                duration: duration,
+                translation: translation,
+            };
+            this._steps.push(obj);
+            return this;
+        },
+        addScale(duration, ratio) {
+            obj = {
+                name: 'scale',
+                duration: duration,
+                ratio: ratio,
+            };
+            this._steps.push(obj);
+            return this;
+        },
+        addFadeIn(duration) {
+            obj = {
+                name: 'fadeIn',
+                duration: duration
+            };
+            this._steps.push(obj);
+            return this;
+        },
+        addFadeOut(duration) {
+            obj = {
+                name: 'fadeOut',
+                duration: duration
+            };
+            this._steps.push(obj);
+            return this;
+        },
+        play(element) {
+            let prevDuration = 0;
+            for (let i of this._steps) {
+                setTimeout((name) => {
+                    console.log(i.name);
+                    switch (name) {
+                        case('move'):
+                            this.move(element, i.duration, i.translation);
+                            break;
+                        case('scale'):
+                            this.scale(element, i.duration, i.ratio);
+                            break;
+                        case('fadeOut'):
+                            this.fadeOut(element, i.duration);
+                            break;
+                        case('fadeIn'):
+                            this.fadeIn(element, i.duration);
+                    }
+                    element.style.transform = getTransform(this.translation, this.ratio);
+                }, prevDuration, i.name);
+                prevDuration = i.duration;
+            }
         }
     }
     return obj;
