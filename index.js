@@ -159,30 +159,28 @@ function animaster() {
         })
     };
 
-    return obj
-}
 
-obj.reset = function (element) {
-    resetFadeOut(element);
-    resetMoveAndScale(element);
-}
+    obj.reset = function (element) {
+        resetFadeOut(element);
+        resetMoveAndScale(element);
+    }
 
-function resetFadeIn(element) {
-    element.style.transitionDuration = null;
-    element.classList.remove('show');
-}
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+    }
 
-function resetFadeOut(element) {
-    element.style.transitionDuration = null;
-    element.classList.remove('hide');
-}
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+    }
 
-function resetMoveAndScale(element) {
-    element.style.transform = null;
-    element.style.transitionDuration = null;
-}
+    function resetMoveAndScale(element) {
+        element.style.transform = null;
+        element.style.transitionDuration = null;
+    }
 
-return obj;
+    return obj;
 }
 
 function getTransform(translation, ratio) {
