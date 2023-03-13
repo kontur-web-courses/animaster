@@ -46,6 +46,17 @@ function animaster () {
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+
+        moveAndHide(element, duration){
+            move(element, duration * 2/5, [100, -20]);
+            fadeOut(element, duration * 3/5);
+        },
+
+        showAndHide(element, duration){
+            fadeIn(element, duration * 1 / 3);
+            fadeOut(element, duration * 2 / 3);
         }
     }
 }
