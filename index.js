@@ -67,14 +67,23 @@ function animaster(){
     }
 
     function heartBeating(element){
-        
+        let interval = setInterval(() => {
+            element.style.transitionDuration = `${500}ms`;
+            element.style.transform = getTransform(null, 1.4);
+            setTimeout(() => {
+                element.style.transitionDuration = `${500}ms`;
+                element.style.transform = getTransform(null, 1);
+            }, 500)
+        }, 1000);
+        return {stop: () => clearInterval(interval)};
     }
 
-    return {scale, move, fadeIn, fadeOut, showAndHide, moveAndHide}
+    return {scale, move, fadeIn, fadeOut, showAndHide, heartBeating, moveAndHide}
 }
 
 function addListeners() {
     let anim = animaster()
+    let stopHb;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -103,6 +112,16 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             anim.showAndHide(block, 5000);
+        });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            stopHb = anim.heartBeating(block, 5000);
+        });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            stopHb.stop();
         });
 }
 
