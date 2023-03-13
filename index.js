@@ -3,7 +3,7 @@ addListeners();
 function createStep(operationName, durationStep, extraParams) {
     return step = {
         operationName: operationName,
-        stepDuration: durationStep,
+        duration: durationStep,
         extraParams: extraParams
     }
 }
@@ -24,7 +24,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(500, {x: 0, y:40}).addMove(500, {x: 40, y:0}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -144,19 +144,22 @@ function animaster() {
     }
 
     obj.addMove = function (duration, translation) {
-        this._steps.push(createStep('move', duration, translation));
+        obj._steps.push(createStep('move', duration, translation));
         return obj
     }
 
     obj.play = function (objToBeAnimated) {
-
-        this._steps.forEach((value, index, array) => {
+        obj._steps.forEach((value, index, array) => {
+            console.log(value);
             if (value.operationName === 'move') {
-                this.move(value.duration, value.extraParams);
+                setTimeout(() => {
+                    obj.move(objToBeAnimated, value.duration, value.extraParams)
+                }, value.duration);
             } else {
 
             }
-        })
+        });
+        obj._steps = [];
     };
 
 
