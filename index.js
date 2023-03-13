@@ -40,7 +40,13 @@ function addListeners() {
     document.getElementById('heartBeating')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 500);
+            let stop = animaster().heartBeating(block, 500);
+            window.StopHeartBeating = stop
+        });
+
+        document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            window.StopHeartBeating();
         });
 }
 
@@ -103,10 +109,11 @@ function animaster() {
         },
 
         heartBeating(element, duration) {
-            setInterval(() => {
+            let timerId = setInterval(() => {
                 this.scale(element, duration, 1.4)
                 setTimeout(() => this.scale(element, duration, 1), duration)
             }, duration * 2)
+            return clearInterval.bind(null, timerId);
         }
     }
 }
