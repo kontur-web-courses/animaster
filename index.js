@@ -34,6 +34,17 @@ function animaster() {
         },
 
         /**
+         * Блок плавно скрывается в прозрачный.
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        fadeOut(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+
+        /**
          * Функция, передвигающая элемент
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
