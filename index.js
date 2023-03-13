@@ -22,7 +22,8 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            // animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -90,6 +91,7 @@ function animaster() {
     }
 
     return {
+        _steps: [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -108,21 +110,25 @@ function animaster() {
         },
 
         showAndHide(element, duration) {
-            this.fadeIn(element,duration/3);
+            this.fadeIn(element, duration / 3);
             let out = this.fadeOut.bind(this);
-            setTimeout(()=>{out(element, duration/3);}, duration/3)
+            setTimeout(() => {
+                out(element, duration / 3);
+            }, duration / 3)
         },
 
         heartBeating(element) {
             let f = () => {
                 this.scale(element, 500, 1.4);
                 let scale = this.scale.bind(this);
-                setTimeout(()=>scale(element, 500, 1), 500)
+                setTimeout(() => scale(element, 500, 1), 500)
             }
             f = f.bind(this)
             let id = setInterval(f, 1000);
             return {
-                stop() {clearInterval(id);}
+                stop() {
+                    clearInterval(id);
+                }
             }
         },
 
@@ -164,7 +170,7 @@ function animaster() {
 
         play(element) {
             let i = 0;
-            setTimeout(function tick() {
+            let tick = () => {
                 const {animationName, durationMS, params} = this._steps[i];
                 this[animationName](element, durationMS, ...params);
                 i += 1;
@@ -172,7 +178,26 @@ function animaster() {
                 {
                     setTimeout(tick, durationMS);
                 }
-            })
+            }
+            tick = tick.bind(this);
+            setTimeout(tick, 0)
+        },
+
+        addMove(duration, transition) {
+            this._steps.push(new AnimationStruct("move", duration, [transition]));
+            return this;
+        },
+        addScale(duration, ratio) {
+            this._steps.push(new AnimationStruct("scale", duration, [ratio]));
+            return this;
+        },
+        addFadeIn(duration) {
+            this._steps.push(new AnimationStruct("fadeIn", duration, []));
+            return this;
+        },
+        addFadeOut(duration) {
+            this._steps.push(new AnimationStruct("fadeOut", duration, []));
+            return this;
         }
     }
 }
