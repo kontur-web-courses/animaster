@@ -52,10 +52,20 @@ function animaster() {
             element.classList.remove('hide');
             element.classList.add('show');
         },
+        'resetFadeIn': function fadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
         'fadeOut': function fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        'resetFadeOut': function fadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
         },
         'move': function move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
@@ -64,6 +74,10 @@ function animaster() {
         'scale': function scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+        'resetMoveAndScale': function rsms(elment) {
+            elment.style.transitionDuration = null;
+            elment.style.transform = null;
         },
         'showAndHide': function scale(element, duration) {
             this.fadeIn(element, duration / 3);
@@ -74,16 +88,15 @@ function animaster() {
                 this.scale(element, 500, 1.4);
                 setTimeout(() => this.scale(element, 500, 1), 500);
             }, 1000);
-            return function stop()
-            {
+            return function stop() {
                 clearInterval(beating);
             };
         },
         'moveAndHide': function moveAndHide(element, duration) {
-            let moveTime = (2/5) * duration;
-            let fadeOutTime = (3/5) * duration;
-            this.move(element, moveTime, {x:100, y:10});
-            setInterval(()=>this.fadeOut(element, fadeOutTime), moveTime);
+            let moveTime = (2 / 5) * duration;
+            let fadeOutTime = (3 / 5) * duration;
+            this.move(element, moveTime, {x: 100, y: 10});
+            setInterval(() => this.fadeOut(element, fadeOutTime), moveTime);
         },
     }
 }
