@@ -1,6 +1,10 @@
 addListeners();
 
+anim = animaster();
+
 function addListeners() {
+    let stopBeatingHeartObj;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -22,7 +26,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            stopBeatingHeartObj = anim.heartBeating(block);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            stopBeatingHeartObj.stop();
         });
 
     document.getElementById('movePlay')
@@ -46,6 +56,9 @@ function addListeners() {
 
 
 function animaster() {
+    let increaseHeartSizeTime;
+    let decreaseHeartSizeTime;
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -74,13 +87,24 @@ function animaster() {
         },
 
         heartBeating(element) {
+            clearInterval(increaseHeartSizeTime);
+            clearInterval(decreaseHeartSizeTime);
+
             this.scale(element, 500, 1.4);
-            setTimeout(() => {
+            decreaseHeartSizeTime = setTimeout(() => {
                 this.scale(element, 500, 1 / 1.4);
-            }, 500);
-            setTimeout(() => {
+            }, 500)
+
+            increaseHeartSizeTime = setTimeout(() => {
                 this.heartBeating(element);
-            }, 995);
+            }, 1000);
+
+            return {
+                stop() {
+                    clearInterval(increaseHeartSizeTime);
+                    clearInterval(decreaseHeartSizeTime);
+                }
+            }
         },
 
         /**
