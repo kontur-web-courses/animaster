@@ -222,23 +222,29 @@ function animaster() {
         play: function play(element){
             let cur_dur = 0;
             for (let step of this._steps){
-                setTimeout(() => {
-                    switch (step.operation){
-                        case 'move':
+                switch (step.operation){
+                    case 'move':
+                        setTimeout(() => {
                             this.move(element, step.duration, step.translation);
-                            break;
-                        case 'scale':
-                            this.scale(element, step.duration, step.ratio)
-                            break;
-                        case 'fadeIn':
+                        }, cur_dur);
+                        break;
+                    case 'scale':
+                        setTimeout(() => {
+                            this.scale(element, step.duration, step.ratio);
+                        }, cur_dur);
+                        break;
+                    case 'fadeIn':
+                        setTimeout(() => {
                             this.fadeIn(element, step.duration);
-                            break;
-                        case 'fadeOut':
-                            this.fadeOut(element, step.duration)
-                            break;
-                    }
-                    cur_dur += step.duration;
-                }, cur_dur);
+                        }, cur_dur);
+                        break;
+                    case 'fadeOut':
+                        setTimeout(() => {
+                            this.fadeOut(element, step.duration);
+                        }, cur_dur);
+                        break;
+                }
+                cur_dur += step.duration;
             }
         }
     }
