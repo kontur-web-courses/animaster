@@ -73,7 +73,19 @@ function animaster() {
             for(const step of this._steps)
                 step(element);
         },
-    }
+        heartBeating(element) {
+            let heartTimer;
+            return {
+                start : () => heartTimer = setInterval(() => {
+                        this.scale(element, 500, 1.4);
+                        setTimeout(() => this.scale(element, 500, 1/1.4), 500);}, 1000),
+                stop : () => {
+                    clearInterval(heartTimer);
+                }
+            }
+        }
+
+     }
 
 }
 
@@ -155,6 +167,19 @@ function addListeners() {
             const block = document.getElementById('customAnimationBlock');
             customAnimation.play(block);
             console.log('looool');
+        });
+
+        const heartBeating = animaster().heartBeating(document.getElementById('heartBeatingBlock'));
+
+        document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            heartBeating.start();
+        });
+        debugger;
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            heartBeating.stop();
         });
 }
 
