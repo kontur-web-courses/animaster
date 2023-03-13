@@ -29,6 +29,12 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 5000)
         });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
 }
 
 /**
@@ -36,6 +42,11 @@ function addListeners() {
  * @param element — HTMLElement, который надо анимировать
  * @param duration — Продолжительность анимации в миллисекундах
  */
+// function fadeIn(element, duration) {
+//     element.style.transitionDuration =  `${duration}ms`;
+//     element.classList.remove('hide');
+//     element.classList.add('show');
+// }
 
 /**
  * Функция, передвигающая элемент
@@ -89,6 +100,10 @@ function animaster() {
         moveAndHide: function moveAndHide(block, time){
             this.move(block,time*2/5, {x: 100, y: -20});
             this.fadeOut(block,time*3/5);
+        },
+        showAndHide: function showAndHide(element, duration){
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
         }
     };
 
