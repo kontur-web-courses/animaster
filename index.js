@@ -4,7 +4,7 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().addFadeIn(5000).play(block);
+            animaster().addColor(5000, "red").play(block);
         });
 
     document.getElementById('fadeOutBlock')
@@ -151,6 +151,11 @@ function animaster() {
             return this.play(element);
         },
 
+        color(element, duration, color) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.backgroundColor = color;
+        },
+
         play(element, cycled = true) {
             const classList = element.classList;
             const style = element.style;
@@ -200,6 +205,10 @@ function animaster() {
         },
         addDelay(duration) {
             this._steps.push(new AnimationStruct("delay", duration, []));
+            return this;
+        },
+        addColor(duration, color){
+            this._steps.push(new AnimationStruct("color", duration, [color]))
             return this;
         },
 
