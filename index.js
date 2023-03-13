@@ -105,10 +105,15 @@ function animaster() {
 
         heartBeating(element) {
             const duration = 500;
-            setInterval(() => {
+            const timerId = setInterval(() => {
             this.scale(element, duration, 1.4);
-            setTimeout(() => this.scale(element, duration, 1 / 1.4), duration);
-            }, 2 * duration);
+            setTimeout(() => this.scale(element, duration, 1 / 1.4), duration);}, 2 * duration);
+            
+            return {
+                stop() {
+                    clearTimeout(timerId);
+                }
+            }
         },
 
         getTransform(translation, ratio) {
