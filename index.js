@@ -19,6 +19,11 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             master.scale(block, 1000, 1.25);
         });
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            master.fadeOut(block, 5000);
+        });
 }
 
 
