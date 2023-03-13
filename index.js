@@ -5,13 +5,24 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            animaster().fadeIn(block, 2000);
+        });
+
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().resetFadeIn(block);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
+        });
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().resetFadeOut(block);
         });
 
     document.getElementById('movePlay')
@@ -28,7 +39,12 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block);
+            animations['moveAndHide'] = animaster().moveAndHide(block);
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animations['moveAndHide'].resetMoveAndHide(block);
         });
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
@@ -121,10 +137,29 @@ function animaster() {
             element.style.transitionDuration = `${800}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+            return {
+                resetMoveAndHide: function (element) {
+                    element.style.animationDuration = null;
+                    element.classList.remove('hide');
+                    element.classList.add('show');
+                    element.style.transform = null;
+                }
+            }
         },
         showAndHide: function (element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
+        },
+        resetFadeIn: function (element) {
+            element.style.animationDuration = null;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        resetFadeOut: function (element) {
+            element.style.animationDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
         }
+
     }
 }
