@@ -88,6 +88,8 @@ function addListeners() {
 function animaster() {
     let increaseHeartSizeTime;
     let decreaseHeartSizeTime;
+    let moveAndHideTimeout;
+    let _steps = [];
 
     return {
         /**
@@ -96,9 +98,21 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+            this.addFadeIn(duration).play(element);
+        },
+
+        addFadeIn(duration) {
+            _steps.push({
+                func(element)
+                {
+                    element.style.transitionDuration = `${duration}ms`;
+                    element.classList.remove('hide');
+                    element.classList.add('show');
+                },
+                duration,
+            });
+
+            return this;
         },
 
         resetFadeIn(element) {
@@ -108,9 +122,21 @@ function animaster() {
         },
 
         fadeOut(element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('show');
-            element.classList.add('hide');
+            this.addFadeOut(duration).play(element);
+        },
+
+        addFadeOut(duration) {
+            _steps.push({
+                func(element)
+                {
+                    element.style.transitionDuration = `${duration}ms`;
+                    element.classList.remove('show');
+                    element.classList.add('hide');
+                },
+                duration,
+            });
+
+            return this;
         },
 
         resetFadeOut(element, duration) {
@@ -122,13 +148,14 @@ function animaster() {
         moveAndHide(element, duration) {
             let moveTime = duration * 2 / 5;
             this.move(element, moveTime, {x: 100, y: 20});
-            setTimeout(() => {
+            moveAndHideTimeout = setTimeout(() => {
                 let hideTime = duration * 3 / 5;
                 this.fadeOut(element, hideTime);
             }, moveTime);
         },
 
         resetMoveAndHide(element) {
+            clearTimeout(moveAndHideTimeout);
             this.resetMoveAndScale(element);
             this.resetFadeOut(element);
         },
@@ -169,8 +196,19 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            this.addMove(duration, translation).play(element);
+        },
+
+        addMove(duration, translation) {
+            _steps.push({
+                func(element) {
+                    element.style.transitionDuration = `${duration}ms`;
+                    element.style.transform = getTransform(translation, null);
+                },
+                duration,
+            });
+
+            return this;
         },
 
         /**
@@ -180,16 +218,37 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            this.addScale(duration, ratio).play(element);
+        },
+
+        addScale(duration, ratio) {
+            _steps.push({
+                func(element)
+                {
+                    element.style.transitionDuration = `${duration}ms`;
+                    element.style.transform = getTransform(null, ratio);
+                },
+                duration,
+            });
+
+            return this;
         },
 
         showAndHide(element, duration){
             let time = duration/3.0
             this.fadeIn(element, time);
             setTimeout(() => {this.fadeOut(element, time)}, 2 * time);
-        }
+        },
 
+        play(element) {
+            let currentTimeout = 0;
+            for (let obj of _steps) {
+                setTimeout(() => obj.func(element), currentTimeout);
+                currentTimeout += obj.duration;
+            }
+
+            _steps = [];
+        }
     }
 }
 
