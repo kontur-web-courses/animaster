@@ -99,6 +99,16 @@ function animaster(){
                     debugger;
                     clearInterval(a);
             }}
+        },
+        addMove: function () {
+            this._steps.push(step)
+            return this
+        },
+        play: function(elem) {
+            for (let action of this._steps){
+                elem.action()
+            }
         }
+        _steps: []
     }
 }
