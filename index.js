@@ -17,7 +17,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(500, {x: 20, y:20}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -60,9 +60,30 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     return {
+        _steps: [],
+
+        play: function(element) {
+            for (let step of this._steps) {
+                step.action(element);
+            }
+            this._steps = [];
+        },
+
         move: function (element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
+        },
+
+        addMove: function (duration, translation) {
+            this._steps.push({
+                action: function (element) {
+                    animaster().move(element, duration, translation);
+                },
+                duration: duration,
+                translation: translation
+            })
+
+            return this;
         },
 
         fadeIn: function (element, duration) {
