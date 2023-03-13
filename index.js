@@ -94,7 +94,7 @@ function animaster() {
 
         addMove: function (duration, translation) {
             this._steps.push({
-                name: "scale",
+                name: "move",
                 duration: duration,
                 translation: translation
             });
@@ -179,6 +179,16 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             moveAndHideAnimaster.resetMoveAndHide(block);
+        });
+
+    document.getElementById('TestPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('TestBlock');
+            const customAnimation = animaster()
+                .addMove(200, {x: 40, y: 40})
+            alert(customAnimation._steps);
+            console.log(customAnimation._steps);
+            customAnimation.play(block);
         });
 }
 
