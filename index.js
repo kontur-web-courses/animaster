@@ -95,9 +95,10 @@ function animaster() {
         },
 
         play(element) {
+            let wait = 0;
             for (let step of this._steps) {
-                step.func(element, step.duration, step.argument);
-                setTimeout(() => '', 200);
+                setTimeout(() => step.func(element, step.duration, step.argument), wait);
+                wait += step.duration;
             }
         },
         /**
