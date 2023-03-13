@@ -1,4 +1,4 @@
-addListeners();
+
 
 function addListeners() {
     document.getElementById('fadeInPlay')
@@ -56,6 +56,18 @@ function addListeners() {
             animaster().move(block, 1000, {x: 100, y: 10});
 
         });
+
+    const worryAnimationHandler = animaster()
+        .addStep('move',200, {x: 80, y: 0})
+        .addStep('move',200, {x: 0, y: 0})
+        .addStep('move',200, {x: 80, y: 0})
+        .addStep('move',200, {x: 0, y: 0})
+        .buildHandler();
+
+    document
+        .getElementById('worryBlock')
+        .addEventListener('click', worryAnimationHandler);
+
 
 }
 
@@ -203,4 +215,13 @@ class Animaster {
         this.addStep('scale',500, 1)
         return this.play(element,true);
     }
+
+    buildHandler(){
+        let animaster = this;
+        return  function() {
+            animaster.play(this);
+        }
+    }
 }
+
+addListeners();
