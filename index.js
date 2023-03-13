@@ -62,7 +62,8 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            stopMoveAndHide = anim.moveAndHide(block, 1000);
+            anim.addMoveAndHide(1000, {x: 100, y: 10}).play(block);
+            stopMoveAndHide = anim.moveAndHide(block, 1000, {x: 100, y: 20});
         });
     document.getElementById('moveAndHideReset')
         .addEventListener('click', function () {
@@ -156,8 +157,8 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
 
-        moveAndHide: function moveAndHide(element, duration){
-            this.move(element, duration * 2/5, {x: 100, y: 20});
+        moveAndHide: function moveAndHide(element, duration, translation){
+            this.move(element, duration * 2/5, translation);
             const id = setTimeout(() => this.fadeOut(element, duration * 3/5), duration * 2/5);
             return {
                 stop: function () {
@@ -169,6 +170,10 @@ function animaster() {
         showAndHide: function showAndHide(element, duration){
             this.fadeIn(element, duration * 1/3);
             setTimeout(() => this.fadeOut(element, duration * 1/3), duration * 2/3);
+        },
+
+        delay: function delay(element, duration){
+            setTimeout(() => {}, duration);
         },
 
         addMove: function addMove(duration, translation){
@@ -205,6 +210,23 @@ function animaster() {
             return this;
         },
 
+        addDelay: function addDelay(duration){
+            this._steps.push({
+                operation: 'delay',
+                duration,
+            });
+            return this;
+        },
+
+        addMoveAndHide: function addMoveAndHide(duration, translation){
+            this._steps.push({
+                operation: 'moveAndHide',
+                duration,
+                translation,
+            });
+            return this;
+        },
+
         play: function play(element){
             for (let step of this._steps){
                 switch (step.operation){
@@ -219,6 +241,9 @@ function animaster() {
                         break;
                     case 'fadeOut':
                         this.fadeOut(element, step.duration)
+                        break;
+                    case 'delay':
+                        this.delay(element, step.duration);
                         break;
                 }
             }
