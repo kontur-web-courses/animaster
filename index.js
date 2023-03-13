@@ -1,6 +1,7 @@
 addListeners();
 
 function addListeners() {
+    let hb;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -10,6 +11,7 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
+            animaster()
             fadeOut(block, 5000);
         });
 
@@ -39,7 +41,11 @@ function addListeners() {
     document.getElementById('heartBreathPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBreathBlock');
-            animaster().heartBreath(block);
+            hb = animaster().heartBreath(block);
+        });
+    document.getElementById('heartBreathStop')
+        .addEventListener('click', function () {
+            hb.Reset();
         });
 }
 
@@ -101,12 +107,18 @@ function animaster() {
         },
 
         heartBreath(element) {
-            setInterval(() => {
+            let refreshIntervalId = setInterval(() => {
                 animaster().scale(element, 500, 1.4);
+                setTimeout(() => {
+                    animaster().scale(element, 500, 1)
+                }, 500);
+            }, 1000);
 
-                animaster().scale(element, 500, 1 / 1.4);
-
-            }, 500);
+            return {
+                Reset() {
+                    clearInterval(refreshIntervalId);
+                }
+            }
         },
     }
 
@@ -120,4 +132,19 @@ function animaster() {
         }
         return result.join(' ');
     }
+
+    // function resetFadeIn(element) {
+    //     element.classList.add('hide');
+    //     element.classList.remove('show');
+    // }
+    //
+    // function resetFadeOut(element) {
+    //     element.classList.remove('hide');
+    //     element.classList.add('show');
+    // }
+    //
+    // function resetMoveAndScale(element){
+    //     animaster().move(element, 0, {x: -100, y: -20});
+    //     resetFadeOut(element);
+    // }
 }
