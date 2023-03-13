@@ -38,14 +38,27 @@ function animaster() {
             element.classList.add('hide');
         },
 
-        moveAndHide: (element, duration) => {
-            element.style.transitionDuration = `${duration * 0.4}ms`;
-            element.style.transform = getTransform({x: 100, y: 20}, null);
-            setTimeout(() => {
-                element.style.transitionDuration = `${duration * 0.6}ms`;
-                element.classList.remove('show');
-                element.classList.add('hide');
-                },duration * 0.4)
+        moveAndHide: () => {
+            let superElement;
+            return {
+                play: (element, duration) => {
+                    superElement = element;
+                    element.style.transitionDuration = `${duration * 0.4}ms`;
+                    element.style.transform = getTransform({x: 100, y: 20}, null);
+                    setTimeout(() => {
+                        element.style.transitionDuration = `${duration * 0.6}ms`;
+                        element.classList.remove('show');
+                        element.classList.add('hide');
+                    },duration * 0.4);
+                },
+                reset: () => {
+                    superElement.style.transitionDuration = `0s`;
+                    superElement.classList.remove('hide');
+                    superElement.classList.add('show');
+                    superElement.style.transform = getTransform({x: 0, y: 0}, null);
+
+                }
+            }
         },
 
         showAndHide: (element, duration) => {
@@ -105,10 +118,16 @@ function addListeners() {
             animaster().fadeOut(block, 1000);
         });
 
+    const moveAndHideFunc = animaster().moveAndHide();
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            moveAndHideFunc.play(block, 1000);
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            moveAndHideFunc.reset();
         });
 
     document.getElementById('showAndHidePlay')
@@ -117,8 +136,7 @@ function addListeners() {
             animaster().showAndHide(block, 1000);
         });
 
-    const block = document.getElementById('heartBeatingBlock');
-    const heartBeating = animaster().heartBeating(block);
+    const heartBeating = animaster().heartBeating(document.getElementById('heartBeatingBlock'));
 
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
