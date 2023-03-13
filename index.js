@@ -120,8 +120,13 @@ function addListeners() {
         });
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
             stopHb.stop();
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            resetMoveAndScale(block);
+            resetFadeOut(block);
         });
 }
 
@@ -134,4 +139,21 @@ function getTransform(translation, ratio) {
         result.push(`scale(${ratio})`);
     }
     return result.join(' ');
+}
+
+function resetFadeIn(element){
+    element.style.transitionDuration = "0ms";
+    element.classList.remove('show');
+    element.classList.add('hide');
+}
+
+function resetFadeOut(element){
+    element.style.transitionDuration = "0ms";
+    element.classList.remove('hide');
+    element.classList.add('show');
+}
+
+function resetMoveAndScale(element){
+    element.style.transitionDuration = "0ms";
+    element.style.transform = null;
 }
