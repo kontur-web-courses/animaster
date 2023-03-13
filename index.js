@@ -124,10 +124,21 @@ function animaster() {
             let timeout = 0;
             while (this._steps.length > 0) {
                 let current = this._steps.shift();
-                if (current.name === 'move') {
-                   setTimeout(() => this.move(element, current.duration, current.coordinates));
-                   timeout+=current.duration;
+                switch (current.name) {
+                    case "move":
+                        setTimeout(() => this.move(element, current.duration, current.coordinates));
+                        break;
+                    case "scale":
+                        setTimeout(() => this.scale(element, current.duration, current.ratio));
+                        break;
+                    case "fadeIn":
+                        setTimeout(() => this.fadeIn(element, current.duration));
+                        break;
+                    case "fadeOut":
+                        setTimeout(() => this.move(element, current.duration));
+                        break;
                 }
+                timeout+=current.duration;
             }
         },
         _steps: []
