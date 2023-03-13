@@ -99,7 +99,6 @@ function animaster () {
             
             console.log(element);
 
-
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
