@@ -98,87 +98,113 @@ function animaster () {
     }
 
     return {
-        _steps: [],
+      _steps: [],
 
-        fadeIn (element, duration) {
-            
-            console.log(element);
+      fadeIn(element, duration) {
+        console.log(element);
 
-            element.style.transitionDuration =  `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove("hide");
+        element.classList.add("show");
+      },
+      fadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove("show");
+        element.classList.add("hide");
+      },
+      move(element, duration, translation) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+      },
+      scale(element, duration, ratio) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(null, ratio);
+      },
 
-        },
-        fadeOut (element, duration) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.classList.remove('show');
-            element.classList.add('hide');
-        },
-        move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
-        },
-        scale(element, duration, ratio) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
-        },
+      moveAndHide(element, duration) {
+        console.log(element);
 
+        this.addMove(duration * 2 / 5, {x: 100, y : 20})
+            .addFadeOut(duration * 3 / 5)
+            .play(element);
+      },
 
-        moveAndHide(element, duration){
-            console.log(element);
-            this.move(element, duration * 2 / 5, { x: 100, y: 20 });
-            setTimeout(this.fadeOut.bind(this, element, duration), duration * 2 / 5);
-        },
+      showAndHide(element, duration) {
+        this.addFadeIn(duration * 1 / 3).addDelay(duration * 1 / 3).addFadeOut(duration * 1 / 3).play(element);
+      },
 
-        showAndHide(element, duration){
-            this.fadeIn(element, duration * 1 / 3);
-            console.log("showed");
-            setTimeout(this.fadeOut.bind(this, element, duration), duration * 2 / 3);
-        },
+      heartBeating(element) {
 
-        heartBeating(element){
-            let f = () => {
-              this.scale(element, 500, 1.4);
-              setTimeout(this.scale.bind(this, element, 500, 1 / 1.4), 500);
-            };
-            
-            let f1 = setInterval(f, 1000);
+        return this.addScale(500, 1.4)
+          .addScale(500, 1 / 1.4)
+          .play(element, cycled = true);
 
-            const obj = {
+      },
+
+      addDelay(duration) {
+        this._steps.push([(element = null) => {}, duration]);
+        return this;
+      },
+
+      addFadeIn(duration) {
+        this._steps.push([this.fadeIn, duration]);
+        return this;
+      },
+
+      addFadeOut(duration) {
+        this._steps.push([this.fadeOut, duration]);
+        return this;
+      },
+
+      addMove(duration, translation) {
+        console.log("Added move");
+        this._steps.push([this.move, duration, translation]);
+        return this;
+      },
+
+      addScale(duration, ratio) {
+        console.log("Added scale");
+        this._steps.push([this.scale, duration, ratio]);
+        return this;
+      },
+
+      play(element, cycled=false) {
+        let prevDur = this.getDuration();
+        console.log(prevDur);
+        let hepler;
+        if (cycled) 
+            helper = setInterval(this.play_helper.bind(this, element, true), prevDur);
+        else this.play_helper(element, false);
+        if (cycled)
+            return {
                 stop(){
-                    console.log("STOP")
-                    clearTimeout(f1);
+                    console.log("STOP + STOP")
+                    clearTimeout(hepler);
                 }
-            }
-            
-            return obj;
-        },
+        }
 
-        addDelay(duration){
-            this._steps.push([(element=null) => {}, duration])
-            return this;
-        },
-            
-        addMove(duration, translation) {
-            console.log('Added move')
-            this._steps.push([this.move, duration, translation]);
-            return this;
-        },
+      },
 
-        addScale(duration, ratio) {
-            console.log('Added scale')
-            this._steps.push([this.scale, duration, ratio]);
-            return this;
-        },
-
-        play(element) {
+        play_helper(element, cycled){
+            console.log("Awake play");
             let prevDur = 0;
-            for (const step of this._steps.map(e => e)) {
+            for (const step of this._steps.map((e) => e)) {
                 const awake = step[0].bind(...[this, element, ...step.slice(1)]);
                 setTimeout(awake, prevDur);
                 prevDur += step[1];
-                this._steps = this._steps.slice(1);
+                if (!cycled)
+                    this._steps = this._steps.slice(1);
             }
+        },
+
+        getDuration(){
+            let duration = 0;
+            for (const step of this._steps) {
+                duration +=  step[1];
+            }
+            return duration;
         }
-    }
+
+      
+    };
 }
