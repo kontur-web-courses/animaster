@@ -39,6 +39,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
+            let stopBeat = animasterObject.heartBeating(block, 1000, 1.25);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
             animasterObject.heartBeating(block, 1000, 1.25);
         });
 }
