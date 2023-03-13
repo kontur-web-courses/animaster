@@ -75,13 +75,19 @@ function addListeners() {
             timer.stop();
         });
 
-    document.getElementById('addMovePlay')
+    document.getElementById('customAnimation')
         .addEventListener('click', function () {
-            const block = document.getElementById('addMoveBlock');
-            timer = animaster().addMove(200, {x: 200, y: 0})
+            const block = document.getElementById('customAnimationBlock');
+            const customAnimation = animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
                 .addMove(200, {x: 0, y: 0})
-                .addMove(200, {x: 200, y: 0})
-                .addMove(200, {x: 0, y: 0}).play(block);
+                .addScale(800, 1);
+            customAnimation.play(block);
         });
 }
 
@@ -89,16 +95,59 @@ function animaster() {
     return {
         _steps: [],
 
-        addMove(duration, argument) {
-            this._steps.push({func: this.move, duration: duration, argument: argument})
+        addMove(duration, translation) {
+            this._steps.push({
+                method: this.move,
+                duration: duration,
+                translation: translation,
+                ratio: null})
+            return this;
+        },
+
+        addScale(duration, ratio){
+            this._steps.push({
+                method: this.scale,
+                name: 'scale',
+                duration: duration,
+                translation: null,
+                ratio: ratio,
+            })
+            return this;
+        },
+
+        addFadeIn(duration){
+            this._steps.push({
+                method: this.fadeIn,
+                name: 'fadeIn',
+                duration: duration,
+                translation: null,
+                ratio: null,
+            })
+            return this;
+        },
+
+        addFadeOut(duration){
+            this._steps.push({
+                method: this.fadeOut,
+                name: 'fadeOut',
+                duration: duration,
+                translation: null,
+                ratio: null,
+            })
             return this;
         },
 
         play(element) {
             let wait = 0;
             for (let step of this._steps) {
-                setTimeout(() => step.func(element, step.duration, step.argument), wait);
-                wait += step.duration;
+                if (step.translation !== null) {
+                    setTimeout(() => step.method(element, step.duration, step.translation), wait)
+                } else if (step.ratio !== null) {
+                    setTimeout(() => step.method(element, step.duration, step.ratio), wait)
+                } else {
+                    setTimeout(() => step.method(element, step.duration), wait)
+                }
+                wait += step.duration
             }
         },
         /**
