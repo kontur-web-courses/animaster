@@ -37,11 +37,16 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             master.scale(block, 1000, 1.25);
         });
-
+    let heart;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            master.heartBeating(block);
+            heart = master.heartBeating(block);
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            heart.stop();
         });
 }
 
@@ -53,10 +58,15 @@ function animaster() {
         },
 
         heartBeating (element) {
-            setInterval(()=> {
+            const id = setInterval(()=> {
                 master.scale(element, 500, 1.4);
                 setTimeout(()=>master.scale(element, 500, 1), 1000)
             }, 2000)
+            return {
+                stop() {
+                    clearInterval(id)
+                }
+            };
         },
 
         showAndHide(element, duration) {
