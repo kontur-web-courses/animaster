@@ -108,11 +108,46 @@ function animaster() {
             return this;
         },
 
+        addScale: function addScale(duration, ratio){
+            this._steps.push({
+                operation: 'scale',
+                duration,
+                ratio,
+            });
+            return this;
+        },
+
+        addFadeIn: function addFadeIn(duration){
+            this._steps.push({
+                operation: 'fadeIn',
+                duration,
+            });
+            return this;
+        },
+
+        addFadeOut: function addFadeOut(duration){
+            this._steps.push({
+                operation: 'fadeOut',
+                duration,
+            });
+            return this;
+        },
+
         play: function play(element){
             for (let step of this._steps){
                 switch (step.operation){
                     case 'move':
                         this.move(element, step.duration, step.translation);
+                        break;
+                    case 'scale':
+                        this.scale(element, step.duration, step.ratio)
+                        break;
+                    case 'fadeIn':
+                        this.fadeIn(element, step.duration);
+                        break;
+                    case 'fadeOut':
+                        this.fadeOut(element, step.duration)
+                        break;
                 }
             }
         }
