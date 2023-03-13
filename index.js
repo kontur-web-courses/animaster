@@ -69,6 +69,10 @@ function animaster() {
                 this.scale(element, 500, 1.4);
                 setTimeout(() => this.scale(element, 500, 1 / 1.4), 500);
             }, 1000);
+            return stop()
+            {
+                clearInterval(beating);
+            };
         },
         'moveAndHide': function moveAndHide(element, duration) {
             let moveTime = (2/5) * duration;
