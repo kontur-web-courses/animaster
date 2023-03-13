@@ -92,6 +92,10 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
+        },
+        moveAndHide: function(element, duration, translation){
+            this.move(element, duration * 2/5, translation)
+            this.fadeOut(element, duration * 3/5, translation)
         }
     }
 }
