@@ -96,6 +96,12 @@ function animaster(){
         moveAndHide: function(element, duration, translation){
             this.move(element, duration * 2/5, translation)
             this.fadeOut(element, duration * 3/5, translation)
+        },
+        showAndHide: function (element, duration){
+            this.fadeIn(element, duration * 1/3)
+            setTimeout(function() {
+            }, duration * 1/3);
+            this.fadeOut(element, duration * 1/3)
         }
     }
 }
