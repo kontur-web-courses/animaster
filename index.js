@@ -4,13 +4,13 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            animaster().addFadeIn(5000).play(block);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000);
+            animaster().addFadeOut(5000).play(block);
         });
 
     document.getElementById('showAndHidePlay')
@@ -22,14 +22,13 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            // animaster().move(block, 1000, {x: 100, y: 10});
             animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
     let heartStop;
     document.getElementById('heartPlay')
@@ -117,16 +116,7 @@ function animaster() {
         heartBeating(element) {
             this.addScale(500, 1.4);
             this.addScale(500, 1);
-            let f = () => {
-                this.play(element);
-            }
-            f = f.bind(this)
-            let id = setInterval(f, 1000);
-            return {
-                stop() {
-                    clearInterval(id);
-                }
-            }
+            this.play(element, true);
         },
 
         /**
@@ -168,12 +158,16 @@ function animaster() {
             }
         },
 
-        play(element) {
+        play(element, cycled = true) {
             let i = 0;
             let tick = () => {
                 const {animationName, durationMS, params} = this._steps[i];
                 this[animationName](element, durationMS, ...params);
                 i += 1;
+                if (cycled)
+                {
+                    i %= this._steps.length;
+                }
                 if (i !== this._steps.length) {
                     setTimeout(tick, durationMS);
                 }
