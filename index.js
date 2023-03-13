@@ -93,7 +93,7 @@ function animaster() {
 
         showAndHide: function showAndHide(element, duration){
             this.fadeIn(element, duration * 1/3);
-            setTimeout(() => this.fadeOut(duration * 1/3), duration * 2/3);
+            setTimeout(() => this.fadeOut(element, duration * 1/3), duration * 2/3);
         }
     }
 }
