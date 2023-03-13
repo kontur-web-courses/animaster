@@ -34,7 +34,7 @@ function addListeners() {
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animasterObject.showAndHide(block, 1000, 1.25);
+            animasterObject.showAndHide(block, 1000);
         });
 }
 
@@ -53,15 +53,15 @@ function animaster() {
 
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
             element.classList.add('hide');
-            element.classList.add('none');
+            //element.classList.add('none');
         },
 
 
         showAndHide(element, duration) {
-            const stageDurationInMs = duration / 3;
-            this.fadeIn(element, stageDurationInMs);
-            setTimeout(this.fadeOut, stageDurationInMs, element, stageDurationInMs);
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => {this.fadeOut(element, duration / 3);}, duration * 2 / 3);
         },
 
         /**
