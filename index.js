@@ -1,29 +1,33 @@
 addListeners();
 
-const anims = getAnims();
-
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            anims.fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
+        });
+
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            anims.move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            anims.scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
 }
 
 
-function getAnims() {
+function animaster() {
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -34,6 +38,12 @@ function getAnims() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+        },
+
+        fadeOut(element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
         },
 
         /**
