@@ -7,16 +7,6 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
             anim.fadeIn(block, 5000);
-            // const customAnimation = anim
-            //     .addMove(200, {x: 40, y: 40})
-            //     .addScale(800, 1.3)
-            //     .addMove(200, {x: 80, y: 0})
-            //     .addScale(800, 1)
-            //     .addMove(200, {x: 40, y: -40})
-            //     .addScale(800, 0.7)
-            //     .addMove(200, {x: 0, y: 0})
-            //     .addScale(800, 1);
-            // customAnimation.play(block);
         });
 
     document.getElementById('fadeOutPlay')
@@ -36,7 +26,7 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             anim.scale(block, 1000, 1.25);
         });
-    
+
     document.getElementById("moveAndHidePlay")
       .addEventListener("click", function () {
         const block = document.getElementById("moveAndHideBlock");
@@ -60,7 +50,22 @@ function addListeners() {
       .addEventListener("click", function () {
         const block = document.getElementById("heartBeatBlock");
         heartBeat.stop();
-      }); 
+      });
+
+    document.getElementById('complexAnimation')
+        .addEventListener('click', function () {
+            const block = document.getElementById('complexBlock');
+            const customAnimation = anim
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1);
+            customAnimation.play(block);
+        });
 }
 
 function getTransform(translation, ratio) {
