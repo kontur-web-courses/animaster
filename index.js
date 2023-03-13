@@ -16,7 +16,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, { x: 100, y: 10 });
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
@@ -40,7 +40,7 @@ function addListeners() {
     document.getElementById('heartBeating')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            animaster().heartBeating(block, 500);
         });
 }
 
@@ -51,7 +51,7 @@ function animaster() {
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
-        */
+         */
         fadeIn(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
@@ -62,28 +62,26 @@ function animaster() {
          * Блок плавно исчезает.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
-        */
+         */
         fadeOut(element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.add('hide');
             element.classList.remove('show');
-        },
-        /**
+        }, /**
          * Функция, передвигающая элемент
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          * @param translation — объект с полями x и y, обозначающими смещение блока
-        */
+         */
         move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
-        },
-        /**
-        * Функция, увеличивающая/уменьшающая элемент
-        * @param element — HTMLElement, который надо анимировать
-        * @param duration — Продолжительность анимации в миллисекундах
-            * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
-        */
+        }, /**
+         * Функция, увеличивающая/уменьшающая элемент
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
+         */
         scale(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
@@ -104,13 +102,16 @@ function animaster() {
             setTimeout(() => this.fadeOut(element, durationPart), durationPart * 2)
         },
 
-        heartBeating(element) {
-            let duration = 500
-            this.scale(element, duration, 1.4)
-            setTimeout(() => this.scale(element, duration, 1), duration)
+        heartBeating(element, duration) {
+            setInterval(() => {
+                this.scale(element, duration, 1.4)
+                setTimeout(() => this.scale(element, duration, 1), duration)
+            }, duration * 2)
         }
     }
 }
+
+
 function getTransform(translation, ratio) {
     const result = [];
     if (translation) {
