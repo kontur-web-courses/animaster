@@ -36,16 +36,18 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animasterObject.showAndHide(block, 1000);
         });
+    let heartBeating = [];
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            let stopBeat = animasterObject.heartBeating(block, 1000, 1.25);
+            heartBeating.push(animasterObject.heartBeating(block, 1000, 1.25));
         });
 
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            animasterObject.heartBeating(block, 1000, 1.25);
+            heartBeating.forEach(element => {
+                element.stop();
+            });
         });
 }
 
@@ -105,13 +107,15 @@ function animaster() {
 
         heartBeating(element) {
             const duration = 500;
+            let timerIdInner;
             const timerId = setInterval(() => {
             this.scale(element, duration, 1.4);
-            setTimeout(() => this.scale(element, duration, 1 / 1.4), duration);}, 2 * duration);
+            timerIdInner = setTimeout(() => this.scale(element, duration, 1 / 1.4), duration);}, 2 * duration);
             
             return {
                 stop() {
                     clearTimeout(timerId);
+                    clearTimeout(timerIdInner);
                 }
             }
         },
