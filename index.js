@@ -59,7 +59,13 @@ function animaster() {
             element.classList.add('show');
         },
 
-        /**
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.add('hide');
+            element.classList.remove('show');
+            },
+
+    /**
          * Блок плавно скрывается в прозрачный.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
@@ -68,9 +74,15 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
-        },
+            },
 
-        /**
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
+            },
+
+    /**
          * Блок сдвигается и скрывается.
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
@@ -125,7 +137,13 @@ function animaster() {
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
-        showAndHide(element, duration) {
+
+        resetMoveAndScale(element) {
+            element.style.transitionDuration = null;
+            element.style.transform = null;
+        },
+
+    showAndHide(element, duration) {
             this.fadeIn(element, duration * 1 / 3);
             setTimeout(this.fadeOut, duration * 2 / 3, element, duration * 1 / 3);
         }
