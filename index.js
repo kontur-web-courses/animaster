@@ -75,20 +75,18 @@ function addListeners() {
                 .addEventListener('click', function () {animation.reset();})
         });
 
-    document.getElementById('customAnimationPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('customAnimationBlock');
-            animaster()
-                .addMove(200, {x: 40, y: 40})
-                .addScale(800, 1.3)
-                .addMove(200, {x: 80, y: 0})
-                .addScale(800, 1)
-                .addMove(200, {x: 40, y: -40})
-                .addScale(800, 0.7)
-                .addMove(200, {x: 0, y: 0})
-                .addScale(800, 1)
-                .play(block);
-        });
+    const customAnimationPlayHandler = animaster()
+        .addMove(200, {x: 40, y: 40})
+        .addScale(800, 1.3)
+        .addMove(200, {x: 80, y: 0})
+        .addScale(800, 1)
+        .addMove(200, {x: 40, y: -40})
+        .addScale(800, 0.7)
+        .addMove(200, {x: 0, y: 0})
+        .addScale(800, 1)
+        .buildHandler();
+
+    document.getElementById('customAnimationPlay').addEventListener('click', customAnimationPlayHandler);
 
 }
 
@@ -151,6 +149,14 @@ function animaster() {
             return this;
         },
 
+        buildHandler: function() {
+            const self = this;
+            return function() {
+                const element = this;
+                self.play(element);
+            };
+        },
+
         play: function(element) {
             let self = this;
             let delay = 0;
@@ -196,10 +202,8 @@ function animaster() {
                     });
                 },
                 reset: function() {
-                    // Сбрасываем все анимации и возвращаем элемент в исходное состояние
                     animations.forEach(function(animation) {
                         if (animation.reset) animation.reset();
-
                     });
                 }
             };
