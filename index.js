@@ -30,7 +30,13 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000, {x: 100, y: 20});
+            animaster().moveAndHide(block, 5000, {x: 100, y: 20}).start();
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000, {x: 0, y: 0}).reset();
         });
 
     document.getElementById('showAndHidePlay')
@@ -139,8 +145,19 @@ function animaster() {
         },
 
         moveAndHide: function (element, duration, translation) {
-            this.move(element, duration * 2/5, translation).start();
-            this.fadeOut(element, duration * 3/5).start();
+            const moveAnimation = this.move(element, duration * 2/5, translation);
+            const hideAnimation = this.fadeOut(element, duration * 3/5);
+
+            return {
+                start: function () {
+                    moveAnimation.start();
+                    hideAnimation.start();
+                },
+                reset: function () {
+                    moveAnimation.reset();
+                    hideAnimation.reset();
+                }
+            };
         },
 
         showAndHide: function (element, duration) {
