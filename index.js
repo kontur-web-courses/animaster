@@ -30,7 +30,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000, {x: 100, y: 20}).start();
+            animaster().addMoveAndHide(5000, {x: 100, y: 20}).play(block);
         });
 
     document.getElementById('moveAndHideReset')
@@ -42,7 +42,7 @@ function addListeners() {
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, 5000);
+            animaster().addShowAndHide(5000).play(block);
         });
 
     document.getElementById('heartBeatingPlay')
@@ -136,6 +136,33 @@ function animaster() {
             return this;
         },
 
+        addDelay: function (duration) {
+            this._steps.push({
+                type: 'delay',
+                duration: duration
+            });
+            return this;
+        },
+
+        addMoveAndHide: function (duration, translation) {
+            this.addMove(duration * 2/5, translation)
+                .addFadeOut(duration * 3/5);
+            return this;
+        },
+
+        addShowAndHide: function (duration) {
+            this.addFadeIn(duration * 1/3)
+                .addDelay(duration * 1/3)
+                .addFadeOut(duration * 1/3);
+            return this;
+        },
+
+        addHeartBeating: function () {
+            this.addScale(500, 1.4)
+                .addScale(500, 1 / 1.4);
+            return this;
+        },
+
         play: function(element) {
             let self = this;
             let delay = 0;
@@ -154,6 +181,15 @@ function animaster() {
                             break;
                         case 'fadeOut':
                             self.fadeOut(element, step.duration).start();
+                            break;
+                        case 'moveAndHide':
+                            self.moveAndHide(element, step.duration, step.translation).start();
+                            break;
+                        case 'showAndHide':
+                            self.showAndHide(element, step.duration);
+                            break;
+                        case 'heartBeating':
+                            self.heartBeating(element);
                             break;
                     }
                 }, delay);
