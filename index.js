@@ -6,7 +6,7 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000).start();
+            animaster().addFadeIn(5000).play(block);
         });
 
     document.getElementById('fadeInReset')
@@ -18,7 +18,7 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000).start();
+            animaster().addFadeOut(5000).play(block);
         });
 
     document.getElementById('fadeOutReset')
@@ -60,7 +60,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10}).start();
+            animaster().addMove(1000, {x: 100, y: 20}).play(block);
         });
 
     document.getElementById('moveReset')
@@ -72,7 +72,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25).start();
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('scaleReset')
@@ -80,10 +80,88 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1).reset();
         });
+
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1)
+                .play(block);
+        });
+
 }
 
 function animaster() {
     return {
+        _steps: [],
+
+        addMove: function(duration, translation) {
+            this._steps.push({
+                type: 'move',
+                duration: duration,
+                translation: translation
+            });
+            return this;
+        },
+
+        addScale: function (duration, ratio) {
+            this._steps.push({
+                type: 'scale',
+                duration: duration,
+                ratio: ratio
+            });
+            return this;
+        },
+
+        addFadeIn: function (duration) {
+            this._steps.push({
+                type: 'fadeIn',
+                duration: duration
+            });
+            return this;
+        },
+
+        addFadeOut: function (duration) {
+            this._steps.push({
+                type: 'fadeOut',
+                duration: duration
+            });
+            return this;
+        },
+
+        play: function(element) {
+            let self = this;
+            let delay = 0;
+
+            this._steps.forEach(function(step) {
+                setTimeout(function() {
+                    switch (step.type) {
+                        case 'move':
+                            self.move(element, step.duration, step.translation).start();
+                            break;
+                        case 'scale':
+                            self.scale(element, step.duration, step.ratio).start();
+                            break;
+                        case 'fadeIn':
+                            self.fadeIn(element, step.duration).start();
+                            break;
+                        case 'fadeOut':
+                            self.fadeOut(element, step.duration).start();
+                            break;
+                    }
+                }, delay);
+
+                delay += step.duration;
+            });
+        },
+
         fadeIn: function(element, duration){
             return {
                 start: function () {
