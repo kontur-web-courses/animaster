@@ -28,7 +28,13 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            let x = animaster().moveAndHide(block, 1000);
+
+            document.getElementById('moveAndHideReset')
+                .addEventListener('click', function () {
+                    const block = document.getElementById('moveAndHideBlock');
+                    x.reset();
+                });
         });
 
     document.getElementById('showAndHidePlay')
@@ -110,6 +116,12 @@ function animaster() {
             this.move(element, duration * 2 / 5, {x: 100, y: 20});
             setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
 
+            return {
+                reset: () => {
+                    resetFadeOut(element);
+                    resetMoveAndScale(element);
+                }
+            }
         },
 
         showAndHide: function (element, duration) {
@@ -127,12 +139,9 @@ function animaster() {
                     currentBeat = false;
                 }
             }, 500);
-            console.log(a);
 
             return {
                 stop: () => {
-                    console.log('vstali');
-                    console.log(a);
                     clearInterval(a);
                 }
             }
