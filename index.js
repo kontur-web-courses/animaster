@@ -54,7 +54,7 @@ function animaster(){
     }
 
     this.showAndHide = function (element, duration) {
-        this.fadeIn(element, duration / 3);
+        this.addFadeIn(element, duration / 3);
         setTimeout(this.fadeOut, duration / 3, element, duration)
     }
 
