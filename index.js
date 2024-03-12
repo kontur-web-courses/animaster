@@ -199,7 +199,7 @@ function animaster() {
                 oper: 'fadeOut',
                 duration: duration,
                 params: undefined,
-                cancel: resetFadeOut,
+                cancel: undefined,
             });
 
             return this;
@@ -209,7 +209,7 @@ function animaster() {
             this._steps.push({
                 oper: 'delay',
                 duration: duration,
-                params: undefined,
+                params: resetFadeOut,
             });
 
             return this;
@@ -257,6 +257,7 @@ function animaster() {
                     }
 
                     for (const call of cancelCalls) {
+                        console.log('CANCEL')
                         call(element);
                     }
                 }
