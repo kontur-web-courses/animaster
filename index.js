@@ -78,8 +78,9 @@ function addListeners() {
     document.getElementById('scaleReset')
         .addEventListener('click', () => {
             const block = document.getElementById('scaleBlock');
-            animaster().resetScale(block, 1000, {x: 0, y: 0});
+            animaster().resetScale(block, 1000, 0);
         });
+
     let stopper;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
@@ -102,6 +103,12 @@ function addListeners() {
             if (stopper) {
                 stopper.stop = true;
             }
+        });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', () => {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndHide(block, 1000, {x: 0, y: 0});
         });
 }
 
@@ -220,10 +227,6 @@ function animaster() {
         element.classList.remove('hide');
     }
 
-    function resetScale() {
-
-    }
-
     function resetMove(element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
@@ -237,6 +240,11 @@ function animaster() {
     function addScale(duration, ratio) {
         this._steps.push(["scale", duration, ratio]);
         return this;
+    }
+
+    function resetScale(element, duration, ratio) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(null, ratio);
     }
 
     function addFadeIn(duration) {
@@ -266,25 +274,31 @@ function animaster() {
             }
             offset += act.at(1);
         }
-    }
 
-    return {
-        _steps,
-        fadeIn,
-        fadeOut,
-        move,
-        scale,
-        moveAndHide,
-        showAndHide,
-        heartBeating,
-        resetFadeIn,
-        resetFadeOut,
-        resetMove,
-        resetScale,
-        addMove,
-        addScale,
-        addFadeIn,
-        addFadeOut,
-        play
-    };
+        function resetMoveAndHide(element) {
+            resetMove(element, 1);
+            resetFadeOut(element, 1);
+        }
+
+        return {
+            _steps,
+            fadeIn,
+            fadeOut,
+            move,
+            scale,
+            moveAndHide,
+            showAndHide,
+            heartBeating,
+            resetFadeIn,
+            resetFadeOut,
+            resetMove,
+            resetScale,
+            addMove,
+            addScale,
+            addFadeIn,
+            addFadeOut,
+            play,
+            resetMoveAndHide
+        };
+    }
 }
