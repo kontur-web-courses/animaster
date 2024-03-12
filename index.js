@@ -18,6 +18,24 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 1000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block, 1000);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -73,6 +91,11 @@ function animaster()
             element.style.transitionDuration = `${duration}ms`;
             element.classList.add('hide');
             element.classList.remove('show');
-        }
+        },
+
+        moveAndHide: function(element, duration) {
+            this.move(element, duration*2/5, {x: 100, y: 20});
+            this.fadeOut(element, duration*3/5);
+        },
     }
 }
