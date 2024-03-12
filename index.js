@@ -1,55 +1,56 @@
 addListeners();
 
 function addListeners() {
-    const x = animaster();
-    let y;
+    let heartBeating;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            x.fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            x.addMove(1000, {x: 100, y: 10}).play(block);
+            animaster()
+                .addMove(1000, {x: 100, y: 10})
+                .play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            x.scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            x.fadeOut(block, 5000);
+            animaster().fadeOut(block, 5000);
         });
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            x.moveAndHide(block, 1000);
+            animaster().moveAndHide(block, 1000);
         });
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            x.showAndHide(block, 5000);
+            animaster().showAndHide(block, 5000);
         });
     document.getElementById('heartBreatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBreatingBlock');
-            y = x.heartBeating(block);
+            heartBeating = animaster().heartBeating(block);
         });
     document.getElementById('heartBreatingStop')
         .addEventListener('click', function () {
-            y?.stop();
-            y = null;
+            heartBeating?.stop();
+            heartBeating = null;
         });
 
     document.getElementById('moveAndHideReset')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            x.resetMoveAndHide(block, 1000);
+            animaster().resetMoveAndHide(block, 1000);
         });
 }
 
@@ -167,6 +168,14 @@ function animaster(){
                     break;
             }
         }
+    }
+
+    function addDelay(duration) {
+        this._steps.push({
+            name: 'wait',
+            duration
+        });
+        return this;
     }
     
     return {
