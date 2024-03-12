@@ -61,7 +61,8 @@ function addListeners() {
 
     document.getElementById('testPlay')
         .addEventListener('click', function () {
-            master.addMove(500, {x: 20, y:20}).addScale(1000, 1.5).addFadeIn(2000).play(block);
+            const block = document.getElementById('testBlock');
+            master.addMove(500, {x: 200, y:20}).addScale(1000, 1.5).addFadeIn(2000).play(block);
         });
 }
 
@@ -206,6 +207,7 @@ function animaster() {
                         setTimeout( () => step.Command(element, step.StepTimeout, step.Additional), interval);
                         break;
                     }
+
                 }
                 interval += step.StepTimeout;
             }
