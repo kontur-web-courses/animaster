@@ -21,7 +21,8 @@ function addListeners() {
             const block = document.getElementById('moveBlock');
             // animaster().move(block, 1000, {x: 100, y: 10});
             animaster().addMove(1000, {x: 100, y: 10})
-                .play(block).move(block, 1000, {x: -50, y: -56});
+                .addFadeOut(250).addFadeIn(250).addScale(500, 0.5)
+                .addScale(500, 2).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -93,16 +94,53 @@ function animaster()
         addMove: function (duration, translation)
         {
             this._steps.push({
+                duration: duration,
                 operation: element => this.move(element, duration, translation)
+            })
+            return this;
+        },
+
+        addScale: function (duration, ratio)
+        {
+            this._steps.push({
+                duration: duration,
+                operation: element => this.scale(element, duration, ratio)
+            })
+            return this;
+        },
+
+        addFadeIn: function (duration)
+        {
+            this._steps.push({
+                duration: duration,
+                operation: element => this.fadeIn(element, duration)
+            })
+            return this;
+        },
+
+        addFadeOut: function (duration)
+        {
+            this._steps.push({
+                duration: duration,
+                operation: element => this.fadeOut(element, duration)
             })
             return this;
         },
 
         play: function (element)
         {
-            for (const operation of this._steps) {
-                operation.operation(element);
+            if (this._steps.length < 1)
+                return this;
+
+            this._steps[0].operation(element);
+            for (let i = 1; i < this._steps.length-1; i++) {
+                console.log(i);
+                let prev_cur = this._steps[i];
+                let next_step = this._steps[i+1];
+                setTimeout(next_step.operation(element), prev_cur.duration);
+                console.log(next_step.operation);
             }
+            this._steps = [];
             return this;
         },
 
