@@ -2,6 +2,8 @@ addListeners();
 
 function animaster() {
 
+    _steps = [];
+
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
         element.classList.add('show');
@@ -47,14 +49,16 @@ function animaster() {
         },
 
         addMove(duration, translation) {
-            return {
+            _steps.push({
+                name: 'move',
                 duration: duration,
-                translation: translation,
-                play(element) {
-                    element.style.transitionDuration = `${this.duration}ms`;
-                    element.style.transform = getTransform(this.translation, null);
-                }
-            }
+                additional: {translation: translation}
+            })
+            return this;
+        },
+
+        play(element) {
+
         },
 
         /**
