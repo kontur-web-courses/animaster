@@ -90,11 +90,24 @@ function animaster(){
         move(element, duration * 2 / 5, {x: 100, y: 20});
         setTimeout(() => fadeOut(element, duration * 3 / 5), duration * 2 / 5);
     }
+    function showAndHide(element, duration){
+        fadeOut(element,duration / 3);
+        setTimeout(() => fadeIn(element, duartion / 3), duration * 2 / 3);
+    }
+
+    function heartbeating(element, duration){
+        scale(element, 500, 1.4);
+        scale(element, 500, 1);
+    }
+
+
+
     return {
         scale : scale,
         move : move,
         fadeIn : fadeIn,
         fadeOut : fadeOut,
-        moveAndHide: moveAndHide
+        moveAndHide: moveAndHide,
+        heartbeating : heartbeating
     }
 }
