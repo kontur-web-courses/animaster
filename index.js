@@ -16,7 +16,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -125,8 +125,31 @@ function animaster() {
                     clearInterval(id2);
                 }
             };
-        }
+        },
 
+        _steps: [],
+        addMove: function (duration, pos) {
+            this._steps.push({
+                oper: 'move',
+                duration: duration,
+                params: pos,
+
+            });
+
+            return this;
+        },
+
+        play: function (element) {
+            for (const step of this._steps) {
+                switch (step.oper) {
+                    case 'move':
+                        setTimeout(() => this.move(element, step.duration, step.params), step.duration);
+                        break;
+                    default:
+                        throw new TypeError(`Unknown step type: ${step}`);
+                }
+            }
+        }
     };
 }
 
