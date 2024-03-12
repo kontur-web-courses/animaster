@@ -38,9 +38,9 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             animaster()
-            .addFadeIn(5000 / 3)
-            .addDelay(5000 / 3)
             .addFadeOut(5000 / 3)
+            .addDelay(5000 / 3)
+            .addFadeIn(5000 / 3)
             .play(block);
         });
 
@@ -251,6 +251,7 @@ function animaster() {
         addScale,
         addFadeIn,
         addFadeOut,
+        addDelay,
         play
     }
 }
