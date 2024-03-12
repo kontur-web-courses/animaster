@@ -28,24 +28,34 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000, {x: 100, y: 20});
+            animaster()
+                .addMove(1000 * 0.4, {x: 100, y: 20})
+                .addFadeOut(1000 * 0.6)
+                .play(block);
         });
 
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, 5000);
+            animaster()
+            .addFadeIn(5000 / 3)
+            .addDelay(5000 / 3)
+            .addFadeOut(5000 / 3)
+            .play(block);
         });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block).start();
         });
+
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block).stop();
         });
+
     document.getElementById('fadeOutReset')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
@@ -135,6 +145,25 @@ function animaster() {
             start,
             stop
         }
+    }
+
+    function addHeartBeatingStart() {
+        function _heartBeating(element, duration = 1000, ratio = 1.4) {
+            scale(element, duration / 2 , ratio);
+            setTimeout(scale, duration / 2, element, duration / 2, 1 / ratio);
+        }
+        globalThis.heartInterval = setInterval(_heartBeating, 1000,)
+        return this;
+    }
+
+    function addHeartBeatingStop() {
+        
+        return this;
+    }
+
+    function addDelay(delay) {
+        setTimeout(() => 1, delay);
+        return this;
     }
 
     function resetFadeIn(element) {
