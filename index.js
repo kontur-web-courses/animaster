@@ -48,6 +48,11 @@ function animaster() {
         element.classList.remove('hide');
         element.classList.add('show');
     };
+    /**
+     * Блок плавно исчезает, превращаясь в прозрачный.
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     */
     const fadeOut = function(element, duration) {
         element.style.transitionDuration = `${duration}ms`;
         element.classList.remove('show');
