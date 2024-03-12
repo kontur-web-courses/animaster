@@ -136,8 +136,7 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
-        },
-        // endregion
+        }, // endregion
 
         // region resets
         resetMoveAndScale(element) {
@@ -157,8 +156,7 @@ function animaster() {
 
             element.classList.remove('hide');
             element.classList.add('show');
-        },
-        // endregion
+        }, // endregion
 
         // region add step
         addMove(duration, translation) {
@@ -222,29 +220,27 @@ function animaster() {
                 name: 'delay',
                 duration: duration,
 
-                func: () => {
-                },
+                func: () => {},
                 args: [duration],
 
-                reset: () => {
-                },
+                reset: () => {},
             })
 
             return this;
-        },
-        //endregion
+        }, //endregion
 
         // region play
         playCycled(element) {
-            let totalDuration = this._steps
+            const totalDuration = this._steps
                 .map(step => step.duration)
                 .reduce((d1, d2) => d1 + d2);
 
-            let resets = this._steps
+            const resets = this._steps
                 .map(step => step.reset)
-                .reverse()
+                .reverse();
 
-            let id = setInterval(() => this.play(element), totalDuration);
+            this.play(element);
+            const id = setInterval(() => this.play(element), totalDuration);
 
             return {
                 stop: function () {
@@ -264,19 +260,17 @@ function animaster() {
             }
 
             let timeouts = [];
-            let resets = this._steps
+            const resets = this._steps
                 .map(step => step.reset)
                 .reverse()
 
             let accumulated = 0;
-            for (let step of this._steps) {
-                let args = step.args.toSpliced(0, 0, element)
+            for (const step of this._steps) {
+                const args = step.args.toSpliced(0, 0, element)
 
-                let timeout = setTimeout(() => {
-                    step.func.apply(this, args)
-                }, accumulated);
-
+                const timeout = setTimeout(() => step.func.apply(this, args), accumulated);
                 timeouts.push(timeout);
+
                 accumulated += step.duration;
             }
 
@@ -292,14 +286,11 @@ function animaster() {
                     }
                 }
             }
-        },
-        //endregion
+        }, //endregion
 
-        buildHandler: function () {
-            let anim = this;
-            return function () {
-                return anim.play(this);
-            };
-        },
+        buildHandler(blockName) {
+            const block = document.getElementById(blockName);
+            return this.play.bind(this, block);
+        }
     }
 }
