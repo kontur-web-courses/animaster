@@ -9,13 +9,24 @@ function animaster(){
             duration,
             translation,
             start: function (element) {
-                this.func.move(element, duration, translation)
+                this.func(element, duration, translation)
             }
         });
 
         return this;
     }
 
+    this.addFadeIn = function (duration) {
+        this._steps.push({
+           func: this.fadeIn,
+           duration,
+           start: function (element) {
+               this.func(element, duration);
+           }
+        });
+
+        return this;
+    }
 
     this.play = function (element) {
         for (const step of this._steps) {
@@ -99,7 +110,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
