@@ -31,7 +31,7 @@ function addListeners() {
             const cancel = animaster().addMove(400, {
                 'x': 100,
                 'y': 20
-            }).addFadeOut(600).play(block).cancel;
+            }).addFadeOut(600).play(block).stop;
 
             document.getElementById('moveAndHideReset').addEventListener('click', cancel);
         });
@@ -244,8 +244,8 @@ function animaster() {
 
                 dur += step.duration;
                 timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
-                if (step.cancelFunc !== undefined) {
-                    cancelCalls.push(step.cancelFunc);
+                if (step.cancel !== undefined) {
+                    cancelCalls.push(step.cancel);
                 }
             }
 
