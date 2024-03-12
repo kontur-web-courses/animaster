@@ -16,6 +16,19 @@ function animaster(){
         return this;
     }
 
+    this.addScale = function (duration, ratio){
+        this._steps.push({
+            func: this.scale,
+            duration,
+            ratio,
+            start: function (element) {
+                this.func(element, this.duration, this.ratio)
+            }
+        });
+
+        return this;
+    }
+
     this.addFadeIn = function (duration) {
         this._steps.push({
            func: this.fadeIn,
@@ -116,7 +129,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('moveAndHide')
