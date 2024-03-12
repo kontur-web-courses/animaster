@@ -11,8 +11,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster()
-                .addMove(1000, {x: 100, y: 10})
+            animaster().addMove(1000, {x: 100, y: 10})
                 .play(block);
         });
 
@@ -189,7 +188,7 @@ function animaster(){
         for (const step of this._steps){
             switch (step.name){
                 case 'move':
-                    this.move(element, step.duration);
+                    this.move(element, step.duration, step.translation);
                     break;
                 case 'fadeIn':
                     this.fadeIn(element, step.duration);
