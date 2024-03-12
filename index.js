@@ -1,5 +1,7 @@
 addListeners();
 
+const ANIMASTER = animaster()
+
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -10,13 +12,18 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster.move(block, 1000, {x: 100, y: 10});
+            ANIMASTER.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster.scale(block, 1000, 1.25);
+            ANIMASTER.scale(block, 1000, 1.25);
+        });
+    document.getElementById('hearhBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('hearhBeatingBlock');
+            ANIMASTER.heartBeating(block);
         });
 }
 
@@ -66,32 +73,40 @@ function animaster() {
     }
 
 
+
+    function fadeOut(element, duration) {
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+
+    }
+
+    function moveAndHide(element, duration) {
+
+    }
+    
+    function showAndHide(element, duration) {
+    
+    }
+    
+    function heartBeating(element) {
+        const duration = 500
+        const pulseOut = 1.4
+        const pulseIn = 1.0
+
+        setInterval(this.scale, 500, element, duration, pulseOut)
+        setInterval(this.scale, 1000, element, duration, pulseIn)
+         
+    }
+
+
     const result = {};
     result.scale = scale;
     result.fadeIn = fadeIn;
     result.move = move;
+    result.heartBeating = heartBeating;
     return result;
-}
-
-
-
-function fadeOut(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('show');
-    element.classList.add('hide');
-}
-
-
-
-function moveAndHide(element, duration) {
 
 }
 
-function showAndHide(element, duration) {
 
-}
-
-function heartBeating(element, duration) {
-
-
-}
