@@ -42,8 +42,8 @@ function addListeners() {
         });
     document.getElementById('heartBreatingStop')
         .addEventListener('click', function () {
-            const block = document.getElementById('heartBreatingBlock');
-            y.flag = false;
+            y?.stop();
+            y = null;
         });
 }
 
@@ -111,16 +111,19 @@ function animaster(){
         setTimeout(() => fadeOut(element, duration), duration)
     }
     function heartBeating(element){
-        let flag = true;
-            setInterval(function () {
-                if (flag) {
+        let intervalId = setInterval(function () {
                 scale(element, 500, 1.4);
                 setTimeout(function () {
                     scale(element, 500, 1);
                 }, 500);
-                }
             }, 1000);
-        return {flag}
+            
+        return {
+            intervalId,
+            stop: function () {
+                clearInterval(this.intervalId);
+            }
+        }
     }
     function resetFadeIn(element){
         element.style.show = null;
