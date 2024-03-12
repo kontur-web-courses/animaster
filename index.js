@@ -63,3 +63,26 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
+
+
+function fadeOut(element, duration) {
+    element.style.transitionDuration =  `${duration}ms`;
+    element.classList.remove('show');
+    element.classList.add('hide');
+}
+
+
+
+function moveAndHide(element, duration) {
+
+}
+
+function showAndHide(element, duration) {
+
+}
+
+function heartBeating(element, duration) {
+
+
+}
