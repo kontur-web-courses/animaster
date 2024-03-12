@@ -92,7 +92,7 @@ function animaster(){
     }
     function showAndHide(element, duration){
         fadeOut(element,duration / 3);
-        setTimeout(() => fadeIn(element, duartion / 3), duration * 2 / 3);
+        setTimeout(() => fadeIn(element, duration / 3), duration * 2 / 3);
     }
 
     function heartbeating(element, duration){
