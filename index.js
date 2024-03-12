@@ -105,7 +105,6 @@ function animaster() {
     function resetFadeOut(element) {
         element.style.transitionDuration = `0ms`;
         element.classList.remove('hide');
-        //element.style.hide = null;
     }
 
     /**
@@ -115,8 +114,6 @@ function animaster() {
      * @param translation — объект с полями x и y, обозначающими смещение блока
      */
     function move(element, duration, translation) {
-        //element.style.transitionDuration = `${duration}ms`;
-        //element.style.transform = getTransform(translation, null);
         this.addMove(duration, translation).play(element);
     }
 
@@ -130,12 +127,9 @@ function animaster() {
     }
 
     function play(element) {
-        console.log(this);
         for (const step of this._steps) {
-            console.log(step);
             switch (step.name) {
                 case 'move':
-                    console.log(step);
                     element.style.transitionDuration = `${step.duration}ms`;
                     element.style.transform = getTransform(step.translation, null);
                     break;
