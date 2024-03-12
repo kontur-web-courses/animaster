@@ -25,7 +25,6 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             heartBeatingInterval = animaster().heartBeating(block);
-            console.log(heartBeatingInterval);
         });
 
     document.getElementById('stopHeartBeating')
@@ -76,6 +75,16 @@ function addListeners() {
             const block = document.getElementById('testBlock');
             testManager.reset(block);
         });
+
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+    document
+        .getElementById('worryAnimationBlock')
+        .addEventListener('click', worryAnimationHandler);
 }
 
 function animaster() {
@@ -243,6 +252,14 @@ function animaster() {
             return this;
         },
 
+        buildHandler() {
+            const animationHandler = this;
+            return function() {
+                const element = this;
+                animationHandler.play(element);
+            };
+        },
+
         play(element, cycled = false) {
             const usedCommands = this._steps.map(x => x);
             const resetFunc = (element) => {
@@ -275,9 +292,7 @@ function animaster() {
             }
             else {
                 let interval = 0;
-                this._steps.reverse();
-                while (this._steps.length > 0) {
-                    const step =  this._steps.pop();
+                for (const step of this._steps) {
                     interval = executeStep(step, element, interval);
                 }
 
