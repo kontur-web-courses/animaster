@@ -1,8 +1,6 @@
 addListeners();
 
 function animaster() {
-    _steps = [];
-
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
         element.classList.add('show');
@@ -28,6 +26,7 @@ function animaster() {
     }
 
     return {
+        _steps: [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -53,16 +52,38 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
-
         addMove(duration, translation) {
-            _steps.push({
+            this._steps.push({
                 name: 'move',
                 duration: duration,
                 additional: {translation: translation}
             })
             return this;
         },
-
+        addScale(duration, ratio) {
+            this._steps.push({
+               name: 'scale',
+               duration: duration,
+               additional: {ratio: ratio}
+            });
+            return this;
+        },
+        addFadeIn(duration) {
+            this._steps.push({
+                name: 'fadeIn',
+                duration: duration,
+                additional: null,
+            });
+            return this;
+        },
+        addFadeOut(duration) {
+            this._steps.push({
+                name: 'fadeOut',
+                duration: duration,
+                additional: null,
+            });
+            return this;
+        },
         play(element) {
             for (let animation of this._steps) {
                 element.style.transitionDuration = `${duration}ms`;
@@ -73,7 +94,6 @@ function animaster() {
                 }
             }
         },
-
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
