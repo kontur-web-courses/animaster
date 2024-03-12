@@ -2,12 +2,12 @@ addListeners();
 
 function addListeners() {
     const animasterObj = animaster();
+    let stopHeartbeating = null;
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
             animasterObj.fadeIn(block, 5000);
         });
-
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -37,32 +37,9 @@ function addListeners() {
     document.getElementById('heartbeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartbeatingBlock');
-            animasterObj.heartbeating(block);
+            stopHeartbeating = animasterObj.heartbeating(block);
         });
 }
-
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-
-
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-
 
 function getTransform(translation, ratio) {
     const result = [];
@@ -106,15 +83,27 @@ function animaster(){
     }
 
     function heartbeating(element){
-        function heartbeatingInner(elem) {
+        function heartbeatingInner(elem, flag) {
             scale(elem, 500, 1.4);
+            if (flag.stopFlag)
+            {
+                return;
+            }
             setTimeout(() => {
                 scale(elem, 500, 1);
-                setTimeout(() => heartbeatingInner(elem), 500);
+                setTimeout(() => heartbeatingInner(elem, flag), 500);
             },
             500)
+            return () => flag.stop = true;
         }
-        heartbeatingInner(element);
+
+        let flag = {stopFlag: false};
+        heartbeatingInner(element, flag);
+        return {
+            stop() {
+                flag.stopFlag = true;
+            }
+        }
     }
 
     return {
