@@ -25,10 +25,11 @@ function addListeners() {
             animaster().scale(block, 1000, 1.25);
         });
 
-    document.getElementById('moveAndHide')
+    document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 1000);
+            let cancel = animaster().moveAndHide(block, 1000).stop;
+            document.getElementById('moveAndHideReset').addEventListener('click', cancel);
         });
 
     document.getElementById('showAndHide')
@@ -106,7 +107,15 @@ function animaster() {
 
         moveAndHide: function (element, duration) {
             this.move(element, (duration / 5) * 2, {'x': 100, 'y': 20});
-            setTimeout(() => this.fadeOut(element, (duration / 5) * 3), (duration / 5) * 2);
+            let timeout = setTimeout(() => this.fadeOut(element, (duration / 5) * 3), (duration / 5) * 2);
+
+            return{
+                'stop' : function () {
+                    clearInterval(timeout);
+                    resetMoveAndScale(element);
+                    resetFadeOut(element)
+                }
+            }
         },
 
         showAndHide: function (element, duration) {
