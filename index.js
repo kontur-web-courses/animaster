@@ -128,5 +128,19 @@ function animaster(){
     function addMove (duration, translation) {
 
     }
+    function resetFadeIn(element){
+        element.style.show = null;
+        element.classList.remove('show');
+    }
+
+    function resetFadeOut(element){
+        element.style.hide = null;
+        element.classList.remove('hide');
+    }
+
+    function resetMoveAndScale(element){
+        element.style.transform = null;
+    }
+    
     return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating };
 }
