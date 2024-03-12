@@ -5,6 +5,8 @@ const master = animaster();
 
 
 function addListeners() {
+    let heartBeatingInterval;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -26,8 +28,15 @@ function addListeners() {
     document.getElementById('heartBeating')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            console.log('pushed');
-            master.heartBeating(block);
+            heartBeatingInterval = master.heartBeating(block);
+        });
+
+    document.getElementById('stopHeartBeating')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            if (heartBeatingInterval !== undefined) {
+                heartBeatingInterval.stop();
+            }
         });
 
     document.getElementById('movePlay')
@@ -73,7 +82,7 @@ function animaster() {
         element.style.transitionDuration =  `0ms`;
         element.style.transform = null;
     }
-    
+
     return {
         /**
          * Функция, передвигающая элемент
@@ -116,10 +125,12 @@ function animaster() {
 
             this.scale(element, interval, upScaleK);
             setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
-            setInterval(() => {
+            const intervalObj = setInterval(() => {
                 this.scale(element, interval, upScaleK);
                 setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
             }, 2 * interval)
+
+            return {stop() {clearInterval(intervalObj)}};
         },
 
         /**
