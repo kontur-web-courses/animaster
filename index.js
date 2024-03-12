@@ -216,8 +216,32 @@ function animaster() {
             return this;
         },
 
+        playCycled: function (element) {
+            let dur = 0;
+            for (const step of this._steps) {
+                dur += step.duration;
+            }
+
+            let cancel;
+            let intvl = setInterval(function () {
+                cancel = this.play().stop;
+            }, dur);
+
+
+            return {
+                stop: function () {
+                    cancel();
+                    clearInterval(intvl);
+                }
+            };
+        },
 
         play: function (element, cycled = false) {
+            if (cycled) {
+                this.playCycled(element);
+                return;
+            }
+
             let dur = 0;
             let cancelCalls = [];
             let timeouts = [];
@@ -245,39 +269,17 @@ function animaster() {
                 }
 
                 dur += step.duration;
-                if (cycled) {
-                    timeouts.push(() => setTimeout(() => meth(element, step.duration, step.params), dur));
-                } else {
-                    timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
-
-                }
+                timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
                 if (step.cancel !== undefined) {
                     cancelCalls.push(step.cancel);
-                }
-            }
-            new_timeouts = [];
-            intervals = [];
-            if (cycled) {
-                for (const timeout of timeouts) {
-                    intervals.push(setInterval(() => new_timeouts.push(timeout()), dur));
                 }
             }
 
             return {
                 stop: function () {
-                    if (cycled) {
-                        for (const timeout of new_timeouts) {
-                            clearTimeout(timeout);
-                        }
-                        for (const interval of intervals) {
-                            clearInterval(interval);
-                        }
-                    } else {
-                        for (const timeout of timeouts) {
-                            clearTimeout(timeout);
-                        }
+                    for (const timeout of timeouts) {
+                        clearTimeout(timeout);
                     }
-
 
                     for (const call of cancelCalls) {
                         console.log('CANCEL');
