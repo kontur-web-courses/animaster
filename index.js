@@ -61,7 +61,7 @@ function addListeners() {
             .addScale(800, 1);
 
         const block = document.getElementById('fullAnimation');
-        const cancel = customAnimation.play(block).cancel;
+        const cancel = customAnimation.play(block).stop;
         document.getElementById('fullAnimationStop').addEventListener('click', cancel);
     });
 }
@@ -194,9 +194,9 @@ function animaster() {
             return this;
         },
 
-        addDelay: function (duration) {
+        addFadeOut: function (duration) {
             this._steps.push({
-                oper: 'delay',
+                oper: 'fadeOut',
                 duration: duration,
                 params: undefined,
                 cancel: resetFadeOut,
@@ -205,15 +205,16 @@ function animaster() {
             return this;
         },
 
-        addFadeOut: function (duration) {
+        addDelay: function (duration) {
             this._steps.push({
-                oper: 'fadeOut',
+                oper: 'delay',
                 duration: duration,
                 params: undefined,
             });
 
             return this;
         },
+
 
         play: function (element) {
             let dur = 0;
@@ -256,7 +257,7 @@ function animaster() {
                     }
 
                     for (const call of cancelCalls) {
-                        call();
+                        call(element);
                     }
                 }
             };
