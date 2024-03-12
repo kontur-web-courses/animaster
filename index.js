@@ -10,7 +10,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).addMove(2000, {x: 200, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -67,6 +67,23 @@ let globalInterval;
 
 function animaster(){
     return{
+        _steps: [],
+        addMove(duration, translation){
+            this._steps.push({
+                func: animaster().move,
+                duration: duration,
+                args: translation
+            })
+            return this;
+        },
+        play(element){
+            let lastStepDuration = 0;
+            for(let step of this._steps){
+                console.log(step.duration);
+                setTimeout(step.func, lastStepDuration, element, step.duration, step.args);
+                lastStepDuration = step.duration;
+            }
+        },
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
