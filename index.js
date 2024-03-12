@@ -225,7 +225,7 @@ function animaster() {
             let cancel;
             let anim = this;
             let intvl = setInterval(function () {
-                cancel = anim.play().stop;
+                cancel = anim.play(element).stop;
             }, dur);
 
 
