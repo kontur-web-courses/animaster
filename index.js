@@ -7,6 +7,24 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        });
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
@@ -80,13 +98,29 @@ function animaster() {
     }
 
     const moveAndHide = function (element, duration) {
-        move(element, duration * 2 / 5, {x : 100, y : 0});
-        fadeOut(element, duration * 3 / 5);
+        const moveTime = duration * 2 / 5;
+        const fadeOutTime = duration * 3 /5;
+        move(element,moveTime, {x : 100, y : 20});
+        setTimeout(() => {
+            fadeOut(element, duration * 3 / 5);
+        }, fadeOutTime);
     }
 
     const showAndHide = function (element, duration) {
-        fadeIn(element, duration / 3);
-        setTimeout(() => fadeOut(element, duration / 3), 300);
+        const segmentTime = duration / 3;
+        fadeIn(element, segmentTime);
+        setTimeout(() => {
+            fadeOut(element, segmentTime * 2)
+        })
+    }
+
+    const heartBeating = function (element, duration) {
+        const beat = function() {
+            scale(element, 0.5, 1.4);
+            scale(element, 0.5, 5 / 7);
+        }
+
+        setInterval(() => beat(), 1000);
     }
 
     return {
@@ -94,5 +128,8 @@ function animaster() {
         fadeOut,
         move,
         scale,
+        moveAndHide,
+        showAndHide,
+        heartBeating,
     }
 }
