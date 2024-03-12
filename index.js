@@ -3,20 +3,46 @@ addListeners();
 function addListeners() {
   const globalAnimaster = animaster();
 
-  document.getElementById("fadeInPlay").addEventListener("click", function () {
-    const block = document.getElementById("fadeInBlock");
-    globalAnimaster.fadeIn(block, 5000);
+  addPlayListener("fadeIn", (anim, block) => {
+    anim.fadeIn(block, 5000);
   });
 
-  document.getElementById("movePlay").addEventListener("click", function () {
-    const block = document.getElementById("moveBlock");
-    globalAnimaster.move(block, 1000, { x: 100, y: 10 });
+  addPlayListener("move", (anim, block) => {
+    anim.move(block, 1000, { x: 100, y: 10 });
   });
 
-  document.getElementById("scalePlay").addEventListener("click", function () {
-    const block = document.getElementById("scaleBlock");
-    globalAnimaster.scale(block, 1000, 1.25);
+  addPlayListener("scale", (anim, block) => {
+    anim.scale(block, 1000, 1.25);
   });
+  
+  addPlayListener("moveAndHide", (anim, block) => {
+    anim.moveAndHide(block, 1000);
+  });
+
+  addPlayListener("showAndHide", (anim, block) => {
+    anim.showAndHide(block, 1000);
+  });
+
+  let heartBeatStop = null;
+  addPlayListener("heartBeating", (anim, block) => {
+    heartBeatStop = anim.heartBeating(block);
+  });
+
+  addClickListener("heartBeatingStop", "heartBeatingBlock", (_, __) => {
+    heartBeatStop?.stop();
+  });
+}
+
+function addPlayListener(name, callback) {
+  addClickListener(name + "Play", name + "Block", callback);
+}
+
+function addClickListener(playName, blockName, callback) {
+  document.getElementById(playName).addEventListener("click", function () {
+    const block = document.getElementById(blockName);
+    const anim = animaster();
+    callback(anim, block);
+  })
 }
 
 function animaster() {
@@ -59,6 +85,30 @@ function animaster() {
       element.style.transitionDuration = `${duration}ms`;
       element.style.transform = getTransform(null, ratio);
     },
+
+    moveAndHide(element, duration) {
+      const moveDuration = duration * 2 / 5;
+      setTimeout(this.move, 0, element, moveDuration, {x: 100, y: 20});
+      setTimeout(this.fadeOut, moveDuration, element, duration - moveDuration);
+    },
+
+    showAndHide(element, duration) {
+      const fadeDuration = duration / 3;
+      setTimeout(this.fadeIn, 0, element, fadeDuration);
+      setTimeout(this.fadeOut, 2 * fadeDuration, element, fadeDuration);
+    },
+
+    heartBeating(element) {
+      const interval = setInterval(() => {
+        setTimeout(this.scale, 0, element, 500, 1.4);
+        setTimeout(this.scale, 500, element, 500, 1 / 1.4);
+      }, 1000);
+      return {
+        stop() {
+          clearInterval(interval)
+        }
+      };
+    }
   };
 }
 
