@@ -34,8 +34,20 @@ function animaster(){
            func: this.fadeIn,
            duration,
            start: function (element) {
-               this.func(element, duration);
+               this.func(element, this.duration);
            }
+        });
+
+        return this;
+    }
+
+    this.addFadeOut = function (duration) {
+        this._steps.push({
+            func: this.fadeOut,
+            duration,
+            start: function (element) {
+                this.func(element, this.duration);
+            }
         });
 
         return this;
