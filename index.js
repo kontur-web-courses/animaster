@@ -125,5 +125,8 @@ function animaster(){
             }
         }
     }
+    function addMove (duration, translation) {
+
+    }
     return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating };
 }
