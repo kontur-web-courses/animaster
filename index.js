@@ -108,7 +108,7 @@ function animaster(){
         setInterval(function () {
             scale(element, 500, 1.4);
             setTimeout(function () {
-                scale(element, 500, 1);
+                scale(element, 500, 1 / 1.4);
             }, 500);
         }, 1000); 
     }
