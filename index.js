@@ -25,6 +25,12 @@ function addListeners() {
             const block = document.getElementById('hearhBeatingBlock');
             ANIMASTER.heartBeating(block);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            ANIMASTER.moveAndHide(block, 1000)
+        })
 }
 
 function getTransform(translation, ratio) {
@@ -50,6 +56,12 @@ function animaster() {
         element.classList.add('show');
     }
 
+    function fadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
     /**
      * Функция, передвигающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -72,23 +84,15 @@ function animaster() {
         element.style.transform = getTransform(null, ratio);
     }
 
-
-
-    function fadeOut(element, duration) {
-        element.style.transitionDuration =  `${duration}ms`;
-        element.classList.remove('show');
-        element.classList.add('hide');
-
-    }
-
     function moveAndHide(element, duration) {
+        ANIMASTER.move(element, duration * 2 / 5, {x: 100, y: 20});
+        ANIMASTER.fadeOut(element, duration * 3 / 5);
+    }
+
+    function showAndHide(element, duration) {
 
     }
-    
-    function showAndHide(element, duration) {
-    
-    }
-    
+
     function heartBeating(element) {
         const duration = 500
         const pulseOut = 1.4
@@ -96,7 +100,7 @@ function animaster() {
 
         setInterval(this.scale, 500, element, duration, pulseOut)
         setInterval(this.scale, 1000, element, duration, pulseIn)
-         
+
     }
 
 
@@ -104,9 +108,11 @@ function animaster() {
     result.scale = scale;
     result.fadeIn = fadeIn;
     result.move = move;
+    result.fadeOut = fadeOut;
+    result.moveAndHide = moveAndHide;
+    result.showAndHide = showAndHide;
     result.heartBeating = heartBeating;
     return result;
-
 }
 
 
