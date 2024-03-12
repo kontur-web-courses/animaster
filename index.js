@@ -114,12 +114,16 @@ function animaster(){
 
     function heartbeating(element){
         function heartbeatingInner(elem, flag) {
-            scale(elem, 500, 1.4);
             if (flag.stopFlag)
             {
                 return;
             }
+            scale(elem, 500, 1.4);
             setTimeout(() => {
+                if (flag.stopFlag)
+                {
+                    return;
+                }
                 scale(elem, 500, 1);
                 setTimeout(() => heartbeatingInner(elem, flag), 500);
             },
