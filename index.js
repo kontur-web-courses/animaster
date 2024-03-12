@@ -41,6 +41,15 @@ function animaster(){
         return this;
     }
 
+    this.addDelay = function (duration) {
+        this._steps.push({
+            duration,
+            start: function () {
+                (duration)
+            }
+        })
+    }
+
     this.addFadeOut = function (duration) {
         this._steps.push({
             func: this.fadeOut,
@@ -55,7 +64,7 @@ function animaster(){
 
     this.play = function (element) {
         for (const step of this._steps) {
-            step.start(element)
+            setTimeout(step.start, step.duration, element);
         }
     }
 
