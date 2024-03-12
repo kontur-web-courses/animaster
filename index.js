@@ -6,25 +6,54 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            anim.fadeIn(block, 5000);
+            anim.addFadeIn(5000).play(block);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            anim.fadeOut(block, 5000);
+            anim.addFadeOut(5000).play(block);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            anim.move(block, 1000, {x: 100, y: 10});
+            anim.addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            anim.scale(block, 1000, 1.25);
+            anim.addScale(1000, 1.25).play(block);
+        });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            anim.addMove(2 * 1000 / 5, {x: 100, y: 20})
+                .addFadeOut(3 * 1000 / 5)
+                .play(block);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            anim.addFadeIn(1000 / 3)
+                .addFadeOut(1000 / 3)
+                .play(block);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            anim.addScale(500, 1.4)
+                .addScale(500, 1.0)
+                .play(block);
+            setInterval(() => {
+                anim.addScale(500, 1.4)
+                    .addScale(500, 1.0)
+                    .play(block);
+            }, 1000);
         });
 
     document.getElementById('customPlay')
