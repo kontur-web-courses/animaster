@@ -22,6 +22,12 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animator.scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animator.scale(block, 1000, 1.25);
+        });
 }
 
 function animaster() {
@@ -57,8 +63,12 @@ function animaster() {
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
-        }
+        },
 
+
+        moveAndHide(element, time) {
+
+        }
     }
 
 }
