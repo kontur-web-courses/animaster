@@ -63,3 +63,21 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
+function animaster(){
+    return{
+        move(element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        },
+        scale(element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        },
+        fadeIn(element, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        }
+    };
+}
