@@ -62,7 +62,7 @@ function addListeners() {
     document.getElementById('testPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('testBlock');
-            master.addMove(500, {x: 20, y:20}).play(block);
+            master.addMove(500, {x: 20, y:20}).addFadeIn(2000).play(block);
         });
 }
 
@@ -159,12 +159,22 @@ function animaster() {
             resetMove(element);
         },
 
-        addMove(timeout, ...args) {
-            let step = {
+        addMove(timeout, position) {
+            const step = {
                 Name: 'move',
                 Command: this.move,
                 StepTimeout: timeout,
-                Additional: args[0]
+                Position: position
+            }
+            this._steps.push(step);
+            return this;
+        },
+
+        addFadeIn(duration) {
+            const step = {
+                Name: 'FadeIn',
+                Command: this.fadeIn,
+                Duration: duration
             }
             this._steps.push(step);
             return this;
@@ -174,7 +184,7 @@ function animaster() {
             while (this._steps.length > 0) {
                 const step = this._steps.pop();
                 console.log(this._steps.length, step)
-                step.Command(element, step.StepTimeout, step.Additional);
+                step.Command(element, step.StepTimeout, step.Position);
             }
         }
     }
