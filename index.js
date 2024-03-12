@@ -78,6 +78,7 @@ function animaster() {
 
     return {
         fadeIn,
+        fadeOut,
         move,
         scale
     }
