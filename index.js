@@ -16,7 +16,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -84,6 +84,7 @@ function animaster() {
     }
 
     return {
+        _steps: [],
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -153,12 +154,35 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
-        scale:
+        scale: function (element, duration, ratio) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        },
 
-            function (element, duration, ratio) {
-                console.log('in')
-                element.style.transitionDuration = `${duration}ms`;
-                element.style.transform = getTransform(null, ratio);
+        addMove: function (duration, translation) {
+            this._steps.push({
+                elementaryOperation: "move",
+                stepDuration: duration,
+                params: translation
+            });
+            return this;
+        },
+
+        play: function (element) {
+            let dur = 0;
+            for (let step of this._steps) {
+                let method;
+                console.log(step)
+                switch (step.elementaryOperation) {
+                    case "move":
+                        method = this.move;
+                        break;
+                }
+
+                console.log(method);
+                dur += step.duration;
+                method(element, step.duration, step.params);
             }
+        }
     }
 }
