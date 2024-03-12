@@ -193,6 +193,10 @@ function animaster() {
         element.style.transform = getTransform(translation, null);
     }
 
+    function resetScale(){
+
+    }
+
     return {
         fadeIn,
         fadeOut,
@@ -200,6 +204,10 @@ function animaster() {
         scale,
         moveAndHide,
         showAndHide,
-        heartBeating
+        heartBeating,
+        resetFadeIn,
+        resetFadeOut,
+        resetMove,
+        resetScale
     };
 }
