@@ -20,6 +20,11 @@ function animaster(){
         element.style.transform = getTransform(null, ratio);
     }
 
+    this.heartBeating = function (element) {
+        this.scale(element, 500, 1.4);
+        this.scale(element, 500, 1);
+    }
+
     return this;
 }
 function addListeners() {
@@ -40,6 +45,13 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        })
+
 }
 
 function getTransform(translation, ratio) {
