@@ -127,8 +127,8 @@ function animaster() {
         const segmentTime = duration / 3;
         fadeIn(element, segmentTime);
         setTimeout(() => {
-            fadeOut(element, segmentTime * 2)
-        })
+            fadeOut(element, segmentTime)
+        }, segmentTime * 2);
     }
 
     const heartBeating = function (element, duration) {
@@ -137,7 +137,7 @@ function animaster() {
             scale(element, segmentTime, 1.4);
             setTimeout(() => {
                 scale(element, segmentTime, 5 / 7);
-            }, segmentTime)
+            }, segmentTime);
         }
 
         setInterval(() => beat(), 1000);
