@@ -86,6 +86,7 @@ let globalInterval;
 function animaster(){
     return{
         _steps: [],
+
         addMove(duration, translation){
             this._steps.push({
                 func: animaster().move,
@@ -94,11 +95,39 @@ function animaster(){
             })
             return this;
         },
+        
+        addScale(duration, ratio){
+            this._steps.push({
+                func: animaster().scale,
+                duration: duration,
+                args: ratio
+            })
+            return this;
+        },
+
+        addFadeIn(duration){
+            this._steps.push({
+                func: animaster().fadeIn,
+                duration: duration,
+                args: []
+            })
+            return this;
+        },
+
+        addFadeOut(duration){
+            this._steps.push({
+                func: animaster().fadeOut,
+                duration: duration,
+                args: []
+            })
+            return this;
+        },
+
         play(element){
             let lastStepDuration = 0;
             for(let step of this._steps){
                 console.log(step.duration);
-                setTimeout(step.func, lastStepDuration, element, step.duration, step.args);
+                setTimeout(step.func(element, step.duration, step.args).start, lastStepDuration);
                 lastStepDuration = step.duration;
             }
         },
