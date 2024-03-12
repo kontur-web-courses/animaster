@@ -24,6 +24,24 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000);
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 1000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -37,6 +55,7 @@ function getTransform(translation, ratio) {
     return result.join(' ');
 }
 
+let currentBeat = false;
 
 function animaster() {
     return {
@@ -68,6 +87,29 @@ function animaster() {
             element.style.transform = getTransform(translation, null);
         },
 
+        moveAndHide: function (element, duration) {
+            this.move(element, duration * 2 / 5, {x: 100, y: 20});
+            setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
+
+        },
+
+        showAndHide: function (element, duration) {
+            setTimeout(() => this.fadeIn(element, duration * 1 / 3), duration * 1 / 3);
+            setTimeout(() => this.fadeOut(element, duration * 1 / 3), duration * 2 / 3);
+        },
+
+        heartBeating: function (element) {
+            setInterval(() => {
+                if (!currentBeat) {
+                    this.scale(element, 500, 1.4);
+                    currentBeat = true;
+                } else {
+                    this.scale(element, 500, 1);
+                    currentBeat = false;
+                }
+            }, 500);
+        },
+
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -75,6 +117,7 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale: function (element, duration, ratio) {
+            console.log('in')
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         }
