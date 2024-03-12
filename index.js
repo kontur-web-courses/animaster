@@ -20,22 +20,25 @@ function addListeners() {
   );
 
   addPlayStopListeners("heartBeating", (anim, block) =>
-    anim.heartBeating(block).play(block, (cycled = true))
+    anim.heartBeating().play(block, (cycled = true))
+  );
+
+  addPlayStopListeners("backgroundSize", (anim, block) =>
+    anim.addBackgroundSize(1000, 100).addBackgroundSize(1000, 5).play(block, (cycled = true))
   );
 }
 
 function addPlayStopListeners(name, callback) {
-  const stops = [];
   addPlayListener(name, (anim, block) => {
-    stops.push(callback(anim, block));
-  });
+    const play = callback(anim, block);
 
-  addClickListener(name + "Reset", name + "Block", (_, __) => {
-    stops.forEach((e) => e.reset());
-  });
+    addClickListener(name + "Reset", name + "Block", (_, __) => {
+      play.reset();
+    });
 
-  addClickListener(name + "Stop", name + "Block", (_, __) => {
-    stops.forEach((e) => e.stop());
+    addClickListener(name + "Stop", name + "Block", (_, __) => {
+      play.stop();
+    });
   });
 }
 
@@ -44,7 +47,7 @@ function addPlayListener(name, callback) {
 }
 
 function addClickListener(playName, blockName, callback) {
-  document.getElementById(playName)?.addEventListener("click", function () {
+  document.getElementById(playName).addEventListener("click", function () {
     const block = document.getElementById(blockName);
     const anim = animaster();
     callback(anim, block);
@@ -77,6 +80,7 @@ function animaster() {
 
     _play(element) {
       let offset = 0;
+      this._timeouts = [];
       this._steps.forEach(({ func, duration, args }) => {
         this._timeouts.push(
           setTimeout(func, offset, element, duration, ...args)
@@ -110,6 +114,15 @@ function animaster() {
       );
     },
 
+    addBackgroundSize(duration, ...args) {
+      return this.addStep(
+        this.backgroundSize,
+        resetbackgroundSize,
+        duration,
+        args
+      );
+    },
+
     addStep(func, cancel, duration, args) {
       this._steps.push({ func, cancel, duration, args });
       return this;
@@ -135,6 +148,11 @@ function animaster() {
       element.style.transform = getTransform(null, ratio);
     },
 
+    backgroundSize(element, duration, size) {
+      element.style.transitionDuration = `${duration}ms`;
+      element.style.backgroundSize = `${size}% ${size}%`;
+    },
+
     moveAndHide(duration) {
       const moveDuration = (duration * 2) / 5;
 
@@ -154,7 +172,7 @@ function animaster() {
       return this;
     },
 
-    heartBeating(element) {
+    heartBeating() {
       this.addScale(500, 1.4).addScale(500, 1);
       return this;
     },
@@ -173,6 +191,11 @@ function animaster() {
   function resetFadeOut(element) {
     element.style.transitionDuration = null;
     show(element);
+  }
+
+  function resetbackgroundSize(element) {
+    element.style.transitionDuration = null;
+    element.style.backgroundSize = null;
   }
 
   function hide(element) {
