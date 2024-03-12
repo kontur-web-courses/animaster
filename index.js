@@ -239,8 +239,7 @@ function animaster() {
 
         play: function (element, cycled = false) {
             if (cycled) {
-                this.playCycled(element);
-                return;
+                return this.playCycled(element);
             }
 
             let dur = 0;
