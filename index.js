@@ -216,7 +216,7 @@ function animaster() {
         },
 
 
-        play: function (element) {
+        play: function (element, cycled) {
             let dur = 0;
             let cancelCalls = [];
             let timeouts = [];
@@ -244,17 +244,39 @@ function animaster() {
                 }
 
                 dur += step.duration;
-                timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
+                if (cycled){
+                    timeouts.push(() => setTimeout(() => meth(element, step.duration, step.params), dur));
+                }else{
+                    timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
+
+                }
                 if (step.cancel !== undefined) {
                     cancelCalls.push(step.cancel);
+                }
+            }
+            new_timeouts = [];
+            intervals = [];
+            if (cycled){
+                for (const timeout of timeouts) {
+                    intervals.push(setInterval(() => new_timeouts.push(timeout()), dur));
                 }
             }
 
             return {
                 stop: function () {
-                    for (const timeout of timeouts) {
-                        clearTimeout(timeout);
+                    if (cycled){
+                        for (const timeout of new_timeouts) {
+                            clearTimeout(timeout);
+                        }
+                        for (const interval of intervals) {
+                            clearInterval(interval);
+                        }
+                    }else{
+                        for (const timeout of timeouts) {
+                            clearTimeout(timeout);
+                        }
                     }
+
 
                     for (const call of cancelCalls) {
                         console.log('CANCEL')
