@@ -20,6 +20,8 @@ function addListeners() {
         });
 }
 
+
+
 /**
  * Блок плавно появляется из прозрачного.
  * @param element — HTMLElement, который надо анимировать
@@ -62,4 +64,27 @@ function getTransform(translation, ratio) {
         result.push(`scale(${ratio})`);
     }
     return result.join(' ');
+}
+
+function animaster() {
+    return {
+        getTransofrm: function (translation, ratio) {
+            const result = [];
+            if (translation) {
+                result.push(`translate(${translation.x}px,${translation.y}px)`);
+            }
+            if (ratio) {
+                result.push(`scale(${ratio})`);
+            }
+            return result.join(' ');
+        },
+        scale: function(element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        },
+        move: function(element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        }
+    }
 }
