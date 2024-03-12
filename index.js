@@ -65,6 +65,15 @@ function addListeners() {
         .addEventListener('click', function () {
             moveAndHideObj.reset();
         });
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+    document
+        .getElementById('worryAnimationPlay')
+        .addEventListener('click', worryAnimationHandler);
 }
 
 function getTransform(translation, ratio) {
@@ -229,10 +238,12 @@ function animaster()
                 .addFadeOut(duration*3/5)
                 .play(element);
 
-            return { reset: function () {
+            return {
+                reset: function () {
                     resetMoveAndScale(element);
                     resetFadeOut(element);
-                }};
+                }
+            };
         },
 
         showAndHide: function (element, duration){
@@ -246,6 +257,14 @@ function animaster()
             return this.addScale(2, 1.4)
                 .addScale(duration, 1/1.4)
                 .play(element, true)
+        },
+
+        buildHandler() {
+            const obj = this;
+
+            return function () {
+                obj.play(this);
+            }
         }
     }
 }
