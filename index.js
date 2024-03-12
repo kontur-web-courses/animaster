@@ -29,6 +29,11 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animasterObj.moveAndHide(block, 5000);
         });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animasterObj.showAndHide(block, 5000);
+        });
 }
 
 /**
@@ -91,8 +96,8 @@ function animaster(){
         setTimeout(() => fadeOut(element, duration * 3 / 5), duration * 2 / 5);
     }
     function showAndHide(element, duration){
-        fadeOut(element,duration / 3);
-        setTimeout(() => fadeIn(element, duration / 3), duration * 2 / 3);
+        fadeIn(element, duration / 3);
+        setTimeout(() => fadeOut(element,duration / 3), duration * 2 / 3);
     }
 
     function heartbeating(element, duration){
@@ -108,6 +113,7 @@ function animaster(){
         fadeIn : fadeIn,
         fadeOut : fadeOut,
         moveAndHide: moveAndHide,
+        showAndHide: showAndHide,
         heartbeating : heartbeating
     }
 }
