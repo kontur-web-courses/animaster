@@ -121,7 +121,7 @@ function animaster() {
                                 element.classList.add('hide');
                                 break;
                         }
-                    }, animation.duration + durationOffset);
+                    }, durationOffset);
                     durationOffset += animation.duration;
                 }
             };
@@ -159,7 +159,7 @@ function animaster() {
                 .play(element);
         },
         heartBeating(element) {
-            this.addScale(500, 1.4).addScale(500, 1).play(element, true);
+            this.addScale(500, 1.4).addScale(5000, 1).play(element, true);
 
            return {
                stop() {
@@ -167,6 +167,10 @@ function animaster() {
                },
            };
         },
+        buildHandler(blockName) {
+            const block = document.getElementById(blockName);
+            return this.play.bind(this, block);
+        }
     }
 }
 
@@ -174,10 +178,7 @@ function addListeners() {
     let animationObjects = {};
 
     document.getElementById('fadeInPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
-        });
+        .addEventListener('click', animaster().addFadeIn(500).buildHandler('fadeInBlock'));
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
