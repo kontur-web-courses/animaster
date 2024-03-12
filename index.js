@@ -24,6 +24,21 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             x.fadeOut(block, 5000);
         });
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            x.moveAndHide(block, 1000);
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            x.showAndHide(block, 5000);
+        });
+    document.getElementById('heartBreatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBreatingBlock');
+            x.heartBeating(block);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -95,5 +110,5 @@ function animaster(){
             scale(element, 500, 1 / 1.4);
         }
     }
-    return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, };
+    return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating };
 }
