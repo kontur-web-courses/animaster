@@ -9,7 +9,9 @@ function addListeners() {
             const animation = animaster().addFadeIn(5000).play(block);
 
             document.getElementById('fadeInReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
 
     document.getElementById('fadeOutPlay')
@@ -18,7 +20,9 @@ function addListeners() {
             const animation = animaster().addFadeOut(5000).play(block);
 
             document.getElementById('fadeOutReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
 
     document.getElementById('moveAndHidePlay')
@@ -27,7 +31,9 @@ function addListeners() {
             const animation = animaster().addMoveAndHide(5000, {x: 100, y: 20}).play(block);
 
             document.getElementById('moveAndHideReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
 
     document.getElementById('showAndHidePlay')
@@ -36,7 +42,9 @@ function addListeners() {
             const animation = animaster().addShowAndHide(5000).play(block);
 
             document.getElementById('showAndHideReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
 
     document.getElementById('showAndHideReset')
@@ -63,7 +71,9 @@ function addListeners() {
             const animation = animaster().addMove(1000, {x: 100, y: 20}).play(block);
 
             document.getElementById('moveReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
 
     document.getElementById('scalePlay')
@@ -72,32 +82,10 @@ function addListeners() {
             const animation = animaster().addScale(1000, 1.25).play(block);
 
             document.getElementById('scaleReset')
-                .addEventListener('click', function () {animation.reset();})
+                .addEventListener('click', function () {
+                    animation.reset();
+                })
         });
-    document.getElementById('changeColorPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('changeColorBlock');
-            const animation = animaster()
-                .addColorChange(1000, '#65f81f', block.style.backgroundColor)
-                .play(block);
-
-            document.getElementById('changeColorReset')
-                .addEventListener('click', function () {animation.reset();})
-        });
-
-    const customAnimationPlayHandler = animaster()
-        .addMove(200, {x: 40, y: 40})
-        .addScale(800, 1.3)
-        .addMove(200, {x: 80, y: 0})
-        .addScale(800, 1)
-        .addMove(200, {x: 40, y: -40})
-        .addScale(800, 0.7)
-        .addMove(200, {x: 0, y: 0})
-        .addScale(800, 1)
-        .buildHandler();
-
-    document.getElementById('customAnimationPlay').addEventListener('click', customAnimationPlayHandler);
-
 }
 
 function animaster() {
