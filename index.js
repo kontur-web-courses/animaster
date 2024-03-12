@@ -26,16 +26,16 @@ function addListeners() {
             animasterObj.scale(block, 1000, 1.25);
         });
 
+    let resetter;
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animasterObj.moveAndHide(block, 1000);
+            resetter = animasterObj.showAndHide(block, 1000);
         });
 
     document.getElementById('moveAndHideReset')
         .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            animasterObj.moveAndHideReset(block);
+            resetter.reset();
         });
     
     let stopper;
@@ -48,6 +48,21 @@ function addListeners() {
                 const block = document.getElementById('heartbeatingBlock');
                 stopper = animasterObj.heartbeating(block);
             }
+        });
+    
+    const customAnimation = animaster()
+        .addMove(200, {x: 40, y: 40})
+        .addScale(800, 1.3)
+        .addMove(200, {x: 80, y: 0});
+        // .addScale(800, 1)
+        // .addMove(200, {x: 40, y: -40})
+        // .addScale(800, 0.7)
+        // .addMove(200, {x: 0, y: 0})
+        // .addScale(800, 1);
+    document.getElementById('customPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customBlock');
+            customAnimation.play(block);
         });
 }
 
@@ -71,6 +86,79 @@ function animaster() {
     };
     
     return {
+        _steps: [],
+
+        play(element) {
+            let timer;
+            let resetter;
+
+            function innerPlay(steps, index) {
+                if (index === steps.length - 1)
+                    return (element) => steps[index].action(element);
+                return (element) => {
+                    steps[index].action(element);
+                    resetter = setTimeout(() => innerPlay(steps, index + 1)(element), steps[index].timeout);
+                }
+            }
+
+            innerPlay(this._steps, 0)(element);
+
+            return {
+                stop() {
+
+                },
+
+                reset() {
+                    clearTimeout(resetter);
+                }
+            }
+        },
+
+        addMove(duration, translation) {
+            const actionFunc = (element) => this.move(element, duration, translation);
+            this._steps.push({
+                timeout: duration,
+                action: actionFunc.bind(this)
+            });
+            return this;
+        },
+
+        addScale(duration, ratio) {
+            const actionFunc = (element) => this.scale(element, duration, ratio);
+            this._steps.push({
+                timeout: duration,
+                action: actionFunc.bind(this)
+            });
+            return this;
+        },
+
+        addFadeIn(duration) {
+            const actionFunc = (element) => this.fadeIn(element, duration);
+            this._steps.push({
+                timeout: duration,
+                action: actionFunc.bind(this)
+            });
+            return this;
+        },
+
+        addFadeOut(duration) {
+            const actionFunc = (element) => this.fadeOut(element, duration);
+            this._steps.push({
+                timeout: duration,
+                action: actionFunc.bind(this)
+            });
+            return this;
+        },
+
+        addDelay(duration) {
+            const actionFunc = (element) => {};
+            this._steps.push({
+                timeout: duration,
+                action: actionFunc.bind(this)
+            });
+            return this;
+        },
+
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
@@ -101,7 +189,7 @@ function animaster() {
          */
         move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            element.style.transform += getTransform(translation, null);
         },
 
         /**
@@ -112,7 +200,7 @@ function animaster() {
          */
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            element.style.transform += getTransform(null, ratio);
         },
 
         /**
@@ -122,26 +210,33 @@ function animaster() {
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         moveAndHide(element, duration, translation = { x: 100, y: 20}) {
-            this.move(element, duration * 2 / 5, translation);
-            setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
+            let ultimateAbort = this.addMove(duration * 2 / 5, translation).addFadeOut(duration * 3 / 5).play(element);
+            this._steps = [];
+            return {
+                reset() {
+                    ultimateAbort.reset();
+                    resetFadeOut(element);
+                    resetMoveAndScale(element);
+                }
+            };
         },
 
-        moveAndHideReset(element) {
-            resetFadeOut(element);
-            resetMoveAndScale(element);
+        showAndHide(element, duration) {
+            let ultimateAbort = this.addFadeIn(duration / 3).addDelay(duration / 3).addFadeOut(duration / 3).play(element);
+            this._steps = [];
+            return {
+                reset() {
+                    ultimateAbort.reset();
+                    resetFadeOut(element);
+                }
+            };
         },
-
-        beatingElements: new Map(),
 
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
          */
         heartbeating(element) {
-            if (this.beatingElements.has(element)) {
-                return this.beatingElements.get(element);
-            }
-
             const heartbeatAnimation = () => {
                 this.scale(element, 500, 1.4);
                 setTimeout(() => {
@@ -152,16 +247,11 @@ function animaster() {
             heartbeatAnimation();
             const timer = setInterval(heartbeatAnimation, 1000);
 
-            const stopFunc = () => {
-                clearInterval(timer);
-                this.beatingElements.delete(element);
+            return {
+                stop() {
+                    clearInterval(timer);
+                }
             };
-            const stopper = {
-                stop: stopFunc.bind(this)
-            };
-            this.beatingElements.set(element, stopper);
-
-            return stopper;
         }
     };
 }
