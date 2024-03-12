@@ -110,7 +110,9 @@ function animaster() {
                 duration: duration,
                 translation: translation
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         addScale: function (duration, ratio) {
@@ -119,7 +121,9 @@ function animaster() {
                 duration: duration,
                 ratio: ratio
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         addFadeIn: function (duration) {
@@ -127,7 +131,9 @@ function animaster() {
                 type: 'fadeIn',
                 duration: duration
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         addFadeOut: function (duration) {
@@ -135,7 +141,9 @@ function animaster() {
                 type: 'fadeOut',
                 duration: duration
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         addDelay: function (duration) {
@@ -143,20 +151,20 @@ function animaster() {
                 type: 'delay',
                 duration: duration
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         addMoveAndHide: function (duration, translation) {
-            this.addMove(duration * 2/5, translation)
-                .addFadeOut(duration * 3/5);
-            return this;
+            return this.addMove(duration * 2 / 5, translation)
+                .addFadeOut(duration * 3 / 5);
         },
 
         addShowAndHide: function (duration) {
-            this.addFadeIn(duration * 1/3)
-                .addDelay(duration * 1/3)
-                .addFadeOut(duration * 1/3);
-            return this;
+            return this.addFadeIn(duration * 1 / 3)
+                .addDelay(duration * 1 / 3)
+                .addFadeOut(duration * 1 / 3);
         },
         
         addColorChange: function (duration, color, prevColor) {
@@ -166,7 +174,9 @@ function animaster() {
                 color: color,
                 prevColor: prevColor
             });
-            return this;
+            let res = Object.assign({}, this);
+            res._steps = this._steps.slice(0);
+            return res;
         },
 
         buildHandler: function() {
