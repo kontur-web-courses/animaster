@@ -128,7 +128,11 @@ function animaster() {
 
             if (cycled) {
                 const intervalId = setInterval(cycle, cycleDuration);
-                return intervalId;
+                return {
+                    stop() {
+                        clearInterval(intervalId);
+                    }
+                };
             } else {
                 cycle();
             }
@@ -160,13 +164,7 @@ function animaster() {
                 .play(element);
         },
         heartBeating(element) {
-            const intervalId = this.addScale(500, 1.4).addScale(500, 1).play(element, true);
-
-           return {
-               stop() {
-                   clearInterval(intervalId);
-               },
-           };
+            return this.addScale(500, 1.4).addScale(500, 1).play(element, true);
         },
         buildHandler(blockName) {
             const block = document.getElementById(blockName);
