@@ -93,6 +93,7 @@ function animaster()
 
         addMove: function (duration, translation)
         {
+            console.log("addMove");
             this._steps.push({
                 duration: duration,
                 operation: element => this.move(element, duration, translation)
@@ -102,6 +103,7 @@ function animaster()
 
         addScale: function (duration, ratio)
         {
+            console.log("addScale");
             this._steps.push({
                 duration: duration,
                 operation: element => this.scale(element, duration, ratio)
@@ -111,6 +113,7 @@ function animaster()
 
         addFadeIn: function (duration)
         {
+            console.log("addFadeIn");
             this._steps.push({
                 duration: duration,
                 operation: element => this.fadeIn(element, duration)
@@ -120,6 +123,7 @@ function animaster()
 
         addFadeOut: function (duration)
         {
+            console.log("addFadeOut");
             this._steps.push({
                 duration: duration,
                 operation: element => this.fadeOut(element, duration)
@@ -132,12 +136,14 @@ function animaster()
             if (this._steps.length < 1)
                 return this;
 
+            console.log(this._steps);
+
             this._steps[0].operation(element);
             for (let i = 1; i < this._steps.length-1; i++) {
                 console.log(i);
                 let prev_cur = this._steps[i];
                 let next_step = this._steps[i+1];
-                setTimeout(next_step.operation(element), prev_cur.duration);
+                setTimeout(() => next_step.operation(element), prev_cur.duration);
                 console.log(next_step.operation);
             }
             this._steps = [];
