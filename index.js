@@ -115,66 +115,112 @@ function resetMoveAndScale(element) {
 }
 
 function animaster() {
+
+    const _steps = []
+    let _currentStep = 0;
+    let _currentTimeout = null;
+
+    const play = function (element) {
+        if(_currentStep === 0) {
+            return;
+        }
+
+        const step = _steps[_currentStep]
+        step.action(element, step.duration, step.arg)
+        _currentTimeout = setTimeout(() => play(element), step.duration);
+    }
+
+    const reset = () => clearTimeout(_currentTimeout);
+
     const fadeIn = function (element, duration) {
-        element.style.transitionDuration =  `${duration}ms`;
-        element.classList.remove('hide');
-        element.classList.add('show');
+        addFadeIn(duration);
+        play(element);
     };
 
     const fadeOut = function(element, duration) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.classList.remove('show');
-        element.classList.add('hide');
+        addFadeOut(duration);
+        play(element);
     };
 
     const move = function (element, duration, translation) {
-        element.style.transitionDuration = `${duration}ms`;
-        element.style.transform = getTransform(translation, null);
+        addMove(duration, translation);
+        play(element);
     };
 
     const scale = function (element, duration, ratio) {
-        element.style.transitionDuration =  `${duration}ms`;
-        element.style.transform = getTransform(null, ratio);
-    }
+        addScale(duration, ratio);
+        play(element);
+    };
+
+    const addAction = function (action, duration, arg) {
+        _steps.push({
+            action,
+            duration,
+            arg
+        });
+        _currentStep++;
+    };
+
+    const addWait = (duration) => addAction(() => void 0, duration)
+    const addMove = function(duration, translation) {
+        addAction(function (element, duration, translation) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(translation, null);
+        }, duration, translation);
+    };
+
+    const addScale = function (duration, ratio) {
+        addAction(function (element, duration, ratio) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.style.transform = getTransform(null, ratio);
+        }, duration, ratio);
+    };
+
+    const addFadeOut = function (duration) {
+        addAction(function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide')
+        }, duration);
+    };
+
+    const addFadeIn = function (duration) {
+        addAction(function (element, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        }, duration);
+    };
 
     const moveAndHide = function (element, duration) {
         const moveTime = duration * 2 / 5;
         const fadeOutTime = duration * 3 /5;
-        move(element,moveTime, {x : 100, y : 20});
-        setTimeout(() => {
-            fadeOut(element, duration * 3 / 5);
-        }, fadeOutTime);
-    }
+        const translation = {x:100, y:20};
+        addMove(moveTime, translation);
+        addFadeOut(fadeOutTime);
+        play(element);
+    };
 
     const showAndHide = function (element, duration) {
         const segmentTime = duration / 3;
-        fadeIn(element, segmentTime);
-        setTimeout(() => {
-            fadeOut(element, segmentTime)
-        }, segmentTime * 2);
-    }
-
-    const heartBeating = function (element) {
-        const beat = function() {
-            const segmentTime = 500;
-            scale(element, segmentTime, 1.4);
-            setTimeout(() => {
-                scale(element, segmentTime, 5 / 7);
-            }, segmentTime)
-        };
-
-        const intervalId = setInterval(() => beat(), 1000);
-
-        const stop = function () {
-            clearInterval(intervalId);
-        };
-
-        return {
-            stop
-        };
+        addFadeIn(element, segmentTime);
+        addWait(segmentTime);
+        addFadeOut(segmentTime);
+        play(element);
     };
 
-    const reset = function () {}
+    const heartBeating = function (element) {
+        let beat = function () {
+            const ratio = 1.4;
+            const segmentTime = 500;
+            addScale(segmentTime, ratio);
+            addScale(segmentTime, 1 / ratio);
+            addAction(beat, 0);
+        };
+
+        addAction(beat);
+        play(element);
+    };
 
     return {
         fadeIn,
@@ -184,6 +230,5 @@ function animaster() {
         moveAndHide,
         showAndHide,
         heartBeating,
-        reset,
     }
 }
