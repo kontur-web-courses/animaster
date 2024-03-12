@@ -1,14 +1,5 @@
 addListeners();
 
-function sleep(duration) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-        currentDate = Date.now();
-        console.log('!');
-    } while (currentDate - date < duration);
-}
-
 function animaster() {
     function resetFadeIn(element) {
         element.style.transitionDuration = null;
@@ -107,25 +98,38 @@ function animaster() {
             return copy;
         },
         play(element, cycled=false) {
-            for (let animation of this._steps) {
-                element.style.transitionDuration = `${animation.duration}ms`;
-                switch (animation['name']) {
-                    case 'move':
-                        element.style.transform = getTransform(animation['additional']['translation'], null);
-                        break;
-                    case 'scale':
-                        element.style.transform = getTransform(null, animation.additional.ratio);
-                        break;
-                    case 'fadeIn':
-                        element.classList.remove('hide');
-                        element.classList.add('show');
-                        break;
-                    case 'fadeOut':
-                        element.classList.remove('show');
-                        element.classList.add('hide');
-                        break;
+            let cycleDuration = this._steps.reduce((sum, current) => sum + current.duration, 0);
+            let cycle = () => {
+                let durationOffset = 0;
+                for (let animation of this._steps) {
+                    setTimeout(() => {
+
+                        element.style.transitionDuration = `${animation.duration}ms`;
+                        switch (animation['name']) {
+                            case 'move':
+                                element.style.transform = getTransform(animation['additional']['translation'], null);
+                                break;
+                            case 'scale':
+                                element.style.transform = getTransform(null, animation.additional.ratio);
+                                break;
+                            case 'fadeIn':
+                                element.classList.remove('hide');
+                                element.classList.add('show');
+                                break;
+                            case 'fadeOut':
+                                element.classList.remove('show');
+                                element.classList.add('hide');
+                                break;
+                        }
+                    }, animation.duration + durationOffset);
+                    durationOffset += animation.duration;
                 }
-                //sleep(animation.duration);
+            };
+
+            if (cycled) {
+                setInterval(cycle, cycleDuration);
+            } else {
+                cycle();
             }
         },
         /**
@@ -155,10 +159,7 @@ function animaster() {
                 .play(element);
         },
         heartBeating(element) {
-            const intervalId = setInterval(() => {
-                this.scale(element, 500, 1.4);
-                setTimeout(() => this.scale(element, 500, 1), 500);
-            }, 1000);``
+            this.addScale(500, 1.4).addScale(500, 1).play(element, true);
 
            return {
                stop() {
