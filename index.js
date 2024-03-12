@@ -19,10 +19,22 @@ function addListeners() {
             animaster().addMove(1000, {x: 100, y: 10}).addMove(2000, {x: 200, y: 10}).play(block);
         });
 
+    document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().move(block, {x: 100, y: 10}, 1).reset();
+        });
+
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25).start();
+        });
+
+    document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().scale(block, 1000, 1.25).reset();
         });
 
     document.getElementById('fadeOutPlay')
@@ -98,7 +110,7 @@ function animaster(){
             let lastStepDuration = 0;
             for(let step of this._steps){
                 console.log(step.duration);
-                setTimeout(step.func, lastStepDuration, element, step.duration, step.args);
+                setTimeout(step.func(element, step.duration, step.args).start, lastStepDuration);
                 lastStepDuration = step.duration;
             }
         },
@@ -145,8 +157,16 @@ function animaster(){
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
         move(element, duration, translation) {
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(translation, null);
+            return{
+                start: function (){
+                    element.style.transitionDuration = `${duration}ms`;
+                    element.style.transform = getTransform(translation, null);
+                },
+                reset: function (){
+                    element.style.transitionDuration =  null;
+                    element.style.transform = getTransform({x: 0, y: 0}, null);
+                }
+            }
         },
 
         /**
@@ -156,8 +176,16 @@ function animaster(){
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
+            return{
+                start: function (){
+                    element.style.transitionDuration =  `${duration}ms`;
+                    element.style.transform = getTransform(null, ratio);
+                },
+                reset: function (){
+                    element.style.transitionDuration =  null;
+                    element.style.transform = getTransform(null, 1 / ratio);
+                }
+            }
         },
 
         moveAndHide(element, duration) {
