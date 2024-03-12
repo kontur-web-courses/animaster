@@ -74,12 +74,14 @@ function addListeners() {
             document.getElementById('scaleReset')
                 .addEventListener('click', function () {animation.reset();})
         });
-    document.getElementById('changeColor')
+    document.getElementById('changeColorPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('changeColorBlock');
-            const animation = animaster().addColorChange(1000, 'black').play(block);
+            const animation = animaster()
+                .addColorChange(1000, '#65f81f', block.style.backgroundColor)
+                .play(block);
 
-            document.getElementById('scaleReset')
+            document.getElementById('changeColorReset')
                 .addEventListener('click', function () {animation.reset();})
         });
 
@@ -108,9 +110,7 @@ function animaster() {
                 duration: duration,
                 translation: translation
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addScale: function (duration, ratio) {
@@ -119,9 +119,7 @@ function animaster() {
                 duration: duration,
                 ratio: ratio
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addFadeIn: function (duration) {
@@ -129,9 +127,7 @@ function animaster() {
                 type: 'fadeIn',
                 duration: duration
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addFadeOut: function (duration) {
@@ -139,9 +135,7 @@ function animaster() {
                 type: 'fadeOut',
                 duration: duration
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addDelay: function (duration) {
@@ -149,37 +143,30 @@ function animaster() {
                 type: 'delay',
                 duration: duration
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addMoveAndHide: function (duration, translation) {
             this.addMove(duration * 2/5, translation)
                 .addFadeOut(duration * 3/5);
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         addShowAndHide: function (duration) {
             this.addFadeIn(duration * 1/3)
                 .addDelay(duration * 1/3)
                 .addFadeOut(duration * 1/3);
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
         
-        addColorChange: function (duration, color) {
+        addColorChange: function (duration, color, prevColor) {
             this._steps.push({
                 type: 'colorChange',
                 duration: duration,
-                color: color
+                color: color,
+                prevColor: prevColor
             });
-            let res = this;
-            res._steps = this._steps.slice(0)
-            return res;
+            return this;
         },
 
         buildHandler: function() {
@@ -218,7 +205,7 @@ function animaster() {
                             animation = self.showAndHide(element, step.duration);
                             break;
                         case 'colorChange':
-                            animation = self.changeColor(element, step.duration, step.color);
+                            animation = self.changeColor(element, step.duration, step.color, step.prevColor);
                             break;
                     }
 
@@ -261,15 +248,15 @@ function animaster() {
             };
         },
 
-        changeColor: function (element, duration, color) {
+        changeColor: function (element, duration, color, prevColor) {
             return {
-                prevColor: element.style.backgroundColor,
                 start: function () {
                     element.style.transitionDuration =  `${duration}ms`;
                     element.style.backgroundColor = color;
                 },
 
                 reset: function () {
+                    element.style.transitionDuration = 0;
                     element.style.backgroundColor = prevColor;
                 }
             };
