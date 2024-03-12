@@ -21,7 +21,7 @@ function addListeners() {
         });
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('fadeOutPlay');
+            const block = document.getElementById('fadeOutBlock');
             x.fadeOut(block, 5000);
         });
 }
