@@ -30,7 +30,7 @@ function addListeners() {
     document.getElementById('heartBeatingStop')
         .addEventListener('click', function () {
             if (heartBeatingPlayIds !== null)
-                for (id of heartBeatingPlayIds) {
+                for (const id of heartBeatingPlayIds) {
                     clearInterval(id);
                 }
         })
@@ -143,8 +143,26 @@ function animaster() {
         element.style.transform = null;
     }
 
-
-    const result = {};
+    const _steps = [];
+    const result = {
+        "_steps": _steps,
+        "addMove": (duration, transition) => {
+            _steps.push((element) => move(element, duration, transition))
+        },
+        "addScale": (duration, ratio) => {
+            _steps.push((element) => scale(element, duration, ratio))
+        },
+        "addFadeIn": (duration) => {
+            _steps.push((element) => move(element, duration))
+        },
+        "addFadeOut": (duration) => {
+            _steps.push((element) => move(element, duration))
+        },
+        "play": (element) => {
+            for (const step of this._steps)
+                step(element);
+        }
+    };
     result.scale = scale;
     result.fadeIn = fadeIn;
     result.move = move;
