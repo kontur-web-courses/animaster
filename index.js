@@ -88,16 +88,16 @@ function animaster() {
         },
         moveAndHide(element, duration) {
             this.move(element, 0.4 * duration, { x: 100, y: 20 });
-            this.fadeOut(element, 0.6 * duration)
+            setTimeout(() => this.fadeOut(element, 0.6 * duration), 0.4 * duration);
         },
         showAndHide(element, duration) {
             this.fadeIn(element, duration / 3);
-            setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), 2 * duration / 3);
         },
         heartBeating() {
             while (true) {
                 this.scale(element, 0.5, 1.4);
-                this.scale(element, 0.5, 5 / 7);
+                setTimeout(() => this.scale(element, 0.5, 5 / 7), 0.5);
             }
         }
     }
