@@ -62,7 +62,7 @@ function addListeners() {
     document.getElementById('testPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('testBlock');
-            master.addMove(500, {x: 200, y:20}).addScale(1000, 1.5).addFadeIn(2000).play(block);
+            master.addFadeIn(500).addMove(500, {x: 20, y:20}).addScale(1000, 1.3).play(block);
         });
 }
 
@@ -147,12 +147,12 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        
-        addScale(timeout, ratio) {
+
+        addScale(duration, ratio) {
             let step = {
                 Name: 'scale',
                 Command: this.scale,
-                StepTimeout: timeout,
+                Duration: duration,
                 Additional: ratio
             }
             this._steps.push(step);
@@ -169,11 +169,11 @@ function animaster() {
             resetMove(element);
         },
 
-        addMove(timeout, position) {
+        addMove(duration, position) {
             const step = {
-                Name: 'move',
+                Name: 'Move',
                 Command: this.move,
-                StepTimeout: timeout,
+                Duration: duration,
                 Position: position
             }
             this._steps.push(step);
@@ -195,21 +195,24 @@ function animaster() {
             this._steps.reverse();
             while (this._steps.length > 0) {
                 const step = this._steps.pop();
-                console.log(this._steps.length, step)
-                step.Command(element, step.StepTimeout, step.Position);
-                console.log(step.Name)
+                console.log(step)
                 switch (step.Name) {
-                    case 'move': {
-                        setTimeout(() => step.Command(element, step.StepTimeout, step.Additional), interval);
+                    case 'Move': {
+                        console.log(123)
+                        setTimeout(() => step.Command(element, step.Duration, step.Position), interval);
                         break;
                     }
                     case 'scale': {
-                        setTimeout( () => step.Command(element, step.StepTimeout, step.Additional), interval);
+                        console.log(345)
+                        setTimeout( () => step.Command(element, step.Duration, step.Additional), interval);
                         break;
                     }
-
+                    case 'FadeIn': {
+                        setTimeout( () => step.Command(element, step.Duration), interval);
+                        break;
+                    }
                 }
-                interval += step.StepTimeout;
+                interval += step.Duration;
             }
         }
     }
