@@ -12,7 +12,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            x.move(block, 1000, {x: 100, y: 10});
+            x.addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
@@ -125,9 +125,6 @@ function animaster(){
             }
         }
     }
-    function addMove (duration, translation) {
-
-    }
     function resetFadeIn(element){
         element.style.show = null;
         element.classList.remove('show');
@@ -141,6 +138,27 @@ function animaster(){
     function resetMoveAndScale(element){
         element.style.transform = null;
     }
+
+    function addMove (duration, translation) {
+        this._steps.push({
+            name: 'move',
+            duration,
+            translation
+        });
+        return this;
+    }
+
+    function play (element) {
+        for (const step of this._steps){
+            switch (step.name){
+                case 'move':
+                    this.move(element, step.duration, step.translation);
+                    break;
+            }
+        }
+    }
     
-    return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating };
+    return {
+        _steps: [],
+        move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating, addMove, play };
 }
