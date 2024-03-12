@@ -81,5 +81,19 @@ function animaster(){
         element.classList.remove('show');
         element.classList.add('hide');
     }
-    return {move, scale, fadeIn, fadeOut};
+    function moveAndHide(element, duration){
+        move(element, duration, {x:100,  y:20});
+        fadeOut(element, duration);
+    }
+    function showAndHide(element, duration){
+        fadeIn(element, duration);
+        fadeOut(element, duration);
+    }
+    function heartBeating(element){
+        while (true) {
+            scale(element, 500, 1.4);
+            scale(element, 500, 1);
+        }
+    }
+    return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, };
 }
