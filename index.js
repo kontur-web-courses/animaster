@@ -25,6 +25,17 @@ function addListeners() {
             animaster().addScale(1000, 1.25).play(block);
         });
 
+    const worryAnimationHandler = animaster()
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .addMove(200, {x: 80, y: 0})
+        .addMove(200, {x: 0, y: 0})
+        .buildHandler();
+
+    document
+        .getElementById('worryAnimationBlock')
+        .addEventListener('click', worryAnimationHandler);
+
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
@@ -235,6 +246,10 @@ function animaster() {
                     clearInterval(intvl);
                 }
             };
+        },
+
+        buildHandler: function () {
+            return (element) => this.play(element);
         },
 
         play: function (element, cycled = false) {
