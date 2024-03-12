@@ -32,7 +32,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animator.scale(block, 1000, 1.25);
+            animator.moveAndHide(block, 1000);
         });
 }
 
@@ -78,8 +78,9 @@ function animaster() {
         },
 
 
-        moveAndHide(element, time) {
-
+        moveAndHide(element, duration) {
+            this.move(element, duration * 2 / 5, {x: 100, y: 20});
+            this.fadeOut(element, duration * 3 / 5);
         }
     }
 
