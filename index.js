@@ -51,6 +51,13 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
+            //setTimeout(()=>{ this.resetFadeIn(element);}, duration);
+        },
+
+        resetFadeIn(element) {
+            element.style.transitionDuration = null;
+            element.classList.add('hide');
+            element.classList.remove('show');
         },
 
         /**
@@ -86,6 +93,12 @@ function animaster(){
             element.classList.add('hide');
         },
 
+        resetFadeOut(element) {
+            element.style.transitionDuration = null;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+
         /**
          * Блок плавно становится прозрачным.
          * @param element — HTMLElement, который надо анимировать
@@ -96,6 +109,12 @@ function animaster(){
             setTimeout(() => {
                 this.fadeOut(element, 3 * duration / 5);
             }, 2 * duration / 5);
+            setTimeout(()=>{ this.resetMoveAndHide(element);}, duration);
+        },
+
+        resetMoveAndHide(element){
+            this.resetFadeOut(element);
+            this.move(element, 0, {x: 0, y: 0});
         },
 
         getTransform(translation, ratio) {
