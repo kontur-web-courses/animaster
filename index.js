@@ -8,6 +8,11 @@ function addListeners() {
             const block = document.getElementById('fadeInBlock');
             animasterObj.fadeIn(block, 5000);
         });
+    document.getElementById('fadeInPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animasterObj.resetFadein(block);
+        });
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -24,6 +29,11 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             animasterObj.fadeOut(block, 5000);
         });
+    document.getElementById('resetFadeout')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animasterObj.resetFadeOut(block);
+        });
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
@@ -38,6 +48,10 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('heartbeatingBlock');
             stopHeartbeating = animasterObj.heartbeating(block);
+        });
+    document.getElementById('heartbeatingStop')
+        .addEventListener('click', function () {
+            stopHeartbeating.stop();
         });
 }
 
@@ -105,6 +119,19 @@ function animaster(){
             }
         }
     }
+    function resetFadein(element){
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut(element){
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetMoveAndScale(element){
+
+    }
 
     return {
         scale : scale,
@@ -113,6 +140,8 @@ function animaster(){
         fadeOut : fadeOut,
         moveAndHide: moveAndHide,
         showAndHide: showAndHide,
-        heartbeating : heartbeating
+        heartbeating : heartbeating,
+        resetFadeOut : resetFadeOut,
+        resetFadein : resetFadein
     }
 }
