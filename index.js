@@ -39,6 +39,22 @@ function addListeners() {
 }
 
 function animaster() {
+    const resetFadeIn = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    };
+    const resetFadeOut = (element) => {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    };
+    const resetMoveAndScale = (element) => {
+        element.style.transitionDuration = null;
+        element.style.transform = getTransform(null, null);
+
+    };
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
