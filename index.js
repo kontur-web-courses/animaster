@@ -34,6 +34,11 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animasterObj.showAndHide(block, 5000);
         });
+    document.getElementById('heartbeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartbeatingBlock');
+            animasterObj.heartbeating(block);
+        });
 }
 
 /**
@@ -100,12 +105,17 @@ function animaster(){
         setTimeout(() => fadeOut(element,duration / 3), duration * 2 / 3);
     }
 
-    function heartbeating(element, duration){
-        scale(element, 500, 1.4);
-        scale(element, 500, 1);
+    function heartbeating(element){
+        function heartbeatingInner(elem) {
+            scale(elem, 500, 1.4);
+            setTimeout(() => {
+                scale(elem, 500, 1);
+                setTimeout(() => heartbeatingInner(elem), 500);
+            },
+            500)
+        }
+        heartbeatingInner(element);
     }
-
-
 
     return {
         scale : scale,
