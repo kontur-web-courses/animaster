@@ -80,8 +80,8 @@ function animaster() {
          */
         fadeOut: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
-            element.classList.add('hide');
             element.classList.remove('show');
+            element.classList.add('hide');
         },
     }
 }
