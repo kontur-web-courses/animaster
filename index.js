@@ -46,14 +46,17 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            anim.addScale(500, 1.4)
-                .addScale(500, 1.0)
-                .play(block);
-            setInterval(() => {
-                anim.addScale(500, 1.4)
-                    .addScale(500, 1.0)
-                    .play(block);
-            }, 1000);
+            if (anim.isBeating())
+                anim.heartBeating(block);
+            console.log(anim.id());
+        });
+
+    document.getElementById('heartBeatingPause')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            if (!anim.isBeating())
+                anim.heartBeating(block);
+            console.log(anim.id());
         });
 
     document.getElementById('customPlay')
@@ -79,15 +82,21 @@ function toStep(callable, duration, ...args) {
         let id = setTimeout(() => {
             callable(element, duration, ...args)
         }, waitTime)
-        return { id: id, duration: duration };
+        return {id: id, duration: duration};
     }
 }
 
 function animaster() {
     let _steps = [];
     let _ids = [];
+    let isBeating = true;
+    let id = null;
+    let r = null;
 
     return {
+        isBeating: function () {
+            return isBeating;
+        },
         fadeIn: function (element, duration) {
             this.addFadeIn(duration).play(element)
         },
@@ -154,6 +163,28 @@ function animaster() {
                 }
             }
         },
+        heartBeating: function (block) {
+            if (!isBeating) {
+                isBeating = true;
+                clearInterval(id);
+                r.reset();
+                return;
+            }
+            setTimeout(() => {
+                this.addScale(500, 1.4)
+                    .addScale(500, 1.0)
+                    .play(block)
+            }, 0);
+            id = setInterval(() => {
+                r = this.addScale(500, 1.4)
+                    .addScale(500, 1.0)
+                    .play(block);
+            }, 1000);
+            console.log(id);
+            isBeating = false;
+        },
+
+        showAndHide: {}
     };
 }
 
