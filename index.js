@@ -59,25 +59,20 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().resetMoveAndScale(block);
         });
-        let obj;
 
+    let obj;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 1000, 1.25);
+            obj = animaster().heartBeating(block, 1000, 1.25);
         });
-        document.getElementById('heartBeatingPlay')
-    .addEventListener('click', function () {
-        const block = document.getElementById('heartBeatingBlock');
-        obj = animaster().heartBeating(block, 1000, 1.25);
-    });
 
     document.getElementById('heartBeatingStop')
-    .addEventListener('click', function () {
-        obj.stop();
-        // const block = document.getElementById('heartBeatingBlock');
-        // animaster().heartBeating(block, 1000, 1.25);
-    });
+        .addEventListener('click', function () {
+            obj.stop();
+            // const block = document.getElementById('heartBeatingBlock');
+            // animaster().heartBeating(block, 1000, 1.25);
+        });
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
@@ -190,26 +185,28 @@ function animaster() {
             setTimeout(showFunction, duration / 3)
         },
 
-        heartBeating (element, duration, ratio){
+        heartBeating(element, duration, ratio) {
             // console.log('create');
             let stop = false;
-            let intervalFunction = function(){
-                element.style.transitionDuration = `${duration/2}ms`;
+            let intervalFunction = function () {
+                element.style.transitionDuration = `${duration / 2}ms`;
                 element.style.transform = getTransform(null, ratio);
-                let scaleFunction = function(){
-                    element.style.transitionDuration = `${duration/2}ms`;
-                    element.style.transform = getTransform(null, 1/ratio);
+                let scaleFunction = function () {
+                    element.style.transitionDuration = `${duration / 2}ms`;
+                    element.style.transform = getTransform(null, 1 / ratio);
                 }
                 console.log(stop);
-                if (stop){
+                if (stop) {
                     return obj
                 }
-                setTimeout(scaleFunction, duration/2)
+                setTimeout(scaleFunction, duration / 2)
                 setTimeout(intervalFunction, 1000)
             }
             intervalFunction();
-            let obj ={
-                stop: () => {stop=true}
+            let obj = {
+                stop: () => {
+                    stop = true
+                }
             }
             return obj
         },
