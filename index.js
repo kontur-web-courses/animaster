@@ -25,6 +25,12 @@ function addListeners() {
             animaster().resetFadeOut(block);
         });
 
+    document.getElementById('showAndHidePlay')
+    .addEventListener('click', function () {
+        const block = document.getElementById('showAndHideBlock');
+        animaster().showAndHide(block, 1000, 1.25);
+    });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -48,6 +54,18 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().resetMoveAndScale(block);
         });
+
+    document.getElementById('heartBeatingPlay')
+    .addEventListener('click', function () {
+        const block = document.getElementById('heartBeatingBlock');
+        animaster().heartBeating(block, 1000, 1.25);
+    });
+
+    document.getElementById('moveAndHidePlay')
+    .addEventListener('click', function () {
+        const block = document.getElementById('moveAndHideBlock');
+        animaster().moveAndHide(block, 1000, {x: 100, y: 20});
+    });
 }
 
 
@@ -129,6 +147,45 @@ function animaster() {
             element.classList.remove('show');
             element.classList.add('hide');
         },
+
+        moveAndHide: function (element, duration, translation){
+            let hideFunction = function(){
+                element.style.transitionDuration = `${3*duration/5}ms`;
+                element.classList.remove('show');
+                element.classList.add('hide');
+            }
+            element.style.transitionDuration = `${2*duration/5}ms`;
+            element.style.transform = getTransform(translation, null);
+            setTimeout(hideFunction, 2*duration/5);
+        },
+
+        showAndHide: function (element, duration){
+            element.style.transitionDuration = `${duration/3}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
+
+            let showFunction = function(){
+                element.style.transitionDuration = `${duration/3}ms`;
+                element.classList.remove('show');
+                element.classList.add('hide');
+            }
+            setTimeout(showFunction, duration/3)
+        },
+
+        heartBeating: function (element, duration, ratio){
+            let intervalFunction = function(){
+                element.style.transitionDuration = `${duration/2}ms`;
+                element.style.transform = getTransform(null, ratio);
+                let scaleFunction = function(){
+                    element.style.transitionDuration = `${duration/2}ms`;
+                    element.style.transform = getTransform(null, 1/ratio);
+                }
+                setTimeout(scaleFunction, duration/2)
+                setTimeout(intervalFunction, 1000)
+            }
+
+            intervalFunction();
+        }
 
         /**
          * Отменить анимацию исчезания.
