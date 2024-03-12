@@ -45,7 +45,8 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            let cancel = animaster().heartBeating(block).stop;
+            let cancel = animaster().addScale(500, 1.4).addScale(500, 1).play(block, true).stop;
+
             document.getElementById('heartBeatingStop').addEventListener('click', cancel);
         });
 
@@ -216,7 +217,7 @@ function animaster() {
         },
 
 
-        play: function (element, cycled) {
+        play: function (element, cycled = false) {
             let dur = 0;
             let cancelCalls = [];
             let timeouts = [];
@@ -244,9 +245,9 @@ function animaster() {
                 }
 
                 dur += step.duration;
-                if (cycled){
+                if (cycled) {
                     timeouts.push(() => setTimeout(() => meth(element, step.duration, step.params), dur));
-                }else{
+                } else {
                     timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
 
                 }
@@ -256,7 +257,7 @@ function animaster() {
             }
             new_timeouts = [];
             intervals = [];
-            if (cycled){
+            if (cycled) {
                 for (const timeout of timeouts) {
                     intervals.push(setInterval(() => new_timeouts.push(timeout()), dur));
                 }
@@ -264,14 +265,14 @@ function animaster() {
 
             return {
                 stop: function () {
-                    if (cycled){
+                    if (cycled) {
                         for (const timeout of new_timeouts) {
                             clearTimeout(timeout);
                         }
                         for (const interval of intervals) {
                             clearInterval(interval);
                         }
-                    }else{
+                    } else {
                         for (const timeout of timeouts) {
                             clearTimeout(timeout);
                         }
@@ -279,7 +280,7 @@ function animaster() {
 
 
                     for (const call of cancelCalls) {
-                        console.log('CANCEL')
+                        console.log('CANCEL');
                         call(element);
                     }
                 }
