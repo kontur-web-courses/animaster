@@ -154,10 +154,24 @@ function animaster(){
 
     function resetMoveAndScale(element){
         element.style.transitionDuration = null;
-        element.style.transform = getTransform(null, null);        
+        element.style.transform = getTransform(null, null);
+    function addMove(duration, args){
+        this._steps.push({
+            operationName : "move",
+            operation: move,
+            duration : duration,
+            args: args
+        });
+        return this;
+    }
+
+    function play(element) {
+        const step = this._steps.unshift();
+        move(element, step.duration, step.args);
     }
 
     return {
+        _steps : [],
         scale : scale,
         move : move,
         fadeIn : fadeIn,
@@ -165,5 +179,9 @@ function animaster(){
         moveAndHide: moveAndHide,
         showAndHide: showAndHide,
         heartbeating : heartbeating,
+        resetFadeOut : resetFadeOut,
+        resetFadein : resetFadein,
+        addMove : addMove,
+        play : play
     }
 }
