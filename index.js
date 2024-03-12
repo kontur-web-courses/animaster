@@ -97,7 +97,6 @@ function addListeners() {
 
 function animaster() {
     let _steps = [];
-    let cycled = false;
     /**
      * Блок плавно появляется из прозрачного.
      * @param element — HTMLElement, который надо анимировать
@@ -225,14 +224,27 @@ function animaster() {
         return this;
     }
 
-    function play(element) {
+    function play(element, cycled = true) {
         let totalTime = 0;
-        for (const data of _steps) {
+        let _innerSteps = _steps.slice();
+        for (const data of _innerSteps) {
             let [func, ...args] = data;
             args.unshift(element);
             totalTime += args[1];
             setTimeout(() => func.apply(null, args), totalTime);
         }
+        if (cycled) {
+            setInterval(() => {
+                let _totalTime = 0;
+                for (const data of _innerSteps) {
+                    let [func, ...args] = data;
+                    args.unshift(element);
+                    _totalTime += args[1];
+                    setTimeout(() => func.apply(null, args), _totalTime);
+                }
+            }, totalTime)
+        }
+        _steps = [];
     }
 
     return {
