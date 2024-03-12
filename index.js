@@ -33,7 +33,7 @@ function addListeners() {
         .buildHandler();
 
     document
-        .getElementById('worryAnimationBlock')
+        .getElementById('worryAnimation')
         .addEventListener('click', worryAnimationHandler);
 
     document.getElementById('moveAndHidePlay')
@@ -249,7 +249,10 @@ function animaster() {
         },
 
         buildHandler: function () {
-            return (element) => this.play(element);
+            let anim = this;
+            return function () {
+                return anim.play(this);
+            };
         },
 
         play: function (element, cycled = false) {
