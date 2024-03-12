@@ -74,16 +74,6 @@ function addListeners() {
             document.getElementById('scaleReset')
                 .addEventListener('click', function () {animation.reset();})
         });
-    document.getElementById('changeColorPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('changeColorBlock');
-            const animation = animaster()
-                .addColorChange(1000, '#65f81f', block.style.backgroundColor)
-                .play(block);
-
-            document.getElementById('changeColorReset')
-                .addEventListener('click', function () {animation.reset();})
-        });
 
     const customAnimationPlayHandler = animaster()
         .addMove(200, {x: 40, y: 40})
@@ -166,18 +156,6 @@ function animaster() {
                 .addDelay(duration * 1 / 3)
                 .addFadeOut(duration * 1 / 3);
         },
-        
-        addColorChange: function (duration, color, prevColor) {
-            this._steps.push({
-                type: 'colorChange',
-                duration: duration,
-                color: color,
-                prevColor: prevColor
-            });
-            let res = Object.assign({}, this);
-            res._steps = this._steps.slice(0);
-            return res;
-        },
 
         buildHandler: function() {
             const self = this;
@@ -213,9 +191,6 @@ function animaster() {
                             break;
                         case 'showAndHide':
                             animation = self.showAndHide(element, step.duration);
-                            break;
-                        case 'colorChange':
-                            animation = self.changeColor(element, step.duration, step.color, step.prevColor);
                             break;
                     }
 
@@ -254,20 +229,6 @@ function animaster() {
                     element.style.transitionDuration = null;
                     element.classList.remove('show');
                     element.classList.add('hide');
-                }
-            };
-        },
-
-        changeColor: function (element, duration, color, prevColor) {
-            return {
-                start: function () {
-                    element.style.transitionDuration =  `${duration}ms`;
-                    element.style.backgroundColor = color;
-                },
-
-                reset: function () {
-                    element.style.transitionDuration = 0;
-                    element.style.backgroundColor = prevColor;
                 }
             };
         },
