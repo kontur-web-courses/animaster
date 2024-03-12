@@ -194,6 +194,7 @@ function animaster() {
         },
 
         play: function (element) {
+            let dur = 0;
             for (const step of this._steps) {
                 console.log(`step: ${JSON.stringify(step)}`)
                 let meth;
@@ -214,7 +215,8 @@ function animaster() {
                         throw new TypeError(`Unknown step type: ${step}`);
                 }
 
-                setTimeout(() => meth(element, step.duration, step.params), step.duration);
+                dur += step.duration;
+                setTimeout(() => meth(element, step.duration, step.params), dur);
             }
         }
     };
