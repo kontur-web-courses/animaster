@@ -64,6 +64,21 @@ function getTransform(translation, ratio) {
 
 function animaster()
 {
+    function resetMoveAndScale(element){
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+    function resetFadeOut(element){
+        element.style.transitionDuration = null
+        element.classList.add('show');
+        element.classList.remove('hide');
+    }
+    function resetFadeIn (element){
+        element.style.transitionDuration = null
+        element.classList.add('hide');
+        element.classList.remove('show');
+
+    }
     return {
         /**
          * Блок плавно появляется из прозрачного.
@@ -118,9 +133,8 @@ function animaster()
             }, duration/3)
         },
         heartBeating: function (block, duration){
-            let id;
             this.scale(block, 500, 1.4);
-            setInterval(() => {
+            const set = setInterval(() => {
                 // Увеличение масштаба элемента
                 this.scale(block, duration, 1.4);
 
@@ -133,8 +147,7 @@ function animaster()
 
             return {
                 stop: function (){
-                    clearTimeout(id);
-                    id = undefined;
+                    clearTimeout(set);
                 }
             }
         }
