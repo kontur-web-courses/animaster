@@ -32,8 +32,14 @@ function animaster(){
 
     this.heartBeating = function (element) {
         this.scale(element, 500, 1.4);
-        setInterval(this.scale, 500, element, 500, 1)
-        setInterval(this.scale, 1000, element, 500, 1.4)
+        const interval1 = setInterval(this.scale, 500, element, 500, 1);
+        const interval2 = setInterval(this.scale, 1000, element, 500, 1.4);
+        return {
+            stop: function (){
+                clearInterval(interval1);
+                clearInterval(interval2);
+            }
+        }
     }
 
     return this;
@@ -72,9 +78,10 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            hb = animaster().heartBeating(block);
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', hb.stop)
         })
-
 }
 
 function getTransform(translation, ratio) {
