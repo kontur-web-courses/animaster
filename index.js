@@ -104,11 +104,6 @@ function addListeners() {
     document
         .getElementById('worryAnimationPlay')
         .addEventListener('click', worryAnimationHandler);
-
-    document.getElementById('heartBeatingReset')
-        .addEventListener('click', function () {
-            worryAnimationHandler.reset();
-        });
 }
 
 function getTransform(translation, ratio) {
@@ -312,7 +307,7 @@ function animaster()
             const obj = this;
 
             return function () {
-                obj.play(this);
+                return obj.play(this);
             }
         }
     }
