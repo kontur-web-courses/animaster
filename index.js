@@ -18,20 +18,29 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
+
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000, { x: 100, y: 20 });
         });
+
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 1000);
         });
+
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            const animation = animaster().heartBeating(block);
+
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    const block = document.getElementById('heartBeatingBlock');
+                    animation.stop();
+                });
         });
 }
 
@@ -105,9 +114,19 @@ function animaster() {
     }
 
     function heartBeating(element) {
-        scale(element, 500, 1.4);
-        setTimeout(() => scale(element, 500, 1), 500);
-        setInterval(() => heartBeating(element), 1000);
+
+        const intervalNum = setInterval(() => {
+            scale(element, 500, 1.4);
+            setTimeout(() => scale(element, 500, 1), 500);
+        }, 1000);
+
+        function stop() {
+            clearInterval(intervalNum);
+        }
+
+        return {
+            stop,
+        }
     }
 
     return {
