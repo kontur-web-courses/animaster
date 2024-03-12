@@ -1,30 +1,36 @@
 addListeners();
 
 function addListeners() {
-  const globalAnimaster = animaster();
 
   addPlayListener("fadeIn", (anim, block) => {
-    anim.addFadeIn(5000);
+    anim.addFadeIn(1000)
+        .play(block);
   });
 
-  addPlayListener("move", (anim) => {
-    anim.addMove(1000, { x: 100, y: 10 });
+  addPlayListener("move", (anim, block) => {
+    anim.addMove(1000, { x: 100, y: 10 })
+        .play(block);
   });
 
-  addPlayListener("scale", (anim) => {
-    anim.addScale(1000, 1.25);
+  addPlayListener("scale", (anim, block) => {
+    anim.addScale(1000, 1.25)
+        .play(block);
   });
 
-  addPlayStopListeners("moveAndHide", (anim) => {
-    anim.moveAndHide(5000);
+  addPlayStopListeners("moveAndHide", (anim, block) => {
+    anim.moveAndHide(5000)
+        .play(block);
   });
 
   addPlayListener("showAndHide", (anim, block) => {
-    anim.showAndHide(block, 1000);
+    anim.showAndHide(1000)
+        .play(block);
   });
 
-  addPlayStopListeners("heartBeating", (anim, block) =>
-    anim.heartBeating(block)
+  addPlayStopListeners("heartBeating", (anim, block) => {
+      anim.heartBeating(block)
+          .play(block, cycled=true)
+    }
   );
 }
 
@@ -50,7 +56,6 @@ function addClickListener(playName, blockName, callback) {
     const block = document.getElementById(blockName);
     const anim = animaster();
     callback(anim, block);
-    anim.play(block);
   });
 }
 
@@ -66,11 +71,11 @@ function animaster() {
             setTimeout(func, offset, element, duration, ...args);
             offset += duration;
           }
+          if (!cycled) {
+            clearInterval(interval);
+          }
         },
         this._steps.reduce((s, e) => s + e.duration, 0));
-      if (!cycled) {
-        clearInterval(interval);
-      }
     },
 
     addMove(duration, ...args) {
@@ -129,14 +134,17 @@ function animaster() {
       return this;
     },
 
-    showAndHide(element, duration) {
+    showAndHide(duration) {
       const fadeDuration = duration / 3;
-      setTimeout(this.fadeIn, 0, element, fadeDuration);
-      setTimeout(this.fadeOut, 2 * fadeDuration, element, fadeDuration);
+      this.addFadeIn(fadeDuration)
+          .addDelay(fadeDuration)
+          .addFadeOut(fadeDuration);
+      return this;
     },
 
     heartBeating(element) {
       const timeouts = [null, null];
+
       const interval = setInterval(() => {
         timeouts[0] = setTimeout(this.scale, 0, element, 500, 1.4);
         timeouts[1] = setTimeout(this.scale, 500, element, 500, 1);
