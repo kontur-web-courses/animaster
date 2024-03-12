@@ -74,6 +74,14 @@ function addListeners() {
             document.getElementById('scaleReset')
                 .addEventListener('click', function () {animation.reset();})
         });
+    document.getElementById('changeColor')
+        .addEventListener('click', function () {
+            const block = document.getElementById('changeColorBlock');
+            const animation = animaster().addColorChange(1000, 'black').play(block);
+
+            document.getElementById('scaleReset')
+                .addEventListener('click', function () {animation.reset();})
+        });
 
     const customAnimationPlayHandler = animaster()
         .addMove(200, {x: 40, y: 40})
@@ -148,6 +156,15 @@ function animaster() {
                 .addFadeOut(duration * 1/3);
             return this;
         },
+        
+        addColorChange: function (duration, color) {
+            this._steps.push({
+                type: 'colorChange',
+                duration: duration,
+                color: color
+            });
+            return this;
+        },
 
         buildHandler: function() {
             const self = this;
@@ -183,6 +200,9 @@ function animaster() {
                             break;
                         case 'showAndHide':
                             animation = self.showAndHide(element, step.duration);
+                            break;
+                        case 'colorChange':
+                            animation = self.changeColor(element, step.duration, step.color);
                             break;
                     }
 
@@ -221,6 +241,21 @@ function animaster() {
                     element.style.transitionDuration = null;
                     element.classList.remove('show');
                     element.classList.add('hide');
+                }
+            };
+        },
+
+        changeColor: function (element, duration, color) {
+            return {
+                prevColor: element.style.backgroundColor,
+                start: function () {
+
+                    element.style.transitionDuration =  `${duration}ms`;
+                    element.style.backgroundColor = color;
+                },
+
+                reset: function () {
+                    element.style.backgroundColor = prevColor;
                 }
             };
         },
