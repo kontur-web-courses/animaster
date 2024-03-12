@@ -28,14 +28,15 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            let cancel = animaster().moveAndHide(block, 1000).stop;
-            document.getElementById('moveAndHideReset').addEventListener('click', cancel);
+            animaster().addMove(400 , {'x': 100, 'y': 20}).addFadeOut(600).play(block);
+            // let cancel = animaster().moveAndHide(block, 1000).stop;
+            // document.getElementById('moveAndHideReset').addEventListener('click', cancel);
         });
 
     document.getElementById('showAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animaster().showAndHide(block, 1000);
+            animaster().addFadeIn(1000 / 3).addDelay(1000 / 3).addFadeOut(1000/3).play(block);
         });
 
     document.getElementById('heartBeatingPlay')
@@ -151,6 +152,10 @@ function animaster() {
             };
         },
 
+        delay: function (){
+
+        },
+
         _steps: [],
         addMove: function (duration, pos) {
             this._steps.push({
@@ -183,6 +188,15 @@ function animaster() {
             return this;
         },
 
+        addDelay: function (duration) {
+            this._steps.push({
+                oper: 'delay',
+                duration: duration,
+                params: undefined,
+            })
+            return this;s
+        },
+
         addFadeOut: function (duration) {
             this._steps.push({
                 oper: 'fadeOut',
@@ -211,6 +225,9 @@ function animaster() {
                     case 'fadeIn':
                         meth = this.fadeIn;
                         break
+                    case 'delay':
+                        meth = this.delay
+                        break;
                     default:
                         throw new TypeError(`Unknown step type: ${step}`);
                 }
