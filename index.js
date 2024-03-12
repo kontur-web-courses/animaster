@@ -22,7 +22,7 @@ function addListeners() {
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
         });
 
     document.getElementById('moveAndHidePlay')
@@ -109,13 +109,13 @@ function animaster() {
             this.move(element, (duration / 5) * 2, {'x': 100, 'y': 20});
             let timeout = setTimeout(() => this.fadeOut(element, (duration / 5) * 3), (duration / 5) * 2);
 
-            return{
-                'stop' : function () {
+            return {
+                'stop': function () {
                     clearInterval(timeout);
                     resetMoveAndScale(element);
-                    resetFadeOut(element)
+                    resetFadeOut(element);
                 }
-            }
+            };
         },
 
         showAndHide: function (element, duration) {
@@ -148,15 +148,31 @@ function animaster() {
             return this;
         },
 
+        addScale: function (duration, scale) {
+            this._steps.push({
+                oper: 'scale',
+                duration: duration,
+                params: scale,
+            });
+
+            return this;
+        },
+
         play: function (element) {
             for (const step of this._steps) {
+                let meth;
                 switch (step.oper) {
                     case 'move':
-                        setTimeout(() => this.move(element, step.duration, step.params), step.duration);
+                        meth = this.move;
+                        break;
+                    case 'scale':
+                        meth = this.scale;
                         break;
                     default:
                         throw new TypeError(`Unknown step type: ${step}`);
                 }
+
+                setTimeout(() => meth(element, step.duration, step.params), step.duration);
             }
         }
     };
