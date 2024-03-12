@@ -40,9 +40,32 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             animator.moveAndHide(block, 1000);
         });
+
+    document.getElementById('resetMoveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animator.resetMoveAndHide(block);
+        });
 }
 
 function animaster() {
+    const resetFadeIn = function(element) {
+        element.style.transitionDuration =  `0ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    const resetFadeOut = function(element) {
+        element.style.transitionDuration =  `0ms`;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    const resetMove = function (element) {
+        element.style.transitionDuration =  `0ms`;
+        element.style.transform = null;
+    }
+
     return {
         /**
          * Функция, передвигающая элемент
@@ -93,6 +116,11 @@ function animaster() {
         moveAndHide(element, duration) {
             this.move(element, duration * 2 / 5, {x: 100, y: 20});
             this.fadeOut(element, duration * 3 / 5);
+        },
+
+        resetMoveAndHide(element) {
+            resetFadeOut(element);
+            resetMove(element);
         }
     }
 
