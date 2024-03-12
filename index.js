@@ -113,16 +113,32 @@ function addListeners() {
     document
         .getElementById('worryAnimationBlock')
         .addEventListener('click', worryAnimationHandler);
+
+    document.getElementById('dancePlay')
+        .addEventListener('click', () => {
+            const block = document.getElementById('danceBlock');
+            const timePart = 400;
+            setTimeout(function run() {
+                animaster().dance(block, timePart);
+                setTimeout(run, 2 * timePart);
+            }, 0);
+        });
 }
 
 
-function getTransform(translation, ratio) {
+function getTransform(translation, ratio, rotate = null, skew = null) {
     const result = [];
     if (translation) {
         result.push(`translate(${translation.x}px,${translation.y}px)`);
     }
     if (ratio) {
         result.push(`scale(${ratio})`);
+    }
+    if (rotate) {
+        result.push(`rotate3d(${rotate.x},${rotate.y},${rotate.y},${rotate.angle}deg)`);
+    }
+    if (skew) {
+        result.push(`skew(${skew.x}deg,${skew.y}deg)`);
     }
     return result.join(' ');
 }
@@ -150,6 +166,25 @@ function animaster() {
         element.style.transitionDuration = `${duration}ms`;
         element.classList.add('hide');
         element.classList.remove('show');
+    }
+
+    function dance(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(
+            null,
+            null,
+            {x: 12, y: 55, z: 45, angle: 15},
+            {x: 10, y: 20}
+        );
+        setTimeout(() => {
+            element.style.transitionDuration = `${duration}ms`;
+            element.style.transform = getTransform(
+                null,
+                null,
+                {x: 12, y: 55, z: 45, angle: 35},
+                {x: -10, y: -20}
+            );
+        }, 400);
     }
 
     /**
@@ -352,6 +387,7 @@ function animaster() {
         addDelay,
         play,
         buildHandler,
+        dance,
     };
 
 }
