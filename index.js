@@ -1,6 +1,24 @@
 addListeners();
 
 function animaster() {
+
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('show');
+        element.classList.remove('hide');
+    }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
