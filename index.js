@@ -92,7 +92,7 @@ function animaster(){
     function heartBeating(element){
         while (true) {
             scale(element, 500, 1.4);
-            scale(element, 500, 1);
+            scale(element, 500, 1 / 1.4);
         }
     }
     return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, };
