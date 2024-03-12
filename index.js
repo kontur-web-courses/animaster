@@ -45,6 +45,12 @@ function addListeners() {
             y?.stop();
             y = null;
         });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            x.resetMoveAndHide(block, 1000);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -139,6 +145,11 @@ function animaster(){
         element.style.transform = null;
     }
 
+    function resetMoveAndHide(element){
+        resetMoveAndScale(element);
+        resetFadeOut(element);
+    }
+
     function addMove (duration, translation) {
         this._steps.push({
             name: 'move',
@@ -160,5 +171,5 @@ function animaster(){
     
     return {
         _steps: [],
-        move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating, addMove, play };
+        move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating, resetMoveAndHide, addMove, play };
 }
