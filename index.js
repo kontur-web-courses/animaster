@@ -5,28 +5,55 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
             // Задание 2
-            animaster().fadeIn(block, 5000);
+            animaster().addFadeIn(3000).play(block);
         });
 
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            // Задание 2
+            animaster().resetFadeIn(block);
+        });
+
+    // Задание 9
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             // Задание 2
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
+        });
+
+    document.getElementById('moveReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMoveAndScale(block);
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             // Задание 2
-            animaster().scale(block, 1000, 1.25);
+            animaster().addScale(1000, 1.25).play(block);
+        });
+
+    document.getElementById('scaleReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('scaleBlock');
+            animaster().resetMoveAndScale(block);
         });
 
     // Задание 4
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 2000, {x: 100, y: 20});
+            animaster().moveAndHide(block, 2000, {x: 100, y: 20}).play();
+        });
+
+    // Задание 7
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 2000, {x: 100, y: 20}).reset();
         });
 
     document.getElementById('showAndHidePlay')
@@ -38,12 +65,65 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            animaster().heartBeating(block).play();
+        });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
+        });
+
+    // Задание 11
+    document.getElementById('customAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('customAnimationBlock');
+            animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .addMove(200, {x: 40, y: -40})
+                .addScale(800, 0.7)
+                .addMove(200, {x: 0, y: 0})
+                .addScale(800, 1)
+                .play(block);
         });
 }
 
 // Задание 1
 function animaster() {
+    // Задание 8
+    let _steps = [];
+
+    function play(element) {
+        let curDur = 0;
+        _steps.forEach(step => {
+            switch (step.name) {
+                case 'fadeIn':
+                    setTimeout(() => fadeIn(element, step.duration), curDur);
+                    curDur += step.duration;
+                    break;
+
+                // Задание 10
+                case 'fadeOut':
+                    setTimeout(() => fadeOut(element, step.duration), curDur);
+                    curDur += step.duration;
+                    break;
+
+                case 'move':
+                    setTimeout(() => move(element, step.duration, step.translation), curDur);
+                    curDur += step.duration;
+                    break;
+
+                case 'scale':
+                    setTimeout(() => scale(element, step.duration, step.ratio), curDur);
+                    curDur += step.duration;
+                    break;
+            }
+        });
+    }
+
     /**
      * Блок плавно появляется из прозрачного.
      * @param element — HTMLElement, который надо анимировать
@@ -55,11 +135,41 @@ function animaster() {
         element.classList.add('show');
     }
 
+    function addFadeIn(duration) {
+        _steps.push({
+            name: 'fadeIn',
+            duration
+        });
+        return this;
+    }
+
+    // Задание 6
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
     // Задание 3
     function fadeOut(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
+    }
+
+    function addFadeOut(duration) {
+        _steps.push({
+            name: 'fadeOut',
+            duration
+        });
+        return this;
+    }
+
+    // Задание 6
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
     }
 
     /**
@@ -73,6 +183,16 @@ function animaster() {
         element.style.transform = getTransform(translation, null);
     }
 
+    // Задание 8
+    function addMove(duration, translation) {
+        _steps.push({
+            name: 'move',
+            duration,
+            translation
+        });
+        return this;
+    }
+
     /**
      * Функция, увеличивающая/уменьшающая элемент
      * @param element — HTMLElement, который надо анимировать
@@ -83,11 +203,39 @@ function animaster() {
         element.style.transitionDuration =  `${duration}ms`;
         element.style.transform = getTransform(null, ratio);
     }
-    
+
+    function addScale(duration, ratio) {
+        _steps.push({
+            name: 'scale',
+            duration,
+            ratio
+        });
+        return this;
+    }
+
+    // Задание 6
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     // Задание 4
     function moveAndHide(element, duration, translation) {
-        move(element, 2 * duration / 5, translation);
-        setTimeout(() => fadeOut(element, 3 * duration / 5), 2 * duration / 5);
+        function play() {
+            move(element,2 * duration / 5, translation);
+            globalThis.timerIdMoveAndHide = setTimeout(() => fadeOut(element, 3 * duration / 5), 2 * duration / 5);
+        }
+
+        function reset() {
+            clearTimeout(globalThis.timerIdMoveAndHide);
+            resetMoveAndScale(element);
+            resetFadeOut(element);
+        }
+
+        return {
+            play,
+            reset
+        }
     }
 
     function showAndHide(element, duration) {
@@ -97,20 +245,40 @@ function animaster() {
     }
 
     function heartBeating(element) {
-        setInterval(() => {
-            scale(element, 500, 1.4);
-            setTimeout(() => scale(element, 500, 1), 500);
-        }, 1000);
+        function play() {
+            globalThis.timerIdHeartBeating = setInterval(() => {
+                scale(element, 500, 1.4);
+                setTimeout(() => scale(element, 500, 1), 500);
+            }, 1000);
+        }
+
+        // Задание 5
+        function stop(){
+            clearInterval(globalThis.timerIdHeartBeating);
+        }
+
+        return {
+            play,
+            stop
+        };
     }
 
     return {
         fadeIn,
+        resetFadeIn,
         fadeOut,
+        resetFadeOut,
         move,
         scale,
+        resetMoveAndScale,
         moveAndHide,
         showAndHide,
-        heartBeating
+        heartBeating,
+        addFadeIn,
+        addFadeOut,
+        addMove,
+        addScale,
+        play
     };
 }
 
