@@ -22,6 +22,32 @@ function addListeners() {
         .addEventListener('click', function(){
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
+        });
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function(){
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().move(block, 2000, {x: 100, y: 20});
+            setTimeout(function(){
+                animaster().fadeOut(block, 3000);
+            }, 2000);
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function(){
+            const block = document.getElementById('showAndHideBlock');
+            animaster().fadeIn(block, 1000);
+            setTimeout(function(){
+                animaster().fadeOut(block, 1000);
+            }, 2000);
+        });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function(){
+            const block = document.getElementById('heartBeatingBlock');
+            setInterval(function(){
+                animaster().scale(block, 500, 1.4);
+                setTimeout(function(){
+                    animaster().scale(block, 500, 1);
+                }, 500);
+            }, 1000)
         })
 }
 
@@ -55,6 +81,6 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
-        }
+        },
     };
 }
