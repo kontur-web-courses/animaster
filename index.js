@@ -18,20 +18,35 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
-}
-
-function getTransform(translation, ratio) {
-    const result = [];
-    if (translation) {
-        result.push(`translate(${translation.x}px,${translation.y}px)`);
-    }
-    if (ratio) {
-        result.push(`scale(${ratio})`);
-    }
-    return result.join(' ');
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 1000, { x: 100, y: 20 });
+        });
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 1000);
+        });
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block);
+        });
 }
 
 function animaster() {
+    function getTransform(translation, ratio) {
+        const result = [];
+        if (translation) {
+            result.push(`translate(${translation.x}px,${translation.y}px)`);
+        }
+        if (ratio) {
+            result.push(`scale(${ratio})`);
+        }
+        return result.join(' ');
+    }
+
     /**
      * Блок плавно появляется из прозрачного.
      * @param element — HTMLElement, который надо анимировать
@@ -76,10 +91,32 @@ function animaster() {
         element.style.transform = getTransform(null, ratio);
     }
 
+    function moveAndHide(element, duration, translation) {
+        const moveTime = duration * 0.4;
+        const hideTime = duration * 0.6
+        move(element, moveTime, translation);
+        setTimeout(() => fadeOut(element, hideTime), moveTime);
+    }
+
+    function showAndHide(element, duration) {
+        const interval = duration / 3;
+        fadeIn(element, interval)
+        setTimeout(() => fadeOut(element, interval), interval);
+    }
+
+    function heartBeating(element) {
+        scale(element, 500, 1.4);
+        setTimeout(() => scale(element, 500, 1), 500);
+        setInterval(() => heartBeating(element), 1000);
+    }
+
     return {
         fadeIn,
         fadeOut,
         move,
-        scale
+        scale,
+        moveAndHide,
+        showAndHide,
+        heartBeating
     }
 }
