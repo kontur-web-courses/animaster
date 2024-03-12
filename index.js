@@ -1,6 +1,29 @@
 addListeners();
 
 function animaster(){
+    this._steps = []
+
+    this.addMove = function (duration, translation){
+        this._steps.push({
+            func: this.move,
+            duration,
+            translation,
+            start: function (element) {
+                this.func.move(element, duration, translation)
+            }
+        });
+
+        return this;
+    }
+
+
+    this.play = function (element) {
+        for (const step of this._steps) {
+            step.start(element)
+        }
+    }
+
+
     this.moveAndHide = function (element, duration) {
         this.move(element, duration * 2 /5, {x:100, y:20});
         this.fadeOut(element, duration * 3 /5);
