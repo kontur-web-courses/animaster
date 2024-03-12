@@ -1,48 +1,56 @@
 addListeners();
 
 
-const animator = animaster();
+const master = animaster();
 
 
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animator.fadeIn(block, 5000);
+            master.fadeIn(block, 5000);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animator.fadeOut(block, 5000);
+            master.fadeOut(block, 5000);
         });
 
     document.getElementById('showAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animator.showAndHide(block, 5000);
+            master.showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeating')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            console.log('pushed');
+            master.heartBeating(block);
         });
 
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animator.move(block, 1000, {x: 100, y: 10});
+            master.move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            animator.scale(block, 1000, 1.25);
+            master.scale(block, 1000, 1.25);
         });
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animator.moveAndHide(block, 1000);
+            master.moveAndHide(block, 1000);
         });
 }
 
 function animaster() {
+    let isHeartBeating = true;
     return {
         /**
          * Функция, передвигающая элемент
@@ -78,6 +86,19 @@ function animaster() {
             setTimeout(() => this.fadeOut(element, shortDuration), shortDuration)
         },
 
+        heartBeating(element) {
+            const upScaleK = 1.4;
+            const defaultScaleK = 1;
+            const interval = 500;
+
+            this.scale(element, interval, upScaleK);
+            setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
+            setInterval(() => {
+                this.scale(element, interval, upScaleK);
+                setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
+            }, 2 * interval)
+        },
+
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -85,6 +106,7 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
+            console.log(132134134);
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
@@ -97,8 +119,6 @@ function animaster() {
     }
 
 }
-
-
 
 function getTransform(translation, ratio) {
     const result = [];
