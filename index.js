@@ -1,6 +1,8 @@
 addListeners();
 
 function addListeners() {
+    let breathHeart;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -40,7 +42,12 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block, 500);
+            breathHeart = animaster().heartBeating(block, 500);
+        });
+
+    document.getElementById('stopHeartBeatingPlay')
+        .addEventListener('click', function () {
+            breathHeart.stop();
         });
 }
 
