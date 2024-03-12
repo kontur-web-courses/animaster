@@ -48,8 +48,6 @@ function addListeners() {
                     x.stop();
                 });
         });
-
-
 }
 
 function getTransform(translation, ratio) {
@@ -66,6 +64,19 @@ function getTransform(translation, ratio) {
 let currentBeat = false;
 
 function animaster() {
+    function resetFadeIn(element) {
+        element.classList.remove('show');
+    }
+
+    function resetFadeOut(element) {
+        element.classList.remove('hide');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
     return {
         /**
          * Блок плавно появляется из прозрачного.
