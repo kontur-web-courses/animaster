@@ -1,8 +1,5 @@
-addListeners();
-
-
 const master = animaster();
-
+addListeners();
 
 function addListeners() {
     let heartBeatingInterval;
@@ -33,7 +30,6 @@ function addListeners() {
 
     document.getElementById('stopHeartBeating')
         .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
             if (heartBeatingInterval !== undefined) {
                 heartBeatingInterval.stop();
             }
@@ -62,10 +58,16 @@ function addListeners() {
             const block = document.getElementById('moveAndHideBlock');
             master.resetMoveAndHide(block);
         });
+
+    document.getElementById('testPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('testBlock');
+            master.addMove(500, {x: 20, y:20}).play(block);
+        });
 }
 
 function animaster() {
-    let isHeartBeating = true;
+
     const resetFadeIn = function(element) {
         element.style.transitionDuration =  `0ms`;
         element.classList.remove('show');
@@ -84,6 +86,7 @@ function animaster() {
     }
 
     return {
+        _steps: [],
         /**
          * Функция, передвигающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -154,10 +157,28 @@ function animaster() {
         resetMoveAndHide(element) {
             resetFadeOut(element);
             resetMove(element);
+        },
+
+        addMove(timeout, ...args) {
+            let step = {
+                Command: this.move,
+                stepTimeout: timeout,
+                additional: args[0]
+            }
+            this._steps.push(step);
+            return this;
+        },
+
+        play(element) {
+            while (this._steps.length > 0) {
+                const step = this._steps.pop();
+                console.log(this._steps.length, step)
+                step.Command(element, step.stepTimeout, step.additional);
+            }
         }
     }
-
 }
+
 
 function getTransform(translation, ratio) {
     const result = [];
