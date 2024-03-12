@@ -68,23 +68,37 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     return {
-        getTransofrm: function (translation, ratio) {
-            const result = [];
-            if (translation) {
-                result.push(`translate(${translation.x}px,${translation.y}px)`);
-            }
-            if (ratio) {
-                result.push(`scale(${ratio})`);
-            }
-            return result.join(' ');
+        fadeIn(element, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('hide');
+            element.classList.add('show');
         },
-        scale: function(element, duration, ratio) {
+        fadeOut(element, duration) {
+            element.style.transitionDuration =  `${duration}ms`;
+            element.classList.remove('show');
+            element.classList.add('hide');
+        },
+        scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        move: function(element, duration, translation) {
+        move(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
+        },
+        moveAndHide(element, duration) {
+            this.move(element, 0.4 * duration, { x: 100, y: 20 });
+            this.fadeOut(element, 0.6 * duration)
+        },
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => this.fadeOut(element, duration / 3), duration / 3);
+        },
+        heartBeating() {
+            while (true) {
+                this.scale(element, 0.5, 1.4);
+                this.scale(element, 0.5, 5 / 7);
+            }
         }
     }
 }
