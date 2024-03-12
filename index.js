@@ -127,7 +127,8 @@ function animaster() {
             };
 
             if (cycled) {
-                setInterval(cycle, cycleDuration);
+                const intervalId = setInterval(cycle, cycleDuration);
+                return intervalId;
             } else {
                 cycle();
             }
@@ -159,7 +160,7 @@ function animaster() {
                 .play(element);
         },
         heartBeating(element) {
-            this.addScale(500, 1.4).addScale(5000, 1).play(element, true);
+            const intervalId = this.addScale(500, 1.4).addScale(500, 1).play(element, true);
 
            return {
                stop() {
@@ -170,7 +171,7 @@ function animaster() {
         buildHandler(blockName) {
             const block = document.getElementById(blockName);
             return this.play.bind(this, block);
-        }
+        },
     }
 }
 
