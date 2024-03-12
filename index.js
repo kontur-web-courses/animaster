@@ -18,11 +18,29 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().scale(block, 1000, 1.25);
         });
-        
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
         const block = document.getElementById('fadeOutBlock');
-        animaster().fadeOut(block, 1000, 1.25);
+        animaster().fadeOut(block, 5000);
+    });
+    
+    document.getElementById('moveAndHidePlay')
+    .addEventListener('click', function () {
+    const block = document.getElementById('moveAndHideBlock');
+    animaster().moveAndHide(block, 5000);
+    });
+
+    document.getElementById('showAndHidePlay')
+    .addEventListener('click', function () {
+    const block = document.getElementById('showAndHideBlock');
+    animaster().showAndHide(block, 5000);
+    });
+
+    document.getElementById('heartBeatingPlay')
+    .addEventListener('click', function () {
+    const block = document.getElementById('heartBeatingBlock');
+    animaster().heartBeating(block);
     });
 }
 
@@ -79,6 +97,24 @@ function animaster(){
         scale(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        moveAndHide(element, duration) {
+            this.move(element, duration * 2 / 5, {x:100, y:20});
+            this.fadeOut(element, duration * 3 / 5);
+        },
+
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration / 3)
+            setTimeout(this.fadeOut, duration / 3, element, duration / 3)
+        },
+
+        heartBeating(element) {
+            function beat(element){
+                animaster().scale(element, 500, 1.4);
+                setTimeout(animaster().scale, 500, element, 500, 1)
+            }
+            setInterval(beat, 1000, element);
         }
 }
 }
