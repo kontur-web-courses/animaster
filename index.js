@@ -16,11 +16,33 @@ function animaster(){
         element.classList.remove('hide');
         element.classList.add('show');
     }
+
+    this.resetFadeIn = function (element){
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    this.resetFadeOut = function (element){
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    this.resetMoveAndScale = function (element){
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
     this.fadeOut = function (element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('show');
         element.classList.add('hide');
     }
+
+
     this.move = function (element, duration, translation) {
         element.style.transitionDuration = `${duration}ms`;
         element.style.transform = getTransform(translation, null);
@@ -61,6 +83,12 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 2000);
+        });
+
+    document.getElementById('moveAndHideStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndScale(block);
         });
 
     document.getElementById('showAndHide')
