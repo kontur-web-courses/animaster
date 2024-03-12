@@ -19,16 +19,10 @@ function addListeners() {
             animaster().showAndHide(block, 5000);
         });
 
-    let stopObj;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            stopObj = animaster().heartBeating(block);
-        });
-
-    document.getElementById('heartBeatingStop')
-        .addEventListener('click', function () {
-            stopObj.stop();
+            animaster().heartBeating(block);
         });
 
     document.getElementById('fadeOutPlay')
@@ -146,15 +140,7 @@ function animaster() {
             }, segmentTime)
         };
 
-        const intervalId = setInterval(() => beat(), 1000);
-
-        const stop = function () {
-            clearInterval(intervalId);
-        };
-
-        return {
-            stop
-        };
+        setInterval(() => beat(), 1000);
     };
 
     return {
