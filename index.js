@@ -198,7 +198,7 @@ function animaster() {
         },
 
         addDelay: function(duration) {
-            this._addAction(() => void 0, duration)
+            this._addAction((element, duration) => void 0, duration)
             return this;
         },
 
@@ -247,7 +247,7 @@ function animaster() {
 
         showAndHide: function (element, duration) {
             const segmentTime = duration / 3;
-            this.addFadeIn(element, segmentTime);
+            this.addFadeIn(segmentTime);
             this.addDelay(segmentTime);
             this.addFadeOut(segmentTime);
             return this.play(element);
