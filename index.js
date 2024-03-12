@@ -135,16 +135,15 @@ function animaster()
         {
             if (this._steps.length < 1)
                 return this;
-
+            let time = 0
             console.log(this._steps);
 
             this._steps[0].operation(element);
-            for (let i = 1; i < this._steps.length-1; i++) {
-                console.log(i);
+            for (let i = 1; i < this._steps.length; i++) {
                 let prev_cur = this._steps[i];
-                let next_step = this._steps[i+1];
-                setTimeout(() => next_step.operation(element), prev_cur.duration);
-                console.log(next_step.operation);
+                setTimeout(() => prev_cur.operation(element), time);
+
+                time+=prev_cur.duration
             }
             this._steps = [];
             return this;
