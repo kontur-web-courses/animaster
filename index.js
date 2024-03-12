@@ -19,6 +19,11 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             x.scale(block, 1000, 1.25);
         });
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutPlay');
+            x.fadeOut(block, 5000);
+        });
 }
 
 function getTransform(translation, ratio) {
