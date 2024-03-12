@@ -36,6 +36,30 @@ function addListeners() {
             const block = document.getElementById('showAndHideBlock');
             animaster().showAndHide(block, 1000);
         });
+
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock')
+            animaster().resetFadeIn(block, 1000);
+        });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock')
+            animaster().resetFadeOut(block, 1000);
+        });
+
+    document.getElementById('moveReset')
+        .addEventListener('click', () => {
+            const block = document.getElementById('moveBlock')
+            animaster().resetMove(block, 1000, {x: 0, y: 0});
+        });
+
+    document.getElementById('scaleReset')
+        .addEventListener('click', () => {
+            const block = document.getElementById('scaleBlock')
+            animaster().resetScale(block, 1000, {x: 0, y: 0});
+        });
 }
 
 
@@ -124,12 +148,35 @@ function animaster() {
      * Имитация сердцебиения
      * @param element — HTMLElement, который надо анимировать
      */
-    function heartBeating (element) {
+    function heartBeating(element) {
         const timePart = duration * 1 / 3;
         fadeIn(element, timePart);
         setTimeout(fadeOut, timePart * 2, element, timePart);
     }
 
+    function resetFadeIn(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
 
-    return {fadeIn, fadeOut, move, scale, moveAndHide, showAndHide};
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
+    function resetFadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+
+        element.classList.add('show')
+        element.classList.remove('hide')
+    }
+
+    function resetMove(element, duration, translation) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+    }
+
+    function resetScale(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+
+    }
+
+    return {fadeIn, fadeOut, move, scale, moveAndHide, showAndHide, resetFadeIn, resetFadeOut, resetMove, resetScale};
 }
