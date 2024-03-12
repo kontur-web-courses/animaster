@@ -200,6 +200,9 @@ function animaster(){
                 case 'scale':
                     this.scale(element, step.duration, step.scale);
                     break;
+                case 'wait':
+                    setTimeout(() => 0, duration)
+                    break;
             }
         }
     }
