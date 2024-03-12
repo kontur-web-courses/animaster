@@ -223,14 +223,15 @@ function animaster() {
             }
 
             let cancel;
+            let anim = this;
             let intvl = setInterval(function () {
-                cancel = this.play().stop;
+                cancel = anim.play().stop;
             }, dur);
 
 
             return {
                 stop: function () {
-                    cancel();
+                    cancel(element);
                     clearInterval(intvl);
                 }
             };
