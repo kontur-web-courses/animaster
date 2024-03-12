@@ -25,6 +25,7 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
             heartBeatingInterval = animaster().heartBeating(block);
+            console.log(heartBeatingInterval);
         });
 
     document.getElementById('stopHeartBeating')
@@ -58,14 +59,22 @@ function addListeners() {
             animaster().resetMoveAndHide(block);
         });
 
+    let testManager;
     document.getElementById('testPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('testBlock');
-            animaster().addFadeIn(500)
+            testManager = animaster().addFadeIn(500)
                 .addMove(500, {x: 20, y:20})
                 .addScale(1000, 1.3)
-                .addFadeOut(1000)
+                .addFadeOut(300)
+                .addFadeIn(200)
                 .play(block);
+        });
+
+    document.getElementById('resetTestPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('testBlock');
+            testManager.reset(block);
         });
 }
 
@@ -86,6 +95,31 @@ function animaster() {
     const resetMove = function(element) {
         element.style.transitionDuration =  `0ms`;
         element.style.transform = null;
+    }
+
+    const createResetCommandsList = function(commands) {
+        let result = [];
+        for (const command of commands) {
+            switch (command.Name) {
+                case 'FadeIn': {
+                    result.push(resetFadeIn);
+                    break;
+                }
+                case 'FadeOut': {
+                    result.push(resetFadeOut);
+                    break;
+                }
+                case 'Move': {
+                    result.push(resetMove);
+                    break;
+                }
+                case 'Scale': {
+                    result.push(resetMove);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     return {
@@ -136,18 +170,13 @@ function animaster() {
         },
 
         heartBeating(element) {
-            const upScaleK = 1.4;
-            const defaultScaleK = 1;
+            const increasedScale = 1.4;
+            const defaultScale = 1;
             const interval = 500;
 
-            this.scale(element, interval, upScaleK);
-            setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
-            const intervalObj = setInterval(() => {
-                this.scale(element, interval, upScaleK);
-                setTimeout(() => this.scale(element, interval, defaultScaleK), interval);
-            }, 2 * interval)
-
-            return {stop() {clearInterval(intervalObj)}};
+            return this.addScale(interval, increasedScale)
+                .addScale(interval, defaultScale)
+                .play(element, true)
         },
 
         /**
@@ -214,21 +243,65 @@ function animaster() {
             return this;
         },
 
-        play(element) {
-            let interval = 0;
-            this._steps.reverse();
-            while (this._steps.length > 0) {
-                const step = this._steps.pop();
-                if (step.hasOwnProperty('Additional')) {
-                    setTimeout(() => step.Command(element, step.Duration, step.Additional), interval);
+        play(element, cycled = false) {
+            const usedCommands = this._steps.map(x => x);
+            const resetFunc = (element) => {
+                for (const command of createResetCommandsList(usedCommands)) {
+                    command(element);
                 }
-                else {
-                    setTimeout( () => step.Command(element, step.Duration), interval);
-                }
-                interval += step.Duration;
             }
+            if (cycled) {
+                let totalTime = 0;
+                for (const step of this._steps) {
+                    totalTime += step.Duration;
+                }
+                let interval = 0;
+                for (const step of this._steps) {
+                    interval = executeStep(step, element, interval);
+                }
+                const intervalObj = setInterval(() => {
+                    interval = 0;
+                    for (const step of this._steps) {
+                        interval = executeStep(step, element, interval);
+                    }
+                }, totalTime);
+
+                return {
+                    stop() {clearInterval(intervalObj)},
+                    reset(element) {
+                        resetFunc(element);
+                    }
+                };
+            }
+            else {
+                let interval = 0;
+                this._steps.reverse();
+                while (this._steps.length > 0) {
+                    const step =  this._steps.pop();
+                    interval = executeStep(step, element, interval);
+                }
+
+                return {
+                    stop() { },
+                    reset(element) {
+                        resetFunc(element) ;
+                    }
+                }
+            }
+
         }
     }
+}
+
+
+function executeStep(step, element, currentInterval) {
+    if (step.hasOwnProperty('Additional')) {
+        setTimeout(() => step.Command(element, step.Duration, step.Additional), currentInterval);
+    }
+    else {
+        setTimeout( () => step.Command(element, step.Duration), currentInterval);
+    }
+    return currentInterval + step.Duration;
 }
 
 
