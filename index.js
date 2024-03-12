@@ -64,7 +64,14 @@ function animaster() {
         },
 
         play(element) {
-
+            for (let animation of this._steps) {
+                element.style.transitionDuration = `${duration}ms`;
+                switch (animation['name']) {
+                    case 'move':
+                        element.style.transform = getTransform(animation['additional']['translation'], null);
+                        break;
+                }
+            }
         },
 
         /**
@@ -80,7 +87,6 @@ function animaster() {
         moveAndHide(element, duration) {
             this.addMove(2 * duration / 5, {x: 100, y: 20}).play(element);
             setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
-
             return {
                 reset() {
                     resetMoveAndHide(element);
