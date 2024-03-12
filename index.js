@@ -66,6 +66,13 @@ function animaster()
         scale: function(element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
+        },
+
+        fadeOut: function(element, duration)
+        {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.add('hide');
+            element.classList.remove('show');
         }
     }
 }
