@@ -166,7 +166,7 @@ function animaster() {
                 oper: 'move',
                 duration: duration,
                 params: pos,
-
+                cancel: resetMoveAndScale,
             });
 
             return this;
@@ -177,6 +177,7 @@ function animaster() {
                 oper: 'scale',
                 duration: duration,
                 params: scale,
+                cancel: resetMoveAndScale,
             });
 
             return this;
@@ -187,6 +188,7 @@ function animaster() {
                 oper: 'fadeIn',
                 duration: duration,
                 params: undefined,
+                cancel: resetFadeIn,
             });
 
             return this;
@@ -197,9 +199,10 @@ function animaster() {
                 oper: 'delay',
                 duration: duration,
                 params: undefined,
+                cancel: resetFadeOut,
             });
+
             return this;
-            s;
         },
 
         addFadeOut: function (duration) {
