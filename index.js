@@ -66,10 +66,28 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             animaster().resetMoveAndScale(block);
         });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndHide(block);
+        });
+
+    document.getElementById('complexPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('complexBlock');
+            animaster()
+                .addMove(200, {x: 40, y: 40})
+                .addScale(800, 1.3)
+                .addMove(200, {x: 80, y: 0})
+                .addScale(800, 1)
+                .play(block);
+        });
 }
 
 
 function animaster() {
+    let _steps = [];
+    let cycled = false;
     /**
      * Блок плавно появляется из прозрачного.
      * @param element — HTMLElement, который надо анимировать
@@ -159,6 +177,35 @@ function animaster() {
         resetMoveAndScale(element);
     }
 
+    function addMove(duration, translation) {
+        _steps.push([move, duration, translation]);
+        return this;
+    }
+
+    function addScale(duration, ratio) {
+        _steps.push([scale, duration, ratio]);
+        return this;
+    }
+    function addFadeOut(duration) {
+        _steps.push([fadeOut, duration]);
+        return this;
+    }
+
+    function addFadeIn(duration) {
+        _steps.push([fadeIn, duration]);
+        return this;
+    }
+
+    function play(element) {
+        let totalTime = 0;
+        for (const data of _steps) {
+            let [func, ...args] = data;
+            args.unshift(element);
+            totalTime += args[1];
+            setTimeout(() => func.apply(null, args), totalTime);
+        }
+    }
+
     return {
         fadeIn,
         move,
@@ -170,7 +217,12 @@ function animaster() {
         resetFadeIn,
         resetFadeOut,
         resetMoveAndScale,
-        resetMoveAndHide
+        resetMoveAndHide,
+        addMove,
+        addScale,
+        addFadeIn,
+        addFadeOut,
+        play
     }
 }
 
