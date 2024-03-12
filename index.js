@@ -1,4 +1,3 @@
-const master = animaster();
 addListeners();
 
 function addListeners() {
@@ -7,25 +6,25 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            master.fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            master.fadeOut(block, 5000);
+            animaster().fadeOut(block, 5000);
         });
 
     document.getElementById('showAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            master.showAndHide(block, 5000);
+            animaster().showAndHide(block, 5000);
         });
 
     document.getElementById('heartBeating')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            heartBeatingInterval = master.heartBeating(block);
+            heartBeatingInterval = animaster().heartBeating(block);
         });
 
     document.getElementById('stopHeartBeating')
@@ -38,31 +37,35 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            master.move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, {x: 100, y: 10});
         });
 
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            master.scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            master.moveAndHide(block, 1000);
+            animaster().moveAndHide(block, 1000);
         });
 
     document.getElementById('resetMoveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            master.resetMoveAndHide(block);
+            animaster().resetMoveAndHide(block);
         });
 
     document.getElementById('testPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('testBlock');
-            master.addFadeIn(500).addMove(500, {x: 20, y:20}).addScale(1000, 1.3).play(block);
+            animaster().addFadeIn(500)
+                .addMove(500, {x: 20, y:20})
+                .addScale(1000, 1.3)
+                .addFadeOut(1000)
+                .play(block);
         });
 }
 
@@ -80,7 +83,7 @@ function animaster() {
         element.classList.add('show');
     }
 
-    const resetMove = function (element) {
+    const resetMove = function(element) {
         element.style.transitionDuration =  `0ms`;
         element.style.transform = null;
     }
@@ -115,10 +118,21 @@ function animaster() {
             element.classList.add('hide')
         },
 
+        addDelay(duration) {
+            let operation = {
+                Name: 'Duration',
+                Duration: duration,
+                Command: function() { }
+            }
+            this._steps.push(operation);
+            return this;
+        },
+
         showAndHide(element, duration) {
-            const shortDuration = duration / 3;
-            this.fadeIn(element, shortDuration);
-            setTimeout(() => this.fadeOut(element, shortDuration), shortDuration)
+            this.addFadeIn(duration / 3)
+                .addDelay(duration / 3)
+                .addFadeOut(duration / 3)
+                .play(element);
         },
 
         heartBeating(element) {
@@ -143,14 +157,13 @@ function animaster() {
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
         scale(element, duration, ratio) {
-            console.log(132134134);
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
 
         addScale(duration, ratio) {
             let step = {
-                Name: 'scale',
+                Name: 'Scale',
                 Command: this.scale,
                 Duration: duration,
                 Additional: ratio
@@ -160,8 +173,9 @@ function animaster() {
         },
 
         moveAndHide(element, duration) {
-            this.move(element, duration * 2 / 5, {x: 100, y: 20});
-            setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
+            this.addMove(duration * 2 / 5,{x: 100, y: 20} )
+                .addFadeOut(duration * 3 / 5)
+                .play(element);
         },
 
         resetMoveAndHide(element) {
@@ -174,7 +188,7 @@ function animaster() {
                 Name: 'Move',
                 Command: this.move,
                 Duration: duration,
-                Position: position
+                Additional: position
             }
             this._steps.push(step);
             return this;
@@ -190,27 +204,26 @@ function animaster() {
             return this;
         },
 
+        addFadeOut(duration) {
+            const step = {
+                Name: 'FadeOut',
+                Command: this.fadeOut,
+                Duration: duration
+            }
+            this._steps.push(step);
+            return this;
+        },
+
         play(element) {
             let interval = 0;
             this._steps.reverse();
             while (this._steps.length > 0) {
                 const step = this._steps.pop();
-                console.log(step)
-                switch (step.Name) {
-                    case 'Move': {
-                        console.log(123)
-                        setTimeout(() => step.Command(element, step.Duration, step.Position), interval);
-                        break;
-                    }
-                    case 'scale': {
-                        console.log(345)
-                        setTimeout( () => step.Command(element, step.Duration, step.Additional), interval);
-                        break;
-                    }
-                    case 'FadeIn': {
-                        setTimeout( () => step.Command(element, step.Duration), interval);
-                        break;
-                    }
+                if (step.hasOwnProperty('Additional')) {
+                    setTimeout(() => step.Command(element, step.Duration, step.Additional), interval);
+                }
+                else {
+                    setTimeout( () => step.Command(element, step.Duration), interval);
                 }
                 interval += step.Duration;
             }
