@@ -40,14 +40,16 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            let x = animaster().heartBeating(block);
+
+            document.getElementById('heartBeatingStop')
+                .addEventListener('click', function () {
+                    const block = document.getElementById('heartBeatingBlock');
+                    x.stop();
+                });
         });
 
-    document.getElementById('heartBeatingStop')
-        .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block).stop();
-        });
+
 }
 
 function getTransform(translation, ratio) {
@@ -114,9 +116,12 @@ function animaster() {
                     currentBeat = false;
                 }
             }, 500);
+            console.log(a);
 
             return {
-                stop: function () {
+                stop: () => {
+                    console.log('vstali');
+                    console.log(a);
                     clearInterval(a);
                 }
             }
