@@ -28,13 +28,7 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block).start();
-        });
-
-    document.getElementById('moveAndHideStop')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block).stop();
+            animaster().moveAndHide(block, 1000, {x: 100, y: 20});
         });
 
     document.getElementById('showAndHidePlay')
@@ -71,11 +65,6 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
             animaster().resetMoveAndScale(block);
-        });
-    document.getElementById('moveAndHideReset')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            animaster().resetMoveAndHide(block);
         });
 }
 
@@ -120,22 +109,9 @@ function animaster() {
         element.classList.add('hide');
     }
 
-    function moveAndHide(element) {
-        function _moveAndHide(element, duration = 1000, ratio = 1.4) {
-            move(element, duration * 0.4, {x: 100, y: 20});
-            setTimeout(fadeOut, duration * 0.4, element, duration * 0.6);
-        }
-        function start() {
-            globalThis.heartInterval = setInterval(_moveAndHide, 1000, element);
-        }
-        function stop() {
-            clearInterval(globalThis.heartInterval);
-            globalThis.heartInterval = 0;
-        }
-        return {
-            start,
-            stop
-        }
+    function moveAndHide(element, duration, translation) {
+        move(element, duration * 0.4, translation);
+        setTimeout(fadeOut, duration * 0.4, element, duration * 0.6);
     }
 
     function showAndHide(element, duration) {
