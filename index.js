@@ -42,6 +42,12 @@ function addListeners() {
             const block = document.getElementById('heartBeatingBlock');
             animaster().heartBeating(block);
         });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animaster().heartBeating(block).stop();
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -99,7 +105,7 @@ function animaster() {
         },
 
         heartBeating: function (element) {
-            setInterval(() => {
+            let a = setInterval(() => {
                 if (!currentBeat) {
                     this.scale(element, 500, 1.4);
                     currentBeat = true;
@@ -108,6 +114,12 @@ function animaster() {
                     currentBeat = false;
                 }
             }, 500);
+
+            return {
+                stop: function () {
+                    clearInterval(a);
+                }
+            }
         },
 
         /**
@@ -116,10 +128,12 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
-        scale: function (element, duration, ratio) {
-            console.log('in')
-            element.style.transitionDuration = `${duration}ms`;
-            element.style.transform = getTransform(null, ratio);
-        }
+        scale:
+
+            function (element, duration, ratio) {
+                console.log('in')
+                element.style.transitionDuration = `${duration}ms`;
+                element.style.transform = getTransform(null, ratio);
+            }
     }
 }
