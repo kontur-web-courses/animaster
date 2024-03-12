@@ -1,6 +1,7 @@
 addListeners();
 
 const ANIMASTER = animaster()
+let heartBeatingPlayIds = null;
 
 function addListeners() {
     document.getElementById('fadeInPlay')
@@ -20,11 +21,19 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             ANIMASTER.scale(block, 1000, 1.25);
         });
-    document.getElementById('hearhBeatingPlay')
+    document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('hearhBeatingBlock');
+            const block = document.getElementById('heartBeatingBlock');
             ANIMASTER.heartBeating(block);
         });
+
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            if (heartBeatingPlayIds !== null)
+                for (id of heartBeatingPlayIds) {
+                    clearInterval(id);
+                }
+        })
 
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
@@ -104,8 +113,11 @@ function animaster() {
         const pulseOut = 1.4
         const pulseIn = 1.0
 
-        setInterval(this.scale, 500, element, duration, pulseOut)
-        setInterval(this.scale, 1000, element, duration, pulseIn)
+        if (heartBeatingPlayIds === null)
+            heartBeatingPlayIds = [
+                setInterval(this.scale, 500, element, duration, pulseOut),
+                setInterval(this.scale, 1000, element, duration, pulseIn),
+            ]
 
     }
 
