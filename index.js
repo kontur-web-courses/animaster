@@ -102,13 +102,15 @@ function animaster(){
     }
     function showAndHide(element, duration){
         fadeIn(element, duration);
-        fadeOut(element, duration);
+        setTimeout(() => fadeOut(element, duration), duration)
     }
     function heartBeating(element){
-        while (true) {
+        setInterval(function () {
             scale(element, 500, 1.4);
-            scale(element, 500, 1);
-        }
+            setTimeout(function () {
+                scale(element, 500, 1);
+            }, 500);
+        }, 1000); 
     }
     return {move, scale, fadeIn, fadeOut, moveAndHide, showAndHide, heartBeating };
 }
