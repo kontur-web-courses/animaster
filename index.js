@@ -44,6 +44,21 @@ function addListeners() {
             let cancel = animaster().heartBeating(block).stop;
             document.getElementById('heartBeatingStop').addEventListener('click', cancel);
         });
+
+    document.getElementById('fullAnimation').addEventListener('click', function () {
+        const customAnimation = animaster()
+            .addMove(200, {x: 40, y: 40})
+            .addScale(800, 1.3)
+            .addMove(200, {x: 80, y: 0})
+            .addScale(800, 1)
+            .addMove(200, {x: 40, y: -40})
+            .addScale(800, 0.7)
+            .addMove(200, {x: 0, y: 0})
+            .addScale(800, 1);
+
+        const block = document.getElementById('fullAnimation');
+        customAnimation.play(block);
+    })
 }
 
 function animaster() {
@@ -180,6 +195,7 @@ function animaster() {
 
         play: function (element) {
             for (const step of this._steps) {
+                console.log(`step: ${JSON.stringify(step)}`)
                 let meth;
                 switch (step.oper) {
                     case 'move':
