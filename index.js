@@ -45,6 +45,18 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
+
+        addMove(duration, translation) {
+            return {
+                duration: duration,
+                translation: translation,
+                play(element) {
+                    element.style.transitionDuration = `${this.duration}ms`;
+                    element.style.transform = getTransform(this.translation, null);
+                }
+            }
+        },
+
         /**
          * Функция, увеличивающая/уменьшающая элемент
          * @param element — HTMLElement, который надо анимировать
@@ -56,7 +68,7 @@ function animaster() {
             element.style.transform = getTransform(null, ratio);
         },
         moveAndHide(element, duration) {
-            this.move(element, 2 * duration / 5, {x: 100, y: 20});
+            this.addMove(2 * duration / 5, {x: 100, y: 20}).play(element);
             setTimeout(() => this.fadeOut(element, 3 * duration / 5), 2 * duration / 5);
         },
         showAndHide(element, duration) {
@@ -88,7 +100,7 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10}).play(block);
         });
 
     document.getElementById('scalePlay')
