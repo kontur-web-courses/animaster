@@ -174,6 +174,8 @@ function animaster() {
         };
     };
 
+    const reset = function () {}
+
     return {
         fadeIn,
         fadeOut,
@@ -182,5 +184,6 @@ function animaster() {
         moveAndHide,
         showAndHide,
         heartBeating,
+        reset,
     }
 }
