@@ -161,9 +161,10 @@ function animaster() {
 
         addMove(timeout, ...args) {
             let step = {
+                Name: 'move',
                 Command: this.move,
-                stepTimeout: timeout,
-                additional: args[0]
+                StepTimeout: timeout,
+                Additional: args[0]
             }
             this._steps.push(step);
             return this;
@@ -173,7 +174,7 @@ function animaster() {
             while (this._steps.length > 0) {
                 const step = this._steps.pop();
                 console.log(this._steps.length, step)
-                step.Command(element, step.stepTimeout, step.additional);
+                step.Command(element, step.StepTimeout, step.Additional);
             }
         }
     }
