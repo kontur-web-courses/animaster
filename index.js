@@ -68,37 +68,37 @@ function getTransform(translation, ratio) {
 
 function animaster() {
     return {
-        fadeIn(element, duration) {
+        fadeIn: function(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        fadeOut(element, duration) {
+        fadeOut: function(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.remove('show');
             element.classList.add('hide');
         },
-        scale(element, duration, ratio) {
+        scale: function(element, duration, ratio) {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        move(element, duration, translation) {
+        move: function(element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
-        moveAndHide(element, duration) {
+        moveAndHide: function(element, duration) {
             this.move(element, 0.4 * duration, { x: 100, y: 20 });
             setTimeout(() => this.fadeOut(element, 0.6 * duration), 0.4 * duration);
         },
-        showAndHide(element, duration) {
+        showAndHide: function(element, duration) {
             this.fadeIn(element, duration / 3);
             setTimeout(() => this.fadeOut(element, duration / 3), 2 * duration / 3);
         },
-        heartBeating() {
-            while (true) {
+        heartBeating: function() {
+            setInterval(() => {
                 this.scale(element, 0.5, 1.4);
                 setTimeout(() => this.scale(element, 0.5, 5 / 7), 0.5);
-            }
+            }, 0.5);
         }
     }
 }
