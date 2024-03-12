@@ -25,6 +25,24 @@ function addListeners() {
             const block = document.getElementById('fadeOutBlock');
             animasterHelper.fadeOut(block, 5000);
         });
+
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animasterHelper.moveAndHide(block, 5000, {x: 100, y: 20});
+        });
+
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animasterHelper.showAndHide(block, 5000);
+        });
+
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            animasterHelper.heartBeating(block, 5000);
+        });
 }
 
 function getTransform(translation, ratio) {
@@ -61,8 +79,41 @@ function animaster() {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-        fadeOut(element, duration) {
 
+        moveAndHide(element, duration, translation) {
+            element.style.transitionDuration = `${2 * duration / 5}ms`;
+            element.style.transform = getTransform(translation, null);
+            setTimeout(() => {
+                element.style.transitionDuration = `${3 * duration / 5}ms`;
+                element.classList.remove('show');
+                element.classList.add('hide');
+            }, 2 * duration / 5);
+        },
+        showAndHide(element, duration) {
+            this.fadeIn(element, duration / 3);
+            setTimeout(() => {
+                this.fadeOut(element, duration / 3);
+            }, duration / 3);
+            setTimeout(() => {
+                this.fadeIn(element, duration / 3);
+            }, 2 * duration / 3);
+        },
+        heartBeating(element) {
+            const scaleUp = () => {
+                this.scale(element, 500, 1.4);
+
+                setTimeout(() => {
+                    scaleDown();
+                }, 500);
+            };
+            const scaleDown = () => {
+                this.scale(element, 500, 1);
+
+                setTimeout(() => {
+                    scaleUp();
+                }, 500);
+            };
+            scaleUp();
         }
     }
 }
