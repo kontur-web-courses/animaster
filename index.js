@@ -61,8 +61,7 @@ function addListeners() {
 
     document.getElementById('testPlay')
         .addEventListener('click', function () {
-            const block = document.getElementById('testBlock');
-            master.addMove(500, {x: 20, y:20}).addFadeIn(2000).play(block);
+            master.addMove(500, {x: 20, y:20}).addScale(1000, 1.5).addFadeIn(2000).play(block);
         });
 }
 
@@ -147,11 +146,21 @@ function animaster() {
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
-
+        
+        addScale(timeout, ratio) {
+            let step = {
+                Name: 'scale',
+                Command: this.scale,
+                StepTimeout: timeout,
+                Additional: ratio
+            }
+            this._steps.push(step);
+            return this;
+        },
 
         moveAndHide(element, duration) {
             this.move(element, duration * 2 / 5, {x: 100, y: 20});
-            this.fadeOut(element, duration * 3 / 5);
+            setTimeout(() => this.fadeOut(element, duration * 3 / 5), duration * 2 / 5);
         },
 
         resetMoveAndHide(element) {
@@ -181,10 +190,24 @@ function animaster() {
         },
 
         play(element) {
+            let interval = 0;
+            this._steps.reverse();
             while (this._steps.length > 0) {
                 const step = this._steps.pop();
                 console.log(this._steps.length, step)
                 step.Command(element, step.StepTimeout, step.Position);
+                console.log(step.Name)
+                switch (step.Name) {
+                    case 'move': {
+                        setTimeout(() => step.Command(element, step.StepTimeout, step.Additional), interval);
+                        break;
+                    }
+                    case 'scale': {
+                        setTimeout( () => step.Command(element, step.StepTimeout, step.Additional), interval);
+                        break;
+                    }
+                }
+                interval += step.StepTimeout;
             }
         }
     }
