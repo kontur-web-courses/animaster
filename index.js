@@ -40,7 +40,13 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
     .addEventListener('click', function () {
     const block = document.getElementById('heartBeatingBlock');
-    animaster().heartBeating(block);
+    animaster().heartBeating().startBeat(block);
+    });
+
+    document.getElementById('heartBeatingStop')
+    .addEventListener('click', function () {
+    const block = document.getElementById('heartBeatingBlock');
+    animaster().heartBeating().stop();
     });
 }
 
@@ -56,6 +62,8 @@ function getTransform(translation, ratio) {
     }
     return result.join(' ');
 }
+
+let globalInterval;
 
 function animaster(){
     return{
@@ -109,12 +117,20 @@ function animaster(){
             setTimeout(this.fadeOut, duration / 3, element, duration / 3)
         },
 
-        heartBeating(element) {
-            function beat(element){
-                animaster().scale(element, 500, 1.4);
-                setTimeout(animaster().scale, 500, element, 500, 1)
+        heartBeating() {
+            return{
+                startBeat(element){
+                    globalInterval = setInterval(this.beat, 1000, element)
+                },
+                beat(element){
+                    animaster().scale(element, 500, 1.4);
+                    setTimeout(animaster().scale, 500, element, 500, 1)
+                },
+                stop(){
+                    console.log("pressed stop button");
+                    clearInterval(globalInterval);
+                }
             }
-            setInterval(beat, 1000, element);
         }
-}
+    }
 }
