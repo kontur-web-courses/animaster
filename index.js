@@ -94,6 +94,7 @@ function addListeners() {
         .addEventListener('click', function () {
             heartBeatingObj.stop();
         });
+
     const worryAnimationHandler = animaster()
         .addMove(200, {x: 80, y: 0})
         .addMove(200, {x: 0, y: 0})
@@ -103,6 +104,11 @@ function addListeners() {
     document
         .getElementById('worryAnimationPlay')
         .addEventListener('click', worryAnimationHandler);
+
+    document.getElementById('heartBeatingReset')
+        .addEventListener('click', function () {
+            worryAnimationHandler.reset();
+        });
 }
 
 function getTransform(translation, ratio) {
