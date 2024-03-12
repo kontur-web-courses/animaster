@@ -33,7 +33,7 @@ function animaster(){
     this.heartBeating = function (element) {
         this.scale(element, 500, 1.4);
         setInterval(this.scale, 500, element, 500, 1)
-        setInterval(this.scale, 1000, element, 500, 1.25)
+        setInterval(this.scale, 1000, element, 500, 1.4)
     }
 
     return this;
