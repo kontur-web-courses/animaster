@@ -28,15 +28,18 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().addMove(400 , {'x': 100, 'y': 20}).addFadeOut(600).play(block);
-            // let cancel = animaster().moveAndHide(block, 1000).stop;
-            // document.getElementById('moveAndHideReset').addEventListener('click', cancel);
+            const cancel = animaster().addMove(400, {
+                'x': 100,
+                'y': 20
+            }).addFadeOut(600).play(block).cancel;
+
+            document.getElementById('moveAndHideReset').addEventListener('click', cancel);
         });
 
     document.getElementById('showAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('showAndHideBlock');
-            animaster().addFadeIn(1000 / 3).addDelay(1000 / 3).addFadeOut(1000/3).play(block);
+            animaster().addFadeIn(1000 / 3).addDelay(1000 / 3).addFadeOut(1000 / 3).play(block);
         });
 
     document.getElementById('heartBeatingPlay')
@@ -58,8 +61,9 @@ function addListeners() {
             .addScale(800, 1);
 
         const block = document.getElementById('fullAnimation');
-        customAnimation.play(block);
-    })
+        const cancel = customAnimation.play(block).cancel;
+        document.getElementById('fullAnimationStop').addEventListener('click', cancel);
+    });
 }
 
 function animaster() {
@@ -152,7 +156,7 @@ function animaster() {
             };
         },
 
-        delay: function (){
+        delay: function () {
 
         },
 
@@ -193,8 +197,9 @@ function animaster() {
                 oper: 'delay',
                 duration: duration,
                 params: undefined,
-            })
-            return this;s
+            });
+            return this;
+            s;
         },
 
         addFadeOut: function (duration) {
@@ -209,8 +214,10 @@ function animaster() {
 
         play: function (element) {
             let dur = 0;
+            let cancelCalls = [];
+            let timeouts = [];
             for (const step of this._steps) {
-                console.log(`step: ${JSON.stringify(step)}`)
+                console.log(`step: ${JSON.stringify(step)}`);
                 let meth;
                 switch (step.oper) {
                     case 'move':
@@ -224,17 +231,32 @@ function animaster() {
                         break;
                     case 'fadeIn':
                         meth = this.fadeIn;
-                        break
+                        break;
                     case 'delay':
-                        meth = this.delay
+                        meth = this.delay;
                         break;
                     default:
                         throw new TypeError(`Unknown step type: ${step}`);
                 }
 
                 dur += step.duration;
-                setTimeout(() => meth(element, step.duration, step.params), dur);
+                timeouts.push(setTimeout(() => meth(element, step.duration, step.params), dur));
+                if (step.cancelFunc !== undefined) {
+                    cancelCalls.push(step.cancelFunc);
+                }
             }
+
+            return {
+                stop: function () {
+                    for (const timeout of timeouts) {
+                        clearTimeout(timeout);
+                    }
+
+                    for (const call of cancelCalls) {
+                        call();
+                    }
+                }
+            };
         }
     };
 }
