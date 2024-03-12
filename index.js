@@ -177,6 +177,16 @@ function animaster(){
             return this;
         },
 
+        addFadeIn(duration){
+            this._steps.push({"name": 'fadeIn', "duration": duration});
+            return this;
+        },
+
+        addFadeOut(duration){
+            this._steps.push({"name": 'fadeOut', "duration": duration});
+            return this;
+        },
+
         play(element){
             for(action of _steps){
                 if (action["name"] == 'Move'){
@@ -184,6 +194,12 @@ function animaster(){
                 }
                 else if (action["name"] == 'Scale'){
                     this.scale(element, action["duration"], action["ratio"]);
+                }
+                else if (action["name"] == 'fadeIn'){
+                    this.fadeIn(element, action["duration"]);
+                }
+                else if (action["name"] == 'fadeOut'){
+                    this.fadeOut(element, action["duration"]);
                 }
             }
         }
