@@ -89,6 +89,12 @@ function addListeners() {
                 .addScale(800, 1)
                 .play(block);
         });
+
+    document.getElementById('heightAnimationPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heightAnimationBlock');
+            animaster().changeHeight(block);
+        });
 }
 
 // Задание 1
@@ -107,7 +113,7 @@ function animaster() {
 
                 // Задание 10
                 case 'fadeOut':
-                    setTimeout(() => fadeOut(element, step.duration), curDur);
+                    globalThis.timerIdFadeOut = setTimeout(() => fadeOut(element, step.duration), curDur);
                     curDur += step.duration;
                     break;
 
@@ -118,6 +124,11 @@ function animaster() {
 
                 case 'scale':
                     setTimeout(() => scale(element, step.duration, step.ratio), curDur);
+                    curDur += step.duration;
+                    break;
+
+                case 'delay':
+                    setTimeout(() => move(element, step.duration, {x: 0, y: 0}), curDur);
                     curDur += step.duration;
                     break;
             }
@@ -220,14 +231,17 @@ function animaster() {
     }
 
     // Задание 4
+    // Задание 12
     function moveAndHide(element, duration, translation) {
         function play() {
-            move(element,2 * duration / 5, translation);
-            globalThis.timerIdMoveAndHide = setTimeout(() => fadeOut(element, 3 * duration / 5), 2 * duration / 5);
+            animaster()
+                .addMove(2 * duration / 5, translation)
+                .addFadeOut(3 * duration / 5)
+                .play(element);
         }
 
         function reset() {
-            clearTimeout(globalThis.timerIdMoveAndHide);
+            clearTimeout(globalThis.timerIdFadeOut);
             resetMoveAndScale(element);
             resetFadeOut(element);
         }
@@ -239,17 +253,37 @@ function animaster() {
     }
 
     function showAndHide(element, duration) {
-        fadeIn(element, duration / 3);
-        setTimeout(() => move(element, duration / 3, {x: 0, y: 0}), duration / 3);
-        setTimeout(() => fadeOut(element, duration / 3), 2 * duration / 3);
+        animaster()
+            .addFadeIn(duration / 3)
+            .addDelay(duration / 3)
+            .addFadeOut(duration / 3)
+            .play(element);
+    }
+
+    function addDelay(duration) {
+        _steps.push({
+            name: 'delay',
+            duration
+        });
+        return this;
     }
 
     function heartBeating(element) {
-        function play() {
-            globalThis.timerIdHeartBeating = setInterval(() => {
-                scale(element, 500, 1.4);
-                setTimeout(() => scale(element, 500, 1), 500);
-            }, 1000);
+        function play(cycled=true) {
+            if (cycled) {
+                globalThis.timerIdHeartBeating = setInterval(() => {
+                    animaster()
+                        .addScale(500, 1.4)
+                        .addScale(500, 1)
+                        .play(element);
+                }, 1000);
+            } else {
+                animaster()
+                    .addScale(500, 1.4)
+                    .addScale(500, 1)
+                    .play(element);
+            }
+
         }
 
         // Задание 5
@@ -261,6 +295,25 @@ function animaster() {
             play,
             stop
         };
+    }
+
+    function changeHeight(element) {
+        let flag = true;
+        let curHeight = 100;
+        setInterval(() => {
+            if (flag) {
+                curHeight -= 1;
+                if (curHeight === 10) {
+                    flag = false;
+                }
+            } else {
+                curHeight += 1
+                if (curHeight === 100) {
+                    flag = true;
+                }
+            }
+            element.style.height = `${curHeight}px`;
+        }, 10)
     }
 
     return {
@@ -278,6 +331,8 @@ function animaster() {
         addFadeOut,
         addMove,
         addScale,
+        addDelay,
+        changeHeight,
         play
     };
 }

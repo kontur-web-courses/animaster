@@ -4,6 +4,8 @@
     border-radius: 10px;
     border: 2px solid #ddd;
     position: relative;
+    height: 150px;
+    background-color: goldenrod;
 }
 
 .container-header {
