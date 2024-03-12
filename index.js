@@ -7,6 +7,12 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 1000, 1.25);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -40,7 +46,7 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          * @param translation — объект с полями x и y, обозначающими смещение блока
          */
-        move: function move(element, duration, translation) {
+        move: function (element, duration, translation) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(translation, null);
         },
@@ -51,7 +57,7 @@ function animaster() {
          * @param duration — Продолжительность анимации в миллисекундах
          * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
          */
-        scale: function scale(element, duration, ratio) {
+        scale: function (element, duration, ratio) {
             element.style.transitionDuration = `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
@@ -61,10 +67,21 @@ function animaster() {
          * @param element — HTMLElement, который надо анимировать
          * @param duration — Продолжительность анимации в миллисекундах
          */
-        fadeIn: function fadeIn(element, duration) {
+        fadeIn: function (element, duration) {
             element.style.transitionDuration = `${duration}ms`;
             element.classList.remove('hide');
             element.classList.add('show');
-        }
+        },
+
+        /**
+         * Блок плавно становится прозрачным.
+         * @param element — HTMLElement, который надо анимировать
+         * @param duration — Продолжительность анимации в миллисекундах
+         */
+        fadeOut: function (element, duration) {
+            element.style.transitionDuration = `${duration}ms`;
+            element.classList.add('hide');
+            element.classList.remove('show');
+        },
     }
 }
