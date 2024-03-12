@@ -57,44 +57,54 @@ function animaster() {
             this.addMove(duration, translation).play(element);
         },
         addMove(duration, translation) {
-            this._steps.push({
+            copy = {...this};
+            copy._steps = [...this._steps];
+            copy._steps.push({
                 name: 'move',
                 duration: duration,
                 additional: {translation: translation}
             })
-            return this;
+            return copy;
         },
         addScale(duration, ratio) {
-            this._steps.push({
+            copy = {...this};
+            copy._steps = [...this._steps];
+            copy._steps.push({
                name: 'scale',
                duration: duration,
                additional: {ratio: ratio}
             });
-            return this;
+            return copy;
         },
         addFadeIn(duration) {
-            this._steps.push({
+            copy = {...this};
+            copy._steps = [...this._steps];
+            copy._steps.push({
                 name: 'fadeIn',
                 duration: duration,
                 additional: null,
             });
-            return this;
+            return copy;
         },
         addFadeOut(duration) {
-            this._steps.push({
+            copy = {...this};
+            copy._steps = [...this._steps];
+            copy._steps.push({
                 name: 'fadeOut',
                 duration: duration,
                 additional: null,
             });
-            return this;
+            return copy;
         },
         addDelay(duration) {
-            this._steps.push({
+            copy = {...this};
+            copy._steps = [...this._steps];
+            copy._steps.push({
                 name: 'delay',
                 duration: duration,
                 additional: null,
             });
-            return this;
+            return copy;
         },
         play(element, cycled=false) {
             for (let animation of this._steps) {
@@ -115,7 +125,7 @@ function animaster() {
                         element.classList.add('hide');
                         break;
                 }
-                sleep(animation.duration);
+                //sleep(animation.duration);
             }
         },
         /**
