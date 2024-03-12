@@ -19,7 +19,9 @@ function addListeners() {
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            animaster().move(block, 1000, {x: 100, y: 10});
+            // animaster().move(block, 1000, {x: 100, y: 10});
+            animaster().addMove(1000, {x: 100, y: 10})
+                .play(block).move(block, 1000, {x: -50, y: -56});
         });
 
     document.getElementById('scalePlay')
@@ -86,6 +88,24 @@ function animaster()
 
     }
     return {
+        _steps: [],
+
+        addMove: function (duration, translation)
+        {
+            this._steps.push({
+                operation: element => this.move(element, duration, translation)
+            })
+            return this;
+        },
+
+        play: function (element)
+        {
+            for (const operation of this._steps) {
+                operation.operation(element);
+            }
+            return this;
+        },
+
         /**
          * Блок плавно появляется из прозрачного.
          * @param element — HTMLElement, который надо анимировать
