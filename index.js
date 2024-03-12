@@ -4,7 +4,7 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            animaster().addFadeIn(5000).play(block);
         });
 
     document.getElementById('fadeOutPlay')
@@ -158,6 +158,16 @@ function animaster() {
             return this;
         },
 
+        addFadeIn: function (duration) {
+            this._steps.push({
+                oper: 'fadeIn',
+                duration: duration,
+                params: undefined,
+            });
+
+            return this;
+        },
+
         play: function (element) {
             for (const step of this._steps) {
                 let meth;
@@ -168,6 +178,9 @@ function animaster() {
                     case 'scale':
                         meth = this.scale;
                         break;
+                    case 'fadeIn':
+                        meth = this.fadeIn;
+                        break
                     default:
                         throw new TypeError(`Unknown step type: ${step}`);
                 }
