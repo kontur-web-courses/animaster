@@ -1,29 +1,27 @@
 addListeners();
 
 function addListeners() {
-  addPlayListener("fadeIn", (anim, block) => {
-    return anim.addFadeIn(1000).play(block);
-  });
+  addPlayListener("fadeIn", (anim, block) => anim.addFadeIn(1000).play(block));
 
-  addPlayListener("move", (anim, block) => {
-    return anim.addMove(1000, { x: 100, y: 10 }).play(block);
-  });
+  addPlayListener("move", (anim, block) =>
+    anim.addMove(1000, { x: 100, y: 10 }).play(block)
+  );
 
-  addPlayListener("scale", (anim, block) => {
-    return anim.addScale(1000, 1.25).play(block);
-  });
+  addPlayListener("scale", (anim, block) =>
+    anim.addScale(1000, 1.25).play(block)
+  );
 
-  addPlayStopListeners("moveAndHide", (anim, block) => {
-    return anim.moveAndHide(5000).play(block);
-  });
+  addPlayStopListeners("moveAndHide", (anim, block) =>
+    anim.moveAndHide(5000).play(block)
+  );
 
-  addPlayListener("showAndHide", (anim, block) => {
-    return anim.showAndHide(1000).play(block);
-  });
+  addPlayListener("showAndHide", (anim, block) =>
+    anim.showAndHide(1000).play(block)
+  );
 
-  addPlayStopListeners("heartBeating", (anim, block) => {
-    return anim.heartBeating(block).play(block, (cycled = true));
-  });
+  addPlayStopListeners("heartBeating", (anim, block) =>
+    anim.heartBeating(block).play(block, (cycled = true))
+  );
 }
 
 function addPlayStopListeners(name, callback) {
@@ -32,8 +30,12 @@ function addPlayStopListeners(name, callback) {
     stops.push(callback(anim, block));
   });
 
+  addClickListener(name + "Reset", name + "Block", (_, __) => {
+    stops.forEach((e) => e.reset());
+  });
+
   addClickListener(name + "Stop", name + "Block", (_, __) => {
-    stops.forEach(e => e.stop());
+    stops.forEach((e) => e.stop());
   });
 }
 
@@ -42,7 +44,7 @@ function addPlayListener(name, callback) {
 }
 
 function addClickListener(playName, blockName, callback) {
-  document.getElementById(playName).addEventListener("click", function () {
+  document.getElementById(playName)?.addEventListener("click", function () {
     const block = document.getElementById(blockName);
     const anim = animaster();
     callback(anim, block);
@@ -58,15 +60,16 @@ function animaster() {
       this._play(element);
       if (cycled) {
         var interval = setInterval(
-          this._play,
-          this._steps.reduce((s, e) => s + e.duration, 0)
+          this._play.bind(this),
+          this._steps.reduce((s, e) => s + e.duration, 0),
+          element
         );
       }
 
       return {
         stop: () => clearInterval(interval),
         reset: () => {
-          this._steps.forEach((e) => e.cancel());
+          this._steps.forEach((e) => e.cancel(element));
           this._timeouts.forEach((e) => clearTimeout(e));
         },
       };
