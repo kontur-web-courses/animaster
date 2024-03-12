@@ -26,10 +26,11 @@ function addListeners() {
         });
 
     const worryAnimationHandler = animaster()
-        .addMove(200, {x: 80, y: 0})
-        .addMove(200, {x: 0, y: 0})
-        .addMove(200, {x: 80, y: 0})
-        .addMove(200, {x: 0, y: 0})
+        .addMove(35, {x: 324, y: 0})
+        .addMove(644, {x: 324, y: 4})
+        .addMove(13, {x: 4, y: 66})
+        .addMove(413, {x: 53, y: 35})
+        .addScale(400, 1.4)
         .buildHandler();
 
     document
