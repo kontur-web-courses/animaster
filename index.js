@@ -7,6 +7,12 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
+        });
+
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
@@ -43,6 +49,16 @@ function animaster() {
         element.classList.add('show');
     };
     /**
+     * Блок плавно исчезает, превращаясь в прозрачный.
+     * @param element — HTMLElement, который надо анимировать
+     * @param duration — Продолжительность анимации в миллисекундах
+     */
+    const fadeOut = function(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    };
+    /**
      * Функция, передвигающая элемент
      * @param element — HTMLElement, который надо анимировать
      * @param duration — Продолжительность анимации в миллисекундах
@@ -75,6 +91,7 @@ function animaster() {
 
     return {
         fadeIn,
+        fadeOut,
         move,
         scale,
     }
