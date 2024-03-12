@@ -76,13 +76,13 @@ function addListeners() {
         });
 
     const customAnimation = animaster()
-        .addMove(200, {x: 40, y: 40})
-        .addScale(800, 1.3)
-        .addMove(200, {x: 80, y: 0})
+        .addMove(300, {x: 20, y: 0})
+        .addScale(800, 1.5)
+        .addMove(300, {x: 0, y: 20})
         .addScale(800, 1)
-        .addMove(200, {x: 40, y: -40})
-        .addScale(800, 0.7)
-        .addMove(200, {x: 0, y: 0})
+        .addMove(300, {x: -20, y: 0})
+        .addScale(800, 1.5)
+        .addMove(300, {x: 0, y: -20})
         .addScale(800, 1);
 
     document.getElementById('customAnimationPlay')
