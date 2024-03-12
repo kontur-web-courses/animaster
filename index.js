@@ -10,7 +10,7 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
-            animaster().fadeOut(block, 5000);
+            animaster().addFadeOut(5000).play(block);
         });
 
     document.getElementById('movePlay')
@@ -168,6 +168,16 @@ function animaster() {
             return this;
         },
 
+        addFadeOut: function (duration) {
+            this._steps.push({
+                oper: 'fadeOut',
+                duration: duration,
+                params: undefined,
+            });
+
+            return this;
+        },
+
         play: function (element) {
             for (const step of this._steps) {
                 let meth;
@@ -177,6 +187,9 @@ function animaster() {
                         break;
                     case 'scale':
                         meth = this.scale;
+                        break;
+                    case 'fadeOut':
+                        meth = this.fadeOut;
                         break;
                     case 'fadeIn':
                         meth = this.fadeIn;
