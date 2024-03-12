@@ -71,9 +71,15 @@ function animaster(){
         element.classList.remove('hide');
         element.classList.add('show');
     }
+    function fadeOut(element, duration){
+        element.style.transitionDuration =  `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
     return {
         scale : scale,
         move : move,
         fadeIn : fadeIn
+        fadeOut : fadeOut
     }
 }
