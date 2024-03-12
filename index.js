@@ -4,7 +4,13 @@ function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            animaster().fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000).start();
+        });
+
+    document.getElementById('fadeInReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().fadeIn(block, 5000).reset();
         });
 
     document.getElementById('movePlay')
@@ -22,14 +28,26 @@ function addListeners() {
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
         const block = document.getElementById('fadeOutBlock');
-        animaster().fadeOut(block, 5000);
+        animaster().fadeOut(block, 5000).start();
     });
+
+    document.getElementById('fadeOutReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000).reset();
+        });
     
     document.getElementById('moveAndHidePlay')
     .addEventListener('click', function () {
     const block = document.getElementById('moveAndHideBlock');
-    animaster().moveAndHide(block, 5000);
+    animaster().moveAndHide(block, 5000).start();
     });
+
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000).reset();
+        });
 
     document.getElementById('showAndHidePlay')
     .addEventListener('click', function () {
@@ -73,15 +91,33 @@ function animaster(){
          * @param duration — Продолжительность анимации в миллисекундах
          */
         fadeIn(element, duration) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.classList.remove('hide');
-            element.classList.add('show');
+            return{
+                start: function (){
+                    element.style.transitionDuration =  `${duration}ms`;
+                    element.classList.remove('hide');
+                    element.classList.add('show');
+                },
+                reset: function (){
+                    element.style.transitionDuration =  null;
+                    element.classList.remove('show');
+                    element.classList.add('hide');
+                }
+            }
         },
 
         fadeOut(element, duration) {
-            element.style.transitionDuration =  `${duration}ms`;
-            element.classList.remove('show');
-            element.classList.add('hide');
+            return {
+                start: function (){
+                    element.style.transitionDuration =  `${duration}ms`;
+                    element.classList.remove('show');
+                    element.classList.add('hide');
+                },
+                reset: function (){
+                    element.style.transitionDuration =  null;
+                    element.classList.remove('hide');
+                    element.classList.add('show');
+                }
+            }
         },
 
 
@@ -108,8 +144,18 @@ function animaster(){
         },
 
         moveAndHide(element, duration) {
-            this.move(element, duration * 2 / 5, {x:100, y:20});
-            this.fadeOut(element, duration * 3 / 5);
+            return {
+                start: function (){
+                    animaster().move(element, duration * 2 / 5, {x:100, y:20});
+                    animaster().fadeOut(element, duration * 3 / 5).start();
+                },
+                reset: function (){
+                    element.style.transitionDuration =  null;
+                    element.style.transform = getTransform({x: 0, y: 0}, null);
+                    element.classList.remove('hide');
+                    element.classList.add('show');
+                }
+            }
         },
 
         showAndHide(element, duration) {
