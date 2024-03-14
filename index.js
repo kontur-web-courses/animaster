@@ -42,6 +42,7 @@ function addListeners() {
 
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
+            isBeating = true;
             const block = document.getElementById('heartBeating');
             heartBeatingAnimation = animasterObj.heartBeating(block);
         });
@@ -64,6 +65,8 @@ function getTransform(translation, ratio) {
 }
 
 function animaster() {
+    isBeating = true;
+
     function fadeIn(element, duration) {
         element.style.transitionDuration =  `${duration}ms`;
         element.classList.remove('hide');
@@ -97,15 +100,16 @@ function animaster() {
     }
 
     function heartBeating(element) {
-        let isGoing = true;
-        while (isGoing) {
-            scale(element, 500, 1.4);
-            // setTimeout(() => scale(element, 500, 1 / 1.4), 1000);
+        console.log(isBeating);
+        scale(element, 500, 1.4);
+        setTimeout(() => scale(element, 500, 1 / 1.4), 500);
+        if (isBeating){
+            setTimeout(() => heartBeating(element), 1000)
         }
         
         return {
             stop: function() { 
-                isGoing = false;
+                isBeating = false;
             }
         }
     }
