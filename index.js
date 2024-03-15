@@ -28,11 +28,10 @@ function addListeners() {
     document.getElementById('moveAndHidePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            let a = animaster()
+            animaster()
                 .addMove(1000 * 2 / 5, {x: 100, y: 10})
                 .addFadeOut(1000 * 3 / 5)
                 .play(block);
-            setTimeout(a.stop, 100);
         });
 
     document.getElementById('showAndHidePlay')
@@ -84,10 +83,6 @@ function addListeners() {
                     setTimeout(run, 2 * timePart);
                 }
             }, 0);
-            // animaster()
-            //     .addScale(timePart, 1.4)
-            //     .addScale(timePart, 5 / 7)
-            //     .play(block, true);
         });
 
     document.getElementById('heartBeatingStop')
